@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
-    internal class BudgetCategory
+    public class BudgetCategory:BaseEntity
     {
+        public int Name { get; set; }
     }
 }
