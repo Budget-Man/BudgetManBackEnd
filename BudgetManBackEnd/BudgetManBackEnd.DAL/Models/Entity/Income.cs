@@ -7,13 +7,19 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
-    public class BudgetCategory:BaseEntity
+    public class Income:BaseEntity
     {
-        public int Name { get; set; }
+        public string Name { get; set; }
 
         [ForeignKey("Account")]
         public Guid AccountId { get; set; }
         [ForeignKey("AccountId")]
         public AccountInfo Account { get; set; }
+
+        [ForeignKey("MoneyHolder")]
+        public Guid MoneyHolderId { get; set; }
+        [ForeignKey("MoneyHolderId")]
+        public MoneyHolder MoneyHolder { get; set; }
+
     }
 }

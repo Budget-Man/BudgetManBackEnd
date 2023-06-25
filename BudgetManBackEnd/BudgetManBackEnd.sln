@@ -5,11 +5,11 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.API", "BudgetManBackEnd.API\BudgetManBackEnd.API.csproj", "{1F748D5A-B209-49AD-8EF6-D5C334FA66AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.DAL", "BudgetManBackEnd.DAL\BudgetManBackEnd.DAL.csproj", "{AABA6528-6329-4D49-B83A-8029ACB1C5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.DAL", "BudgetManBackEnd.DAL\BudgetManBackEnd.DAL.csproj", "{AABA6528-6329-4D49-B83A-8029ACB1C5E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.Common", "BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj", "{3D2C2CF6-F9DC-46D9-8F9B-9E044CC91361}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MayNghien.Common", "BudgetManBackEnd.Common\MayNghien.Common.csproj", "{3D2C2CF6-F9DC-46D9-8F9B-9E044CC91361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.Service", "BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj", "{1FB7312D-4552-4BDE-93BA-D60E453B61AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.Service", "BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj", "{1FB7312D-4552-4BDE-93BA-D60E453B61AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

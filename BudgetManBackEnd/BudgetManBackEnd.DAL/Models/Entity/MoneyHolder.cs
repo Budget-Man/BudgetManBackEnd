@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
-    public class BudgetCategory:BaseEntity
+    public class MoneyHolder:BaseEntity
     {
-        public int Name { get; set; }
-
+        public string Name { get; set; }
+        public string? BankName { get; set; }
+        public string? AccountNumber { get; set; }
         [ForeignKey("Account")]
         public Guid AccountId { get; set; }
         [ForeignKey("AccountId")]
