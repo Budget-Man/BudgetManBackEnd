@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BudgetManBackEnd.DAL.Models.Entity
+namespace MayNghien.DAL.Models.Entity
 {
     public class BaseEntity
     {

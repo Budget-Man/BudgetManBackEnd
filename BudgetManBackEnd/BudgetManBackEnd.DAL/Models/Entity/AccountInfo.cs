@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MayNghien.DAL.Models.Entity;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
@@ -13,6 +9,8 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public string Name { get; set; }
         public string? MobileNo { get; set; }
         public string? Email { get; set; }
+
+        public double Balance { get; set; }
 
     }
 }

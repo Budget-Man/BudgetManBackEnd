@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "MayNghien.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/MayNghien.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MayNghien.Common.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "MayNghien.Common/1.0.0": {
+      "type": "project",
+      "path": "../BudgetManBackEnd.Common/MayNghien.Common.csproj",
+      "msbuildProject": "../BudgetManBackEnd.Common/MayNghien.Common.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "MayNghien.Common >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\ITEL\\.nuget\\packages\\": {}
@@ -33,7 +52,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj": {
+              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

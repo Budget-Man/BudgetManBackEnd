@@ -12,4 +12,8 @@
     <Folder Include="Implementation\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetManBackEnd.Common\MayNghien.Common.csproj" />
+  </ItemGroup>
+
 </Project>
