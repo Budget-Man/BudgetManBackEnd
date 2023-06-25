@@ -2,6 +2,16 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "BudgetManBackEnd.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/BudgetManBackEnd.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BudgetManBackEnd.Common.dll": {}
+        }
+      },
       "MayNghien.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -15,6 +25,11 @@
     }
   },
   "libraries": {
+    "BudgetManBackEnd.Common/1.0.0": {
+      "type": "project",
+      "path": "../BudgetManBackEnd.Common/BudgetManBackEnd.Common.csproj",
+      "msbuildProject": "../BudgetManBackEnd.Common/BudgetManBackEnd.Common.csproj"
+    },
     "MayNghien.Common/1.0.0": {
       "type": "project",
       "path": "../BudgetManBackEnd.Common/MayNghien.Common.csproj",
@@ -23,6 +38,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "BudgetManBackEnd.Common >= 1.0.0",
       "MayNghien.Common >= 1.0.0"
     ]
   },
@@ -53,8 +69,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
+            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
+            },
             "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj": {
               "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj"
+            },
+            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
             }
           }
         }

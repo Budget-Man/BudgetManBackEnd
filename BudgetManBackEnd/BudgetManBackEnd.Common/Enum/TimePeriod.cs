@@ -12,6 +12,7 @@ namespace BudgetManBackEnd.CommonClass.Enum
         Weekly,
         Monthly,
         Quarterly,
-        Annually
+        Annually,
+        Irregular
     }
 }

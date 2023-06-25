@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
-      "projectName": "BudgetManBackEnd.Common",
-      "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+      "projectUniqueName": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj",
+      "projectName": "MayNghien.Common",
+      "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj",
       "packagesPath": "C:\\Users\\ITEL\\.nuget\\packages\\",
       "outputPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
       "projectStyle": "PackageReference",

@@ -1,4 +1,4 @@
-﻿using MayNghien.DAL.Models.Entity;
+﻿using MayNghien.Common.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

@@ -1,4 +1,4 @@
-﻿using MayNghien.DAL.Models.Entity;
+﻿using MayNghien.Common.Models.Entity;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {

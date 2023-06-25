@@ -20,6 +20,10 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public Guid MoneyHolderId { get; set; }
         [ForeignKey("MoneyHolderId")]
         public virtual MoneyHolder MoneyHolder { get; set; }
+        public string Reason { get; set; }
+        public string? Description { get; set; }
+        public bool IsPaid { get; set; } = false;
+
 
 
     }

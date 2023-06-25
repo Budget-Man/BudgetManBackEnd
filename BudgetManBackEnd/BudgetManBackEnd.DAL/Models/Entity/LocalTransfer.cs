@@ -1,5 +1,4 @@
-﻿using MayNghien.DAL.Models.Entity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MayNghien.DAL.Models.Entity
+namespace MayNghien.Common.Models.Entity
 {
     public class BaseEntity
     {
