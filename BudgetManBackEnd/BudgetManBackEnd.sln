@@ -16,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.TransferCronjob", "BudgetManBackEnd.TransferCronjob\BudgetManBackEnd.TransferCronjob.csproj", "{B3AEE282-1A8E-42CB-B09F-79317A12082E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.TransferCronjob", "BudgetManBackEnd.TransferCronjob\BudgetManBackEnd.TransferCronjob.csproj", "{B3AEE282-1A8E-42CB-B09F-79317A12082E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.CommonClass", "BudgetManBackEnd.Common\BudgetManBackEnd.CommonClass.csproj", "{BA7AAC45-D779-4ED3-84AC-F9F62588B0AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.Common", "BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj", "{BA7AAC45-D779-4ED3-84AC-F9F62588B0AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
