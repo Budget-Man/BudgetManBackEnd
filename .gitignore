@@ -402,3 +402,4 @@ FodyWeavers.xsd
 
 
 */debug/*
+*.cache
