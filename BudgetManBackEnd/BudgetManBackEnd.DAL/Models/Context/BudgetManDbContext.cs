@@ -1,11 +1,13 @@
 ﻿using BudgetManBackEnd.DAL.Models.Entity;
+using MayNghien.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace BudgetManBackEnd.DAL.Models.Context
 {
-    public partial class BudgetManDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class BudgetManDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public BudgetManDbContext() { }
 
@@ -26,6 +28,31 @@ namespace BudgetManBackEnd.DAL.Models.Context
         public DbSet<MoneySpend> MoneySpends { get; set; }
         public DbSet<MoneySpendDetail> MoneySpendDetails { get; set; }
 
+        #endregion
+
+        #region config 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                var appSetting = JsonConvert.DeserializeObject<AppSetting>(File.ReadAllText("appsettings.json"));
+                optionsBuilder.UseSqlServer(appSetting.ConnectionString);
+            }
+
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+
+
+            base.OnModelCreating(builder);
+        }
         #endregion
     }
 }
