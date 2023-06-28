@@ -1,18 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Qfmwct225x+uMbjTxr7kQH8Fvpq4kYUuI2VmUBJc15n+j1zO3fenVn9qQoad8VVlFHuaEnS+cKWsqLK8FQBvDA==",
-  "success": false,
+  "dgSpecHash": "Uc1zR6oNTVphAx1y0TWAAkwZamdC0XXcp1SuJOUJ/yKuXVRgLVbwnIwHgPEfRk95y1uYtTaKdxTohHvoyAUfew==",
+  "success": true,
   "projectFilePath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
   "expectedPackageFiles": [],
-  "logs": [
-    {
-      "code": "NU1104",
-      "level": "Error",
-      "message": "Unable to find project 'D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj'. Check that the project reference is valid and that the project file exists.",
-      "libraryId": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj",
-      "targetGraphs": [
-        "net6.0"
-      ]
-    }
-  ]
+  "logs": []
 }
