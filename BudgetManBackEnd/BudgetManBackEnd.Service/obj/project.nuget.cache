@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3x9UVYfu16TS0zSfhLROQiShZc8ziefVtaCgliizDdTHtXFONRnL22tm/7xBa7sGSB1Fu8eojP4MUlatjhteUQ==",
+  "dgSpecHash": "54tSAXau8G9nf2MfR6NnvkgsatKdVxcCGPiuLvIy0Iz+wtK0Li3ojL00vVc9CC641soy/U1ccSOlOCmnti2N2g==",
   "success": true,
-  "projectFilePath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
+  "projectFilePath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
