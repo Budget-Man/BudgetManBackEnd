@@ -2,7 +2,7 @@
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
-    public class Debts:BaseAccountEntity
+    public class Debt:BaseAccountEntity
     {
         public string Name { get; set; }
         public double TotalAmount { get; set; }

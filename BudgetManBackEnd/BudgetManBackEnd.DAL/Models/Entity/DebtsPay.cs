@@ -14,7 +14,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         [ForeignKey("Debts")]
         public Guid DebtsId { get; set; }
         [ForeignKey("DebtsId")]
-        public virtual Debts Debts { get; set; }
+        public virtual Debt Debts { get; set; }
         public double? PaidAmount { get; set; }
         public double? Interest { get; set; }
         public double InterestRate { get; set; } = 0;
