@@ -32,30 +32,31 @@
     },
     "MayNghien.Common/1.0.0": {
       "type": "project",
-      "path": "../BudgetManBackEnd.Common/MayNghien.Common.csproj",
-      "msbuildProject": "../BudgetManBackEnd.Common/MayNghien.Common.csproj"
+      "path": "../MayNghien.Common/MayNghien.Common.csproj",
+      "msbuildProject": "../MayNghien.Common/MayNghien.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "BudgetManBackEnd.Common >= 1.0.0",
+      "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj",
       "MayNghien.Common >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ITEL\\.nuget\\packages\\": {}
+    "C:\\Users\\binh.phan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
+      "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
       "projectName": "BudgetManBackEnd.DAL",
-      "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
-      "packagesPath": "C:\\Users\\ITEL\\.nuget\\packages\\",
-      "outputPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\obj\\",
+      "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
+      "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
+      "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ITEL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -69,14 +70,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
-              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
+            "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+              "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
             },
-            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj": {
-              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj"
+            "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj": {
+              "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj"
             },
-            "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
-              "projectPath": "D:\\binh\\projects\\BudgetMan\\Source code\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
+            "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+              "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
             }
           }
         }
@@ -96,8 +97,7 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -106,8 +106,19 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1104",
+      "level": "Error",
+      "message": "Unable to find project 'D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj'. Check that the project reference is valid and that the project file exists.",
+      "libraryId": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\MayNghien.Common.csproj",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }
