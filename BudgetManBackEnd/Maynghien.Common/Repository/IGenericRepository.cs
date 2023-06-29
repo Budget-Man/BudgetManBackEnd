@@ -1,10 +1,11 @@
 ﻿
+using MayNghien.Common.Models;
 using MayNghien.Common.Models.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Maynghien.Common.Repository
 {
-    public interface IGenericRepository<T, C> where T : BaseEntity where C : IdentityDbContext
+    public interface IGenericRepository<T, C> where T : BaseEntity where C : BaseContext
     {
 
         void Add(T entity);

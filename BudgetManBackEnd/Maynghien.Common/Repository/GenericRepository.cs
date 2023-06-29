@@ -1,12 +1,13 @@
 ﻿
 
+using MayNghien.Common.Models;
 using MayNghien.Common.Models.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Maynghien.Common.Repository
 {
     public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity, TContext>
-        where TEntity : BaseEntity where TContext : IdentityDbContext
+        where TEntity : BaseEntity where TContext : BaseContext
     {
         #region Properties
         public TContext _context;
