@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj" />
+    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+  </ItemGroup>
+
 </Project>

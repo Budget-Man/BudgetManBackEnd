@@ -10,6 +10,13 @@
     <ProjectReference Include="..\BudgetManBackEnd.DAL\BudgetManBackEnd.DAL.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
     <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+  
+    <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contract\" />
+    <Folder Include="Implementation\" />
   </ItemGroup>
 
 </Project>

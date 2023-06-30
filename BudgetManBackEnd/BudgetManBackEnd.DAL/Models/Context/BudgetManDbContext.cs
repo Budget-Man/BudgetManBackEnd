@@ -7,13 +7,9 @@ using Newtonsoft.Json;
 
 namespace BudgetManBackEnd.DAL.Models.Context
 {
-    public class BudgetManDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class BudgetManDbContext : BaseContext
     {
-        public BudgetManDbContext() { }
-
-        public BudgetManDbContext(DbContextOptions options) : base(options)
-        {
-        }
+        
         #region dbset
         public DbSet<AccountInfo> AccountInfos { get; set; }
         public DbSet<Budget> Budgets { get; set; }
@@ -42,17 +38,6 @@ namespace BudgetManBackEnd.DAL.Models.Context
 
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
-            }
-
-
-
-            base.OnModelCreating(builder);
-        }
         #endregion
     }
 }
