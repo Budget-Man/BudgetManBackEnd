@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetManBackEnd.DAL\BudgetManBackEnd.DAL.csproj" />
+    <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
+    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+  </ItemGroup>
+
 </Project>
