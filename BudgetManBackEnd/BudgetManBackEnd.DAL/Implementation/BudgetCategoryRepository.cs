@@ -17,5 +17,16 @@ namespace BudgetManBackEnd.DAL.Implementation
             _context = unitOfWork;
         }
 
+        public IQueryable<BudgetCategory> GetAll(string UserId)
+        {
+            var result = _context.BudgetCategorys.Where(m => m.IsDeleted != false && m.Account.UserId==UserId)
+                
+                .AsQueryable();
+            return result;
+        }
+        public BudgetCategory? FindById(Guid Id)
+        {
+            return _context.BudgetCategorys.FirstOrDefault(m => m.Id==Id &&m.IsDeleted==false);
+        }
     }
 }
