@@ -11,7 +11,7 @@ namespace BudgetManBackEnd.Service.Implementation
     {
         private readonly IBudgetCategoryRepository _budgetCategoryRepository;
         private readonly IMapper _mapper;
-        public BudgetCategoryService(IBudgetCategoryRepository budgetCategoryRepository,IMapper mapper)
+        public BudgetCategoryService(IBudgetCategoryRepository budgetCategoryRepository, IMapper mapper)
         {
             _budgetCategoryRepository = budgetCategoryRepository;
             _mapper = mapper;
@@ -34,11 +34,11 @@ namespace BudgetManBackEnd.Service.Implementation
             catch (Exception ex)
             {
                 result.IsSuccess = false;
-                result.Message =ex.Message +":"+ ex.StackTrace;
+                result.Message = ex.Message + ":" + ex.StackTrace;
                 return result;
-                
+
             }
-            
+
         }
 
         public AppResponse<string> DeletebudgetCategory(Guid request)
@@ -49,9 +49,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 var budgetcat = new BudgetCategory();
                 budgetcat = _budgetCategoryRepository.Get(request);
                 budgetcat.IsDeleted = true;
-                
+
                 _budgetCategoryRepository.Edit(budgetcat);
-                
+
                 result.IsSuccess = true;
                 result.Data = "Delete Sucessfuly";
                 return result;
@@ -81,7 +81,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budgetcat.Name = request.Name;
                 //budgetcat.Id = Guid.NewGuid();
                 _budgetCategoryRepository.Edit(budgetcat);
-                
+
                 result.IsSuccess = true;
                 result.Data = request;
                 return result;
@@ -95,13 +95,13 @@ namespace BudgetManBackEnd.Service.Implementation
             }
         }
 
-        public AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory(string userId)
+        public AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory()
         {
             var result = new AppResponse<List<BudgetCategoryDto>>();
-
+            string userId = "";
             try
             {
-                var query = _budgetCategoryRepository.GetAll().Where(m=>m.Account.UserId==userId);
+                var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId);
                 var list = query.Select(m => new BudgetCategoryDto
                 {
                     Name = m.Name,
@@ -118,6 +118,28 @@ namespace BudgetManBackEnd.Service.Implementation
                 return result;
             }
 
+        }
+
+        public AppResponse<BudgetCategoryDto> GetBudgetCategory(Guid budgetCategoryId)
+        {
+            var result = new AppResponse<BudgetCategoryDto>();
+            try
+            {
+                var budcat = _budgetCategoryRepository.Get(budgetCategoryId);
+                var data = _mapper.Map<BudgetCategoryDto>(budcat);
+                result.IsSuccess = true;
+                result.Data = data;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = ex.StackTrace;
+                return result;
+
+            }
+
+            return result;
         }
     }
 }

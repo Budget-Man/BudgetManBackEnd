@@ -6,9 +6,10 @@ namespace BudgetManBackEnd.Service.Contract
 {
     public interface IBudgetCategoryService
     {
-        AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory(string userId);
+        AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory();
         AppResponse<BudgetCategoryDto> CreatebudgetCategory(BudgetCategoryDto request);
         AppResponse<BudgetCategoryDto> EditbudgetCategory(BudgetCategoryDto request);
         AppResponse<string> DeletebudgetCategory(Guid budgetCategoryId);
+        AppResponse<BudgetCategoryDto> GetBudgetCategory(Guid budgetCategoryId);
     }
 }
