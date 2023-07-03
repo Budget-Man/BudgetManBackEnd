@@ -29,7 +29,10 @@ namespace MayNghien.Common.Models
             base.OnModelCreating(builder);
         }
 
-       
+        public DbSet<TEntity> CreateSet<TEntity>() where TEntity : class
+        {
+            return base.Set<TEntity>();
+        }
 
     }
 }

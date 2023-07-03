@@ -47,7 +47,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var budgetcat = new BudgetCategory();
-                budgetcat = _budgetCategoryRepository.FindById(request);
+                budgetcat = _budgetCategoryRepository.Get(request);
                 budgetcat.IsDeleted = true;
                 
                 _budgetCategoryRepository.Edit(budgetcat);
@@ -77,7 +77,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     result.Message = "Id cannot be null";
                     return result;
                 }
-                budgetcat = _budgetCategoryRepository.FindById(request.Id.Value);
+                budgetcat = _budgetCategoryRepository.Get(request.Id.Value);
                 budgetcat.Name = request.Name;
                 //budgetcat.Id = Guid.NewGuid();
                 _budgetCategoryRepository.Edit(budgetcat);
@@ -101,7 +101,7 @@ namespace BudgetManBackEnd.Service.Implementation
 
             try
             {
-                var query = _budgetCategoryRepository.GetAll(userId);
+                var query = _budgetCategoryRepository.GetAll().Where(m=>m.Account.UserId==userId);
                 var list = query.Select(m => new BudgetCategoryDto
                 {
                     Name = m.Name,

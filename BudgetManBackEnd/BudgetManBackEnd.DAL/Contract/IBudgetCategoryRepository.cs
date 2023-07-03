@@ -6,7 +6,6 @@ namespace BudgetManBackEnd.DAL.Contract
 {
     public interface IBudgetCategoryRepository : IGenericRepository<BudgetCategory, BudgetManDbContext>
     {
-        IQueryable<BudgetCategory> GetAll(string UserId);
-        BudgetCategory? FindById(Guid Id);
+       
     }
 }

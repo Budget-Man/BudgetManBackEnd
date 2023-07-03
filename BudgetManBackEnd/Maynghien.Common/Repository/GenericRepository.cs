@@ -1,8 +1,9 @@
 ﻿
-
+using EFCore.BulkExtensions;
 using MayNghien.Common.Models;
 using MayNghien.Common.Models.Entity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Maynghien.Common.Repository
 {
@@ -133,6 +134,54 @@ namespace Maynghien.Common.Repository
             _context.SaveChanges();
         }
 
+        public DbSet<TEntity> GetSet()
+        {
+            return _context.CreateSet<TEntity>();
+        }
+
+        public void ClearTracker()
+        {
+            _context.ChangeTracker.Clear();
+        }
+
+        public TEntity? Get(Guid id)
+        {
+            return GetSet().Find(id);
+        }
+
+        public Task<int> CountRecordsAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BulkInsert(IList<TEntity> items, int packageSize = 1000)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                _context.BulkInsert(items, new BulkConfig { BatchSize = packageSize });
+                transaction.Commit();
+            }
+        }
+
+        public async Task BulkInsert(IList<TEntity> entities, CancellationToken cancellationToken)
+        {
+            await _context.BulkInsertAsync(entities, cancellationToken: cancellationToken);
+        }
+
+        public async Task BulkUpdate(IList<TEntity> entities, CancellationToken cancellationToken)
+        {
+            await _context.BulkUpdateAsync(entities, cancellationToken: cancellationToken);
+        }
+
+        public IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
+        {
+            return GetSet().Where(predicate).AsQueryable();
+        }
+
+        public virtual IQueryable<TEntity> GetAll()
+        {
+            return GetSet().AsQueryable();
+        }
 
         #endregion
     }
