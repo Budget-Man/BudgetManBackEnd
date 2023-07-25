@@ -22,15 +22,15 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            
-                var result = _budgetCategoryService.GetAllBudgetCategory();
 
-                return Ok(result);
-           
+            var result = _budgetCategoryService.GetAllBudgetCategory();
+
+            return Ok(result);
+
         }
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetBugdgetCate( Guid id)
+        public IActionResult GetBugdgetCate(Guid id)
         {
 
             var result = _budgetCategoryService.GetBudgetCategory(id);
@@ -69,3 +69,4 @@ namespace BudgetManBackEnd.API.Controllers
 
         }
     }
+}

@@ -16,6 +16,7 @@ namespace BudgetManBackEnd.API.StartUp
         {
             #region Service Mapping
             builder.Services.AddScoped<IBudgetCategoryService, BudgetCategoryService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             
             #endregion Service Mapping
 
