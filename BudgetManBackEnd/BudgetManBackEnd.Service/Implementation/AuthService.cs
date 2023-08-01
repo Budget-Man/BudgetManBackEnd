@@ -20,10 +20,11 @@ namespace BudgetManBackEnd.Service.Implementation
         private IConfiguration _config;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AuthService(IConfiguration config, UserManager<IdentityUser> userManager)
+        public AuthService(IConfiguration config, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _config = config;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         public async Task<AppResponse<string>> CreateUser(UserModel user)
         {
