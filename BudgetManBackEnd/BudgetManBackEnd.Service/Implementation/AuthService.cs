@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using static MayNghien.Common.CommonMessage.AuthResponseMessage;
+using BudgetManBackEnd.DAL.Models.Entity;
+using BudgetManBackEnd.DAL.Contract;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -20,11 +22,14 @@ namespace BudgetManBackEnd.Service.Implementation
         private IConfiguration _config;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AuthService(IConfiguration config, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IAccountInfoRepository _accountInfoRepository;
+        public AuthService(IConfiguration config, UserManager<IdentityUser> userManager, 
+            RoleManager<IdentityRole> roleManager, IAccountInfoRepository accountInfoRepository)
         {
             _config = config;
             _userManager = userManager;
             _roleManager = roleManager;
+            _accountInfoRepository = accountInfoRepository;
         }
         public async Task<AppResponse<string>> CreateUser(UserModel user)
         {
@@ -41,8 +46,25 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError(ERR_MSG_UserExisted);
                 }
                 var newIdentityUser = new IdentityUser { Email = user.Email, UserName = user.Email };
-                await _userManager.CreateAsync(newIdentityUser);
+                var createResult = await _userManager.CreateAsync(newIdentityUser);
                 await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
+
+                newIdentityUser = await _userManager.FindByEmailAsync(user.Email);
+                if (newIdentityUser != null)
+                {
+                    var AccountInfo = new AccountInfo()
+                    {
+                        Id = Guid.NewGuid(),
+                        Balance = 0,
+                        Email = user.Email,
+                        CreatedBy = user.Email,
+                        CreatedOn = DateTime.Now,
+                        Name = user.UserName,
+                        IsDeleted = false,
+                        UserId = newIdentityUser.Id,
+                    };
+                    _accountInfoRepository.Add(AccountInfo);
+                }
                 return result.BuildResult(INFO_MSG_UserCreated);
             }
             catch (Exception ex)
