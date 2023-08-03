@@ -5,7 +5,7 @@ using Maynghien.Common.Repository;
 
 namespace BudgetManBackEnd.DAL.Implementation
 {
-    internal class AccountInfoRepository : GenericRepository<AccountInfo, BudgetManDbContext>, IAccountInfoRepository
+    public class AccountInfoRepository : GenericRepository<AccountInfo, BudgetManDbContext>, IAccountInfoRepository
     {
         public AccountInfoRepository(BudgetManDbContext unitOfWork) : base(unitOfWork)
         {
