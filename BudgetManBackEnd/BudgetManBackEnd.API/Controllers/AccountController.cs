@@ -24,6 +24,14 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Regisger(UserModel login)
+        {
+            var result = await _authService.CreateUser(login);
+
+            return Ok(result);
+        }
 
     }
 }

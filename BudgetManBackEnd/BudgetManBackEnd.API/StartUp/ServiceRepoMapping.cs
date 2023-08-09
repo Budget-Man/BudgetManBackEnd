@@ -1,5 +1,6 @@
 ﻿using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
+using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 
@@ -16,11 +17,13 @@ namespace BudgetManBackEnd.API.StartUp
         {
             #region Service Mapping
             builder.Services.AddScoped<IBudgetCategoryService, BudgetCategoryService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             
             #endregion Service Mapping
 
             #region Repository Mapping
             builder.Services.AddScoped<IBudgetCategoryRepository, BudgetCategoryRepository>();
+            builder.Services.AddScoped<IAccountInfoRepository, AccountInfoRepository>();
             
             #endregion Repository Mapping
         }

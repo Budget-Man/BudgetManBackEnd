@@ -9,7 +9,11 @@ namespace BudgetManBackEnd.DAL.Models.Context
 {
     public class BudgetManDbContext : BaseContext
     {
-        
+        public BudgetManDbContext() { }
+        public BudgetManDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         #region dbset
         public DbSet<AccountInfo> AccountInfos { get; set; }
         public DbSet<Budget> Budgets { get; set; }
