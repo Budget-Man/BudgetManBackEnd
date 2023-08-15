@@ -366,3 +366,8 @@ FodyWeavers.xsd
 obj/
 obj\
 
+*/obj
+obj/
+obj\
+.VS/
+.vs\

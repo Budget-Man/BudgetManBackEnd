@@ -10,8 +10,4 @@
     <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Response\Auth\" />
-  </ItemGroup>
-
 </Project>

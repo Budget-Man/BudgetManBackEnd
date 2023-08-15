@@ -10,8 +10,10 @@ namespace MayNghien.Common.CommonMessage
     {
         public const string ERR_MSG_UserNotFound = "Thông tin đăng nhập không chính xác";
         public const string ERR_MSG_UserNotConFirmed = "Tài khoản chưa được kích hoạt";
+        public const string ERR_MSG_UserLockedOut = "Tài khoản đã bị khóa";
         public const string ERR_MSG_UserExisted = "Email này đã tồn tại";
         public const string ERR_MSG_EmailIsNullOrEmpty = "Phải nhập email";
         public const string INFO_MSG_UserCreated = "Tạo tài khoản thành công, vui xòng chờ admin kích hoạt";
+        public const string INFO_MSG_UserDeleted = "Xóa tài khoản thành công";
     }
 }

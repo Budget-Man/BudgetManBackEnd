@@ -85,11 +85,16 @@ namespace BudgetManBackEnd.Service.Implementation
                 //Demo Purpose, I have Passed HardCoded User Information    
 
                 identityUser = await _userManager.FindByNameAsync(login.UserName);
-                if (identityUser != null)
+                if (identityUser != null )
                 {
                     if (identityUser.EmailConfirmed != true)
                     {
                         return result.BuildError(ERR_MSG_UserNotConFirmed);
+                    }
+                    if(await _userManager.IsLockedOutAsync(identityUser))
+                    {
+                        return result.BuildError(ERR_MSG_UserLockedOut);
+
                     }
                     if (await _userManager.CheckPasswordAsync(identityUser, login.Password))
                     {
