@@ -8,7 +8,7 @@ namespace MayNghien.Models.Request.Base
 
         public SortByInfo? SortBy { get; set; }
         [Required]
-        [Range(0, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int? PageIndex { get; set; }
 
         [Required]
