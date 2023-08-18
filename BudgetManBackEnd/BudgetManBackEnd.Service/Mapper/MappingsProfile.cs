@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace BudgetManBackEnd.Service.Mapper
         protected void CreateMap()
         {
             CreateMap<BudgetCategory, BudgetCategoryDto>()
+                .ReverseMap();
+            CreateMap<IdentityUser, UserModel>()
                 .ReverseMap();
 
         }
