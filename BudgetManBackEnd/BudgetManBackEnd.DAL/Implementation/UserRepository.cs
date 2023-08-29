@@ -1,6 +1,7 @@
 ﻿using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Models.Context;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace BudgetManBackEnd.DAL.Implementation
 
         public IQueryable<IdentityUser> FindByPredicate(Expression<Func<IdentityUser, bool>> predicate)
         {
-            return _context.Users.Where(predicate).AsQueryable();
+            return _context.Users.AsNoTrackingWithIdentityResolution().Where(predicate).AsQueryable();
         }
 
         
