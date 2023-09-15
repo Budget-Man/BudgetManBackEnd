@@ -8,7 +8,9 @@ using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using MayNghien.Common.Helpers;
 using MayNghien.Models.Response.Base;
+using Microsoft.AspNetCore.Http;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -16,11 +18,15 @@ namespace BudgetManBackEnd.Service.Implementation
     {
         private IDebtRepository _debtRepository;
         private IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private IAccountInfoRepository _accountInfoRepository;
 
-        public DebtService(IDebtRepository debtRepository, IMapper mapper)
+        public DebtService(IDebtRepository debtRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository)
         {
             _debtRepository = debtRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            _accountInfoRepository = accountInfoRepository;
         }
 
         public AppResponse<DebtDto> CreateDebt(DebtDto request)
@@ -28,8 +34,18 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<DebtDto>();
             try
             {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var accountInfo = accountInfoQuery.First();
+
+
                 var debt = _mapper.Map<Debt>(request);
                 debt.Id = Guid.NewGuid();
+                debt.AccountId = accountInfo.Id;
 
                 request.Id = debt.Id;
 

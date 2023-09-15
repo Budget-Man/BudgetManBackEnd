@@ -18,12 +18,14 @@ namespace BudgetManBackEnd.API.StartUp
             #region Service Mapping
             builder.Services.AddScoped<IBudgetCategoryService, BudgetCategoryService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IDebtService, DebtService>();
             
             #endregion Service Mapping
 
             #region Repository Mapping
             builder.Services.AddScoped<IBudgetCategoryRepository, BudgetCategoryRepository>();
             builder.Services.AddScoped<IAccountInfoRepository, AccountInfoRepository>();
+            builder.Services.AddScoped<IDebtRepository, DebtRepository>();
             
             #endregion Repository Mapping
         }
