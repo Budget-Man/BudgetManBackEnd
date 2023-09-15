@@ -31,7 +31,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var UserId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-                var role = ClaimHelper.GetClainByName(_httpContextAccessor, "Role");
+                //var role = ClaimHelper.GetClainByName(_httpContextAccessor, "Role");
                 var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == UserId);
                 if (accountInfoQuery.Count() == 0)
                 {

@@ -98,7 +98,11 @@ namespace BudgetManBackEnd.Service.Implementation
                     }
                     if (await _userManager.CheckPasswordAsync(identityUser, login.Password))
                     {
-                        user = new UserModel { UserName = identityUser.UserName, Email = identityUser.Email };
+                        user = new UserModel { 
+                            UserName = identityUser.UserName,
+                            Email = identityUser.Email,
+                            Id = identityUser.Id,
+                            };
 
                     }
 
@@ -114,6 +118,19 @@ namespace BudgetManBackEnd.Service.Implementation
                         await _roleManager.CreateAsync(role);
                     }
                     await _userManager.AddToRoleAsync(newIdentity, "superadmin");
+                    var accountInfor = new AccountInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Balance = 0,
+                        Email = newIdentity.Email,
+                        CreatedBy = newIdentity.Email,
+                        CreatedOn = DateTime.Now,
+                        Name = newIdentity.UserName,
+                        IsDeleted = false,
+                        UserId = newIdentity.Id,
+                    };
+                    _accountInfoRepository.Add(accountInfor);
+
                 }
                 if (user != null)
                 {
