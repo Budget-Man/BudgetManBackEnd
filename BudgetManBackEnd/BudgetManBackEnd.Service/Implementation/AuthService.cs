@@ -155,6 +155,7 @@ namespace BudgetManBackEnd.Service.Implementation
             var claims = new List<Claim>
             {
                 new Claim("UserName", user.UserName),
+                new Claim("UserId", user.Id),
 
                 new Claim("Email", user.Email),
 
