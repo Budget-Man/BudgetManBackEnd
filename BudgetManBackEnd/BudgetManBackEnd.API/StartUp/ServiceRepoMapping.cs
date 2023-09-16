@@ -1,4 +1,5 @@
-﻿using BudgetManBackEnd.DAL.Contract;
+﻿using System.Security.Cryptography.X509Certificates;
+using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Service.Contract;
@@ -19,6 +20,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IBudgetCategoryService, BudgetCategoryService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDebtService, DebtService>();
+            builder.Services.AddScoped<IDebtsPayService, DebtsPayService>();
             
             #endregion Service Mapping
 
@@ -26,6 +28,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IBudgetCategoryRepository, BudgetCategoryRepository>();
             builder.Services.AddScoped<IAccountInfoRepository, AccountInfoRepository>();
             builder.Services.AddScoped<IDebtRepository, DebtRepository>();
+            builder.Services.AddScoped<IDebtsPayRepository,DebtsRepository>();
             
             #endregion Repository Mapping
         }
