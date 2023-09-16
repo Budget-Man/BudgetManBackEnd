@@ -63,9 +63,19 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<DebtsPayDto>();
             try
             {
-                var debtsPay = _debtsPayRepository.FindBy(x => x.Id == Id).Include(x => x.Debts);
-                var data = _mapper.Map<DebtsPayDto>(debtsPay);
-                result.BuildResult(data);
+                var query = _debtsPayRepository.FindBy(x => x.Id == Id).Include(x => x.Debts);
+                var debtsPay = query.Select(x => new DebtsPayDto
+                {
+                    DebtsName = x.Debts.Name,
+                    Id = x.Id,
+                    DebtsId= x.Debts.Id,
+                    Interest = x.Interest,
+                    InterestRate = x.InterestRate,
+                    IsPaid = x.IsPaid,
+                    PaidAmount  = x.PaidAmount,
+                    RatePeriod= x.RatePeriod,
+                }).First();
+                result.BuildResult(debtsPay);
             }
             catch(Exception ex)
             {

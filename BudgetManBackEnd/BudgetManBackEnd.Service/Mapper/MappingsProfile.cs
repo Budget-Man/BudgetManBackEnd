@@ -26,6 +26,10 @@ namespace BudgetManBackEnd.Service.Mapper
                 .ReverseMap();
             CreateMap<DebtsPay, DebtsPayDto>()
                 .ReverseMap();
+            CreateMap<Budget, BudgetDto>()
+                .ReverseMap();
+            CreateMap<Loan, Loan>()
+                .ReverseMap();
 
         }
     }

@@ -21,6 +21,8 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDebtService, DebtService>();
             builder.Services.AddScoped<IDebtsPayService, DebtsPayService>();
+            builder.Services.AddScoped<IBudgetService, BudgetService>();
+            builder.Services.AddScoped<ILoanService, LoanService>();
             
             #endregion Service Mapping
 
@@ -28,7 +30,9 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IBudgetCategoryRepository, BudgetCategoryRepository>();
             builder.Services.AddScoped<IAccountInfoRepository, AccountInfoRepository>();
             builder.Services.AddScoped<IDebtRepository, DebtRepository>();
-            builder.Services.AddScoped<IDebtsPayRepository,DebtsRepository>();
+            builder.Services.AddScoped<IDebtsPayRepository,DebtsPayRepository>();
+            builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
+            builder.Services.AddScoped<ILoanRepository, LoanRepository>();
             
             #endregion Repository Mapping
         }
