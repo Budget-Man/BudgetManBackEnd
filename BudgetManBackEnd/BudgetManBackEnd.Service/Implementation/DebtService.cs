@@ -101,9 +101,10 @@ namespace BudgetManBackEnd.Service.Implementation
         public AppResponse<List<DebtDto>> GetAllDebt()
         {
             var result = new AppResponse<List<DebtDto>>();
+            string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             try
             {
-                var query = _debtRepository.GetAll();
+                var query = _debtRepository.GetAll().Where(x=>x.Account.UserId == userId);
                 var list =  query.Select(x => new DebtDto
                 {
                     Id = x.Id,

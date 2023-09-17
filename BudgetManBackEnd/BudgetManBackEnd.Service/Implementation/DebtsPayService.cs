@@ -33,9 +33,11 @@ namespace BudgetManBackEnd.Service.Implementation
         public AppResponse<List<DebtsPayDto>> GetAllDebtsPay()
         {
             var result = new AppResponse<List<DebtsPayDto>>();
+            string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             try
             {
                 var query = _debtsPayRepository.GetAll()
+                    .Where(x => x.Account.UserId == userId)
                     .Include(x=>x.Debts);
                 var list = query.Select(x=> new DebtsPayDto
                 {

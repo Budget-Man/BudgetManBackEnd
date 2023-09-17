@@ -48,7 +48,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var budget = _mapper.Map<Budget>(request);
                 budget.Id = Guid.NewGuid();
                 budget.AccountId = accountInfo.Id;
-
+                _budgetRepository.Add(budget);
                 request.Id = budget.Id;
                 result.BuildResult(request);
             }
@@ -100,9 +100,12 @@ namespace BudgetManBackEnd.Service.Implementation
         public AppResponse<List<BudgetDto>> GetAllBudget()
         {
             var result =  new AppResponse<List<BudgetDto>>();
+            string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             try
             {
-                var query = _budgetRepository.GetAll().Include(x=>x.BudgetCategory);
+                var query = _budgetRepository.GetAll()
+                    .Where(x => x.Account.UserId == userId)
+                    .Include(x=>x.BudgetCategory);
                 var list = query
                     .Select(x=> new BudgetDto
                     {

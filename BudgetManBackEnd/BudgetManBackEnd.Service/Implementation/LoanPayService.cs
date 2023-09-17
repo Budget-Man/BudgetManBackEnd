@@ -99,7 +99,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var loanPay =_mapper.Map<LoanPay>(request);
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
-
+                loanPay.Account = accountInfo;
                 _loanPayRepository.Add(loanPay);
 
                 request.Id = loanPay.Id;
