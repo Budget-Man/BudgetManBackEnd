@@ -115,7 +115,8 @@ namespace BudgetManBackEnd.Service.Implementation
         public AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory()
         {
             var result = new AppResponse<List<BudgetCategoryDto>>();
-            string userId = "";
+            
+            string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId"); ;
             try
             {
                 var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId);
@@ -131,7 +132,7 @@ namespace BudgetManBackEnd.Service.Implementation
             catch (Exception ex)
             {
                 result.IsSuccess = false;
-                result.Message = ex.StackTrace;
+                result.Message =ex.Message +" "+ ex.StackTrace;
                 return result;
             }
 
