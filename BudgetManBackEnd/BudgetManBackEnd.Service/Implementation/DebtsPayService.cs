@@ -137,6 +137,10 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
+                if(request.DebtsId==null) 
+                {
+                    return result.BuildError("Debt Cannot be null");
+                }
                 var debts = _debtRepository.FindBy(m=>m.Id == request.DebtsId && m.IsDeleted!=false);
                 if (debts.Count() == 0)
                 {
