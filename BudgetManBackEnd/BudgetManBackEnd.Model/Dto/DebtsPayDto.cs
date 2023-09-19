@@ -12,13 +12,13 @@ namespace BudgetManBackEnd.Model.Dto
     public class DebtsPayDto:BaseDto
     {
         public Guid DebtsId { get; set; }
-        public string DebtsName { get; set; }
+        public string? DebtsName { get; set; }
 
 
         public double? PaidAmount { get; set; }
         public double? Interest { get; set; }
         public double InterestRate { get; set; } = 0;
         public TimePeriod RatePeriod { get; set; }
-        public bool IsPaid { get; set; } = false;
+        public bool? IsPaid { get; set; } = false;
     }
 }

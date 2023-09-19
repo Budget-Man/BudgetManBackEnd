@@ -18,16 +18,20 @@ namespace BudgetManBackEnd.Service.Implementation
     public class DebtsPayService : IDebtsPayService
     {
         private readonly IDebtsPayRepository _debtsPayRepository;
+        private readonly IDebtRepository _debtRepository;
         private IMapper _mapper;
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DebtsPayService(IDebtsPayRepository debtsPayRepository, IMapper mapper, IAccountInfoRepository accountInfoRepository, IHttpContextAccessor httpContextAccessor)
+        public DebtsPayService(IDebtsPayRepository debtsPayRepository, IMapper mapper, 
+            IAccountInfoRepository accountInfoRepository, IDebtRepository debtRepository
+            , IHttpContextAccessor httpContextAccessor)
         {
             _debtsPayRepository = debtsPayRepository;
             _mapper = mapper;
             _accountInfoRepository = accountInfoRepository;
             _httpContextAccessor = httpContextAccessor;
+            _debtRepository = debtRepository;
         }
 
         public AppResponse<List<DebtsPayDto>> GetAllDebtsPay()
@@ -133,11 +137,20 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
-
-                var debtsPay = _mapper.Map<DebtsPay>(request);
+                var debts = _debtRepository.FindBy(m=>m.Id == request.DebtsId && m.IsDeleted!=false);
+                if (debts.Count() == 0)
+                {
+                    return result.BuildError("Cannot find debt");
+                }
+                var debtsPay = new DebtsPay();
                 debtsPay.Id = Guid.NewGuid();
                 debtsPay.AccountId = accountInfo.Id;
-
+                debtsPay.DebtsId = request.DebtsId;
+                debtsPay.InterestRate = request.InterestRate;
+                debtsPay.Interest= request.Interest;
+                debtsPay.PaidAmount = request.PaidAmount;
+                debtsPay.RatePeriod = request.RatePeriod;
+                debtsPay.IsPaid = request.IsPaid??true;
                 _debtsPayRepository.Add(debtsPay);
             }
             catch(Exception ex)
