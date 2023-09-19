@@ -363,6 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 */obj
+*\obj
 obj/
 obj\
 .VS/
