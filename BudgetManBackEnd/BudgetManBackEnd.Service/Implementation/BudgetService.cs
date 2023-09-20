@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -20,15 +21,16 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IBudgetRepository _budgetRepository;
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IMapper _mapper;
-
+        private IBudgetCategoryRepository _budgetCategoryRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BudgetService(IBudgetRepository budgetRepository, IAccountInfoRepository accountInfoRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public BudgetService(IBudgetRepository budgetRepository, IAccountInfoRepository accountInfoRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IBudgetCategoryRepository budgetCategoryRepository)
         {
             _budgetRepository = budgetRepository;
             _accountInfoRepository = accountInfoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _budgetCategoryRepository = budgetCategoryRepository;
         }
 
         public AppResponse<BudgetDto> CreateBudget(BudgetDto request)
@@ -36,18 +38,27 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<BudgetDto>();
             try
             {
-                var UserId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-                //var role = ClaimHelper.GetClainByName(_httpContextAccessor, "Role");
-                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == UserId);
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
                 if (accountInfoQuery.Count() == 0)
                 {
-                return result.BuildError("Cannot find Account Info by this user");
+                    return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
+                if (request.BudgetCategoryId == null)
+                {
+                    return result.BuildError("Debt Cannot be null");
+                }
+                var budgetCategories = _budgetCategoryRepository.FindBy(m => m.Id == request.BudgetCategoryId && m.IsDeleted != true);
+                if (budgetCategories.Count() == 0)
+                {
+                    return result.BuildError("Cannot find debt");
+                }
 
                 var budget = _mapper.Map<Budget>(request);
                 budget.Id = Guid.NewGuid();
                 budget.AccountId = accountInfo.Id;
+                budget.BudgetCategory = budgetCategories.First();
                 _budgetRepository.Add(budget);
                 request.Id = budget.Id;
                 result.BuildResult(request);

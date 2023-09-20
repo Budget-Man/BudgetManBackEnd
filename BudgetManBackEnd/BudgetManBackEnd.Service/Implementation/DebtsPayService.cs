@@ -141,7 +141,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Debt Cannot be null");
                 }
-                var debts = _debtRepository.FindBy(m=>m.Id == request.DebtsId && m.IsDeleted!=false);
+                var debts = _debtRepository.FindBy(m=>m.Id == request.DebtsId && m.IsDeleted!=true);
                 if (debts.Count() == 0)
                 {
                     return result.BuildError("Cannot find debt");
@@ -156,6 +156,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.RatePeriod = request.RatePeriod;
                 debtsPay.IsPaid = request.IsPaid??true;
                 _debtsPayRepository.Add(debtsPay);
+
+
+                result.BuildResult(request);
             }
             catch(Exception ex)
             {

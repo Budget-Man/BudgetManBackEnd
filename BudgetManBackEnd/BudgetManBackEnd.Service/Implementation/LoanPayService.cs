@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -21,12 +22,14 @@ namespace BudgetManBackEnd.Service.Implementation
         private IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
-        public LoanPayService(ILoanPayRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository)
+        private ILoanRepository _loanRepository;
+        public LoanPayService(ILoanPayRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, ILoanRepository loanRepository)
         {
             _loanPayRepository = loanPayRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
+            _loanRepository = loanRepository;
         }
 
         public AppResponse<LoanPayDto> GetLoanPay(Guid Id)
@@ -96,10 +99,19 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
+                if (request.LoanId == null)
+                {
+                    return result.BuildError("Debt Cannot be null");
+                }
+                var loan = _loanRepository.FindBy(m => m.Id == request.LoanId && m.IsDeleted != true);
+                if (loan.Count() == 0)
+                {
+                    return result.BuildError("Cannot find debt");
+                }
                 var loanPay =_mapper.Map<LoanPay>(request);
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
-                loanPay.Account = accountInfo;
+                loanPay.Loan = loan.First();
                 _loanPayRepository.Add(loanPay);
 
                 request.Id = loanPay.Id;
