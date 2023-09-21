@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj": {}
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj": {}
   },
   "projects": {
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+        "projectUniqueName": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
         "projectName": "BudgetManBackEnd.Common",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
-        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
+        "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+        "packagesPath": "C:\\Users\\84856\\.nuget\\packages\\",
+        "outputPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\84856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -45,7 +49,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -54,21 +59,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj": {
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
+        "projectUniqueName": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
         "projectName": "BudgetManBackEnd.DAL",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
-        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\obj\\",
+        "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj",
+        "packagesPath": "C:\\Users\\84856\\.nuget\\packages\\",
+        "outputPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\84856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -82,11 +91,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
               },
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
               }
             }
           }
@@ -110,6 +119,12 @@
               "version": "[6.0.19, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.19, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[6.0.19, )"
             },
@@ -138,7 +153,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -147,21 +163,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj": {
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj",
+        "projectUniqueName": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj",
         "projectName": "BudgetManBackEnd.Model",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj",
-        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\obj\\",
+        "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj",
+        "packagesPath": "C:\\Users\\84856\\.nuget\\packages\\",
+        "outputPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\84856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -175,8 +195,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
+              },
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
               }
             }
           }
@@ -196,7 +219,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -205,21 +229,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj": {
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
+        "projectUniqueName": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
         "projectName": "BudgetManBackEnd.Service",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
-        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\obj\\",
+        "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\BudgetManBackEnd.Service.csproj",
+        "packagesPath": "C:\\Users\\84856\\.nuget\\packages\\",
+        "outputPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Service\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\84856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -233,17 +261,17 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj"
               },
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.DAL\\BudgetManBackEnd.DAL.csproj"
               },
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Model\\BudgetManBackEnd.Model.csproj"
               },
-              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
-                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
+              "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+                "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
               }
             }
           }
@@ -277,7 +305,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -286,21 +315,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+    "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
+        "projectUniqueName": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
         "projectName": "MayNghien.Common",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
-        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\obj\\",
+        "projectPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
+        "packagesPath": "C:\\Users\\84856\\.nuget\\packages\\",
+        "outputPath": "D:\\BaiAnhBinh\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\84856\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -330,6 +363,10 @@
               "target": "Package",
               "version": "[6.7.12, )"
             },
+            "Microsoft.AspNetCore": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.19, )"
@@ -345,7 +382,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -354,7 +392,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

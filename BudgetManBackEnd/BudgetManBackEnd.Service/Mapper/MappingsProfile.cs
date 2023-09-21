@@ -34,7 +34,12 @@ namespace BudgetManBackEnd.Service.Mapper
                 .ReverseMap();
             CreateMap<MoneyHolder, MoneyHolderDto>()
                 .ReverseMap();
-
+            CreateMap<MoneySpend, MoneySpendDto>()
+                .ReverseMap();
+            CreateMap<Income,  IncomeDto>()
+              .ReverseMap();
+            CreateMap<LocalTransfer, LocalTransferDto>()
+             .ReverseMap();
         }
     }
 }
