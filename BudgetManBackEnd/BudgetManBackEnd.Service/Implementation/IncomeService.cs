@@ -102,12 +102,12 @@ namespace BudgetManBackEnd.Service.Implementation
                 var accountInfo = accountInfoQuery.First();
                 if (request.MoneyHolderId == null)
                 {
-                    return result.BuildError("Income Cannot be null");
+                    return result.BuildError("Money holder Cannot be null");
                 }
-                var query = _incomeRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted != true);
+                var query = _moneyHolderRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted != true);
                 if (query.Count() == 0)
                 {
-                    return result.BuildError("Cannot find Income");
+                    return result.BuildError("Cannot find money holder");
                 }
                 var income = _mapper.Map<Income>(request);
                 income.Id = Guid.NewGuid();
