@@ -107,7 +107,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
                 loanPay.MoneyHolder = loan.First();
-                _loanPayRepository.Add(loanPay);
+                _loanPayRepository.Add(loanPay, accountInfo.Name);
 
                 request.Id = loanPay.Id;
                 result.BuildResult(request);

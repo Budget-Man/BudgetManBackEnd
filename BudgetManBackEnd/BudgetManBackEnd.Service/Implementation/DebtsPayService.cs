@@ -155,7 +155,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.PaidAmount = request.PaidAmount;
                 debtsPay.RatePeriod = request.RatePeriod;
                 debtsPay.IsPaid = request.IsPaid??true;
-                _debtsPayRepository.Add(debtsPay);
+                _debtsPayRepository.Add(debtsPay, accountInfo.Name);
 
 
                 result.BuildResult(request);

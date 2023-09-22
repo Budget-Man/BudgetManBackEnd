@@ -59,7 +59,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.Id = Guid.NewGuid();
                 budget.AccountId = accountInfo.Id;
                 budget.BudgetCategory = budgetCategories.First();
-                _budgetRepository.Add(budget);
+                _budgetRepository.Add(budget, accountInfo.Name);
                 request.Id = budget.Id;
                 result.BuildResult(request);
             }

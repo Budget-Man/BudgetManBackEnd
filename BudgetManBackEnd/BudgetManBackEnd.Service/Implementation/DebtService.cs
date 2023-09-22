@@ -49,7 +49,7 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 request.Id = debt.Id;
 
-                _debtRepository.Add(debt);
+                _debtRepository.Add(debt, accountInfo.Name);
 
                 result.BuildResult(request);
 

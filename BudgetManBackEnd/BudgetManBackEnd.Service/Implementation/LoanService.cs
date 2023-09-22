@@ -48,7 +48,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.Id = Guid.NewGuid();
                 loan.AccountId = accountInfo.Id;
 
-                _loanRepository.Add(loan);
+                _loanRepository.Add(loan, accountInfo.Name);
 
                 request.Id = loan.Id;
                 result.BuildResult(request);

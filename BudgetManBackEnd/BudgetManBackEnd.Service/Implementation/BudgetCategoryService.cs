@@ -42,7 +42,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budgetcat = _mapper.Map<BudgetCategory>(request);
                 budgetcat.Id = Guid.NewGuid();
                 budgetcat.AccountId = accountInfo.Id;
-                _budgetCategoryRepository.Add(budgetcat);
+                _budgetCategoryRepository.Add(budgetcat, accountInfo.Name);
                 request.Id = budgetcat.Id;
                 result.IsSuccess = true;
                 result.Data = request;

@@ -10,6 +10,7 @@ using LinqKit;
 using MayNghien.Common.Helpers;
 using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using static MayNghien.Common.CommonMessage.AuthResponseMessage;
@@ -24,9 +25,10 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserService(IConfiguration config, UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager, IAccountInfoRepository accountInfoRepository,
-            IUserRepository userRepository, IMapper mapper)
+            IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _config = config;
             _userManager = userManager;
@@ -34,12 +36,20 @@ namespace BudgetManBackEnd.Service.Implementation
             _accountInfoRepository = accountInfoRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<AppResponse<string>> CreateUser(UserModel user)
         {
             var result = new AppResponse<string>();
             try
             {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var accountInfo = accountInfoQuery.First();
                 if (string.IsNullOrEmpty(user.Email))
                 {
                     return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
@@ -69,7 +79,7 @@ namespace BudgetManBackEnd.Service.Implementation
                             IsDeleted = false,
                             UserId = newIdentityUser.Id,
                         };
-                        _accountInfoRepository.Add(AccountInfo);
+                        _accountInfoRepository.Add(AccountInfo, accountInfo.Name);
                     }
                     await _userManager.AddToRoleAsync(newIdentityUser, user.Role);
                 }

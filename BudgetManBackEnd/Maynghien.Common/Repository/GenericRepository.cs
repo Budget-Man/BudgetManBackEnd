@@ -33,14 +33,14 @@ namespace Maynghien.Common.Repository
         #endregion
 
         #region Method
-        public virtual void Add(TEntity item)
+        public virtual void Add(TEntity item, string userName)
         {
             if (item != null)
             {
                 item.CreatedOn = DateTime.UtcNow;
                 if (item.CreatedBy == null)
                 {
-                    item.CreatedBy = "";
+                    item.CreatedBy = userName;
                 }
                 _context.Add(item);
                 _context.SaveChanges();

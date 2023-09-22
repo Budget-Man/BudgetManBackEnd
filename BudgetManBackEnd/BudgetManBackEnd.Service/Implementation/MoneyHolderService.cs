@@ -49,7 +49,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var moneyHolder = _mapper.Map<MoneyHolder>(request);
                 moneyHolder.AccountId = accountInfo.Id;
                 moneyHolder.Id = Guid.NewGuid();
-
+                _moneyHolderRepository.Add(moneyHolder, accountInfo.Name);
                 request.Id = moneyHolder.Id;
                 result.BuildResult(request);
             }
