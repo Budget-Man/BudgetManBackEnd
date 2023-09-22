@@ -12,8 +12,8 @@ namespace BudgetManBackEnd.Service.Contract
 {
     public interface IMoneySpendService
     {
-        AppResponse<MoneySpendDto> GetMoneySpend(Guid Id);
-        AppResponse<List<MoneySpendDto>> GetAllMoneySpend();
+        AppResponse<MoneySpendDto> GetMonaySpend(Guid Id);
+        AppResponse<List<MoneySpendDto>> GetAllMonaySpends();
         AppResponse<MoneySpendDto> CreateMoneySpend(MoneySpendDto request);
         AppResponse<MoneySpendDto> EditMoneySpend(MoneySpendDto request);
         AppResponse<string> DeleteMoneySpend(Guid Id);
