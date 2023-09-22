@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -17,18 +18,18 @@ namespace BudgetManBackEnd.Service.Implementation
 {
     public class IncomeService : IIncomeService
     {
-        private readonly IIncomeRepository _loanPayRepository;
+        private readonly IIncomeRepository _incomeRepository;
         private IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
-        private IMoneyHolderRepository _loanRepository;
-        public IncomeService(IIncomeRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository loanRepository)
+        private IMoneyHolderRepository _moneyHolderRepository;
+        public IncomeService(IIncomeRepository incomeRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository moneyHolderRepository)
         {
-            _loanPayRepository = loanPayRepository;
+            _incomeRepository = incomeRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
-            _loanRepository = loanRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<IncomeDto> GetIncome(Guid Id)
@@ -36,10 +37,15 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<IncomeDto>();
             try
             {
-                var query = _loanPayRepository.FindBy(x => x.Id == Id).Include(x => x.MoneyHolder);
-                var loanPay = query.First();
-                var data = _mapper.Map<IncomeDto>(loanPay);
-                data.MoneyHolderName = loanPay.MoneyHolder.Name;
+                var query = _incomeRepository.FindBy(x => x.Id == Id).Include(x => x.MoneyHolder);
+                var data = query.Select(x=>new IncomeDto
+                {
+                    Id = x.Id,
+                    MoneyHolderId = x.MoneyHolderId,
+                    MoneyHolderName =x.MoneyHolder.Name,
+                    Name = x.Name,
+                }).First();
+                
                 result.BuildResult(data);
 
             }
@@ -63,7 +69,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _loanPayRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.MoneyHolder);
+                var query = _incomeRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.MoneyHolder);
                 var list = query
                     .Select(x => new IncomeDto
                     {
@@ -96,20 +102,19 @@ namespace BudgetManBackEnd.Service.Implementation
                 var accountInfo = accountInfoQuery.First();
                 if (request.MoneyHolderId == null)
                 {
-                    return result.BuildError("Debt Cannot be null");
+                    return result.BuildError("Income Cannot be null");
                 }
-                var loan = _loanRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted != true);
-                if (loan.Count() == 0)
+                var query = _incomeRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted != true);
+                if (query.Count() == 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("Cannot find Income");
                 }
-                var loanPay = _mapper.Map<Income>(request);
-                loanPay.Id = Guid.NewGuid();
-                loanPay.AccountId = accountInfo.Id;
-                loanPay.MoneyHolder = loan.First();
-                _loanPayRepository.Add(loanPay, accountInfo.Name);
+                var income = _mapper.Map<Income>(request);
+                income.Id = Guid.NewGuid();
+                income.AccountId = accountInfo.Id;
+                _incomeRepository.Add(income, accountInfo.Name);
 
-                request.Id = loanPay.Id;
+                request.Id = income.Id;
                 result.BuildResult(request);
 
             }
@@ -125,8 +130,8 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<IncomeDto>();
             try
             {
-                var loanPay = _mapper.Map<Income>(request);
-                _loanPayRepository.Edit(loanPay);
+                var income = _mapper.Map<Income>(request);
+                _incomeRepository.Edit(income);
                 result.BuildResult(request);
             }
             catch (Exception ex)
@@ -141,9 +146,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
-                var loanPay = _loanPayRepository.Get(Id);
-                loanPay.IsDeleted = true;
-                _loanPayRepository.Edit(loanPay);
+                var income = _incomeRepository.Get(Id);
+                income.IsDeleted = true;
+                _incomeRepository.Edit(income);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)

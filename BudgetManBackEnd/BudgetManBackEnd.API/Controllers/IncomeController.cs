@@ -10,43 +10,43 @@ namespace BudgetManBackEnd.API.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class IncomeController : Controller
     {
-        private IIncomeService _loanPayService;
+        private IIncomeService _incomeService;
 
-        public IncomeController(IIncomeService loanPayService)
+        public IncomeController(IIncomeService incomeService)
         {
-            _loanPayService = loanPayService;
+            _incomeService = incomeService;
         }
         [HttpGet]
         public IActionResult GetAllIncome()
         {
-            var result = _loanPayService.GetAllIncome();
+            var result = _incomeService.GetAllIncome();
             return Ok(result);
         }
         [HttpGet]
         [Route("{Id}")]
-        public IActionResult GetLoanPay(Guid Id)
+        public IActionResult Get(Guid Id)
         {
-            var result = _loanPayService.GetIncome(Id);
+            var result = _incomeService.GetIncome(Id);
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult CreateLoanPay(IncomeDto request)
+        public IActionResult Create(IncomeDto request)
         {
-            var result = _loanPayService.CreateIncome(request);
+            var result = _incomeService.CreateIncome(request);
             return Ok(result);
         }
         [HttpPut]
         [Route("{Id}")]
-        public IActionResult EditLoanPay(IncomeDto request)
+        public IActionResult Edit(IncomeDto request)
         {
-            var result = _loanPayService.EditIncome(request);
+            var result = _incomeService.EditIncome(request);
             return Ok(result);
         }
         [HttpDelete]
         [Route("{Id}")]
-        public IActionResult DeleteLoanPay(Guid Id)
+        public IActionResult Delete(Guid Id)
         {
-            var result = _loanPayService.DeleteIncome(Id);
+            var result = _incomeService.DeleteIncome(Id);
             return Ok(result);
         }
     }

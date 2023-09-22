@@ -10,43 +10,43 @@ namespace BudgetManBackEnd.API.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class MoneySpendController : Controller
     {
-        private IMoneySpendService _loanPayService;
+        private IMoneySpendService _moneySpendService;
 
-        public MoneySpendController(IMoneySpendService loanPayService)
+        public MoneySpendController(IMoneySpendService moneySpendService)
         {
-            _loanPayService = loanPayService;
+            _moneySpendService = moneySpendService;
         }
         [HttpGet]
         public IActionResult GetAllLoanPay()
         {
-            var result = _loanPayService.GetAllMoneySpend();
+            var result = _moneySpendService.GetAllMoneySpend();
             return Ok(result);
         }
         [HttpGet]
         [Route("{Id}")]
         public IActionResult GetLoanPay(Guid Id)
         {
-            var result = _loanPayService.GetMoneySpend(Id);
+            var result = _moneySpendService.GetMoneySpend(Id);
             return Ok(result);
         }
         [HttpPost]
         public IActionResult CreateLoanPay(MoneySpendDto request)
         {
-            var result = _loanPayService.CreateMoneySpend(request);
+            var result = _moneySpendService.CreateMoneySpend(request);
             return Ok(result);
         }
         [HttpPut]
         [Route("{Id}")]
         public IActionResult EditLoanPay(MoneySpendDto request)
         {
-            var result = _loanPayService.EditMoneySpend(request);
+            var result = _moneySpendService.EditMoneySpend(request);
             return Ok(result);
         }
         [HttpDelete]
         [Route("{Id}")]
         public IActionResult DeleteLoanPay(Guid Id)
         {
-            var result = _loanPayService.DeleteMoneySpend(Id);
+            var result = _moneySpendService.DeleteMoneySpend(Id);
             return Ok(result);
         }
     }

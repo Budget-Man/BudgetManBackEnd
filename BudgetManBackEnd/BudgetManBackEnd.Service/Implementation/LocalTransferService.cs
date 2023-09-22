@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -17,18 +18,18 @@ namespace BudgetManBackEnd.Service.Implementation
 {
     public class LocalTransferService : ILocalTransferService
     {
-        private readonly ILocalTransferRepository _loanPayRepository;
+        private readonly ILocalTransferRepository _localTransferRepository;
         private IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
-        private IMoneyHolderRepository _loanRepository;
-        public LocalTransferService(ILocalTransferRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository loanRepository)
+        private IMoneyHolderRepository _moneyHolderRepository;
+        public LocalTransferService(ILocalTransferRepository localTransferRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository moneyHolderRepository)
         {
-            _loanPayRepository = loanPayRepository;
+            _localTransferRepository = localTransferRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
-            _loanRepository = loanRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<LocalTransferDto> GetLocalTransfer(Guid Id)
@@ -36,11 +37,15 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<LocalTransferDto>();
             try
             {
-                var query = _loanPayRepository.FindBy(x => x.Id == Id).Include(x => x.ToMoneyHolder);
-                var loanPay = query.First();
-                var data = _mapper.Map<LocalTransferDto>(loanPay);
-                data.MoneyHolderIdBankName = loanPay.ToMoneyHolder.Name;
-                data.MoneyHolderIdName = loanPay.FromMoneyHolder.Name;
+                var query = _localTransferRepository.FindBy(x => x.Id == Id).Include(x => x.ToMoneyHolder);
+                var data = query.Select(x=>new LocalTransferDto
+                {
+                    Amount = x.Amount,
+                    FromMoneyHolderId = x.FromMoneyHolderId,
+                    Id = x.Id,
+                    FromMoneyHolderName  = x.FromMoneyHolder.BankName,
+                    ToMoneyHolderName = x.ToMoneyHolder.Name,
+                } ).First();
                 result.BuildResult(data);
 
             }
@@ -64,13 +69,13 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _loanPayRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.ToMoneyHolder).Include(x => x.FromMoneyHolder);
+                var query = _localTransferRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.ToMoneyHolder).Include(x => x.FromMoneyHolder);
                 var list = query
                     .Select(x => new LocalTransferDto
                     {
                         Id = x.Id,
-                        MoneyHolderIdBankName = x.ToMoneyHolder.Name,
-                        MoneyHolderIdName = x.FromMoneyHolder.BankName,
+                        ToMoneyHolderName = x.ToMoneyHolder.Name,
+                        FromMoneyHolderName = x.FromMoneyHolder.BankName,
                         FromMoneyHolderId = accountInfo.Id,
                         ToMoneyHolderId = accountInfo.Id,
                     })
@@ -98,26 +103,28 @@ namespace BudgetManBackEnd.Service.Implementation
                 var accountInfo = accountInfoQuery.First();
                 if (request.ToMoneyHolderId == null)
                 {
-                    return result.BuildError("Debt Cannot be null");
+                    return result.BuildError("To money holder Cannot be null");
                 }
-                var loan = _loanRepository.FindBy(m => m.Id == request.ToMoneyHolderId && m.IsDeleted != true);
-                if (loan.Count() == 0)
+                var moneyHolder = _moneyHolderRepository.FindBy(m => m.Id == request.ToMoneyHolderId && m.IsDeleted != true);
+                if (moneyHolder.Count() == 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("Cannot find to money holder");
                 }
-                var loan2 = _loanRepository.FindBy(m => m.Id == request.FromMoneyHolderId && m.IsDeleted != true);
-                if (loan.Count() == 0)
+                if(request.FromMoneyHolderName == null)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("From money holder cannot be null");
                 }
-                 var loanPay = _mapper.Map<LocalTransfer>(request);
-                loanPay.Id = Guid.NewGuid();
-                loanPay.AccountId = accountInfo.Id;
-                loanPay.ToMoneyHolder = loan.First();
-                loanPay.FromMoneyHolder = loan.First();
-                _loanPayRepository.Add(loanPay, accountInfo.Name);
+                var moneyHolder2 = _moneyHolderRepository.FindBy(m => m.Id == request.FromMoneyHolderId && m.IsDeleted != true);
+                if (moneyHolder2.Count() == 0)
+                {
+                    return result.BuildError("Cannot find from money holder");
+                }
+                 var localTransfer = _mapper.Map<LocalTransfer>(request);
+                localTransfer.Id = Guid.NewGuid();
+                localTransfer.AccountId = accountInfo.Id;
+                _localTransferRepository.Add(localTransfer, accountInfo.Name);
 
-                request.Id = loanPay.Id;
+                request.Id = localTransfer.Id;
                 result.BuildResult(request);
 
             }
@@ -134,7 +141,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var loanPay = _mapper.Map<LocalTransfer>(request);
-                _loanPayRepository.Edit(loanPay);
+                _localTransferRepository.Edit(loanPay);
                 result.BuildResult(request);
             }
             catch (Exception ex)
@@ -149,9 +156,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
-                var loanPay = _loanPayRepository.Get(Id);
-                loanPay.IsDeleted = true;
-                _loanPayRepository.Edit(loanPay);
+                var localTransfer = _localTransferRepository.Get(Id);
+                localTransfer.IsDeleted = true;
+                _localTransferRepository.Edit(localTransfer);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)

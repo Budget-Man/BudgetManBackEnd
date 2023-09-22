@@ -12,10 +12,10 @@ namespace BudgetManBackEnd.Model.Dto
     {
      
         public Guid FromMoneyHolderId { get; set; }
-        public string? MoneyHolderIdName { get; set; }
+        public string? FromMoneyHolderName { get; set; }
            
         public Guid ToMoneyHolderId { get; set; }
-       public string? MoneyHolderIdBankName { get; set; }
+       public string? ToMoneyHolderName { get; set; }
        
         public double Amount { get; set; }
     }

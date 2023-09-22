@@ -40,10 +40,21 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<MoneySpendDto>();
             try
             {
-                var query = _moneySpendRepository.FindBy(x => x.Id == Id).Include(x => x.Budget.BudgetCategory).Include(x=>x.MoneyHolder);
-                var loanPay = query.First();
-                var data = _mapper.Map<MoneySpendDto>(loanPay);
-                data.BudgetName = loanPay.Budget.BudgetCategory.Name;
+                var query = _moneySpendRepository.FindBy(x => x.Id == Id)
+                    .Include(x => x.Budget.BudgetCategory)
+                    .Include(x=>x.MoneyHolder);
+                var data = query.Select(x=> new MoneySpendDto
+                {
+                    Amount = x.Amount,
+                    BudgetId = x.BudgetId,
+                    Description = x.Description,
+                    Id = x.Id,
+                    IsPaid = x.IsPaid,
+                    MoneyHolderId = x.MoneyHolderId,
+                    MoneyHolderName = x.MoneyHolder.Name,
+                    Reason = x.Reason,
+                    BudgetName = x.Budget.BudgetCategory.Name,
+                }).First();
                 result.BuildResult(data);
 
             }
@@ -103,32 +114,31 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
-                if (request.BudgetId == null)
+                if(request.BudgetId == null)
                 {
-                    return result.BuildError("Debt Cannot be null");
+                    return result.BuildError("Budget cannot null");
                 }
-                var loan = _moneyHolderRepository.FindBy(m => m.Id == request.BudgetId && m.IsDeleted != true);
-                if (loan.Count() == 0)
+                var budget = _budgetRepository.FindBy(m => m.Id == request.BudgetId && m.IsDeleted == false);
+                if (budget.Count()== 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("cannot find budget");
                 }
-                if (request.MoneyHolderId == null)
+                if(request.MoneyHolderId == null)
                 {
-                    return result.BuildError("Debt Cannot be null");
+                    return result.BuildError("Money holder cannot null");
                 }
-                var loan2 = _budgetRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted != true);
-                if (loan2.Count() == 0)
+                var moneyHolder = _moneyHolderRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted == false);
+                if (moneyHolder.Count()== 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("Cannot find money holder");
                 }
-                var loanPay = _mapper.Map<MoneySpend>(request);
-                loanPay.Id = Guid.NewGuid();
-                loanPay.AccountId = accountInfo.Id;
-                loanPay.MoneyHolder= loan.First();
-                loanPay.Budget = loan2.First();
-                _moneySpendRepository.Add(loanPay, accountInfo.Name);
+                var moneySpend = _mapper.Map<MoneySpend>(request);
+                moneySpend.Id = Guid.NewGuid();
+                moneySpend.Budget = null;
+                moneySpend.Modifiedby = null;
 
-                request.Id = loanPay.Id;
+                _moneySpendRepository.Add(moneySpend, userId);
+
                 result.BuildResult(request);
 
             }
@@ -144,8 +154,8 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<MoneySpendDto>();
             try
             {
-                var loanPay = _mapper.Map<MoneySpend>(request);
-                _moneySpendRepository.Edit(loanPay);
+                var moneySpend = _mapper.Map<MoneySpend>(request);
+                _moneySpendRepository.Edit(moneySpend);
                 result.BuildResult(request);
             }
             catch (Exception ex)
@@ -160,9 +170,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
-                var loanPay = _moneySpendRepository.Get(Id);
-                loanPay.IsDeleted = true;
-                _moneySpendRepository.Edit(loanPay);
+                var moneySpend = _moneySpendRepository.Get(Id);
+                moneySpend.IsDeleted = true;
+                _moneySpendRepository.Edit(moneySpend);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)

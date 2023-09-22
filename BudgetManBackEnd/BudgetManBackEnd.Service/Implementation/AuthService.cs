@@ -63,7 +63,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         IsDeleted = false,
                         UserId = newIdentityUser.Id,
                     };
-                    _accountInfoRepository.Add(AccountInfo);
+                    _accountInfoRepository.Add(AccountInfo, "");
                 }
                 return result.BuildResult(INFO_MSG_UserCreated);
             }
@@ -129,7 +129,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         IsDeleted = false,
                         UserId = newIdentity.Id,
                     };
-                    _accountInfoRepository.Add(accountInfor);
+                    _accountInfoRepository.Add(accountInfor, "");
 
                 }
                 if (user != null)

@@ -38,9 +38,17 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var query = _loanPayRepository.FindBy(x=>x.Id == Id).Include(x=>x.Loan);
-                var loanPay = query.First();
-                var data = _mapper.Map<LoanPayDto>(loanPay);
-                data.LoanName = loanPay.Loan.Name;
+                var data = query.Select(x=>new LoanPayDto
+                {
+                    Id = x.Id,
+                    Interest = x.Interest,
+                    InterestRate = x.InterestRate,
+                    IsPaid = x.IsPaid,
+                    LoanId = x.LoanId,
+                    LoanName = x.Loan.Name,
+                    PaidAmount = x.PaidAmount,
+                    RatePeriod = x.RatePeriod,
+                }).First();
                 result.BuildResult(data);
 
             }

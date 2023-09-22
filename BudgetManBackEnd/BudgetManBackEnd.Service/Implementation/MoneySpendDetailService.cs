@@ -19,17 +19,13 @@ namespace BudgetManBackEnd.Service.Implementation
     {
         private IMoneySpendRepository _moneySpendRepository;
         private IMoneySpendDetailRepository _moneySpendDetailRepository;
-        private IMoneyHolderRepository _moneyHolderRepository;
-        private IBudgetRepository _budgetRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
 
-        public MoneySpendDetailService(IMoneySpendRepository moneySpendRepository, IMoneyHolderRepository moneyHolderRepository, IBudgetRepository budgetRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneySpendDetailRepository moneySpendDetailRepository)
+        public MoneySpendDetailService(IMoneySpendRepository moneySpendRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneySpendDetailRepository moneySpendDetailRepository)
         {
             _moneySpendRepository = moneySpendRepository;
-            _moneyHolderRepository = moneyHolderRepository;
-            _budgetRepository = budgetRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
@@ -42,7 +38,16 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var query = _moneySpendDetailRepository.FindBy(x => x.Id == Id).Include(x => x.MoneySpend);
-                var loanPay = query.First();
+                var loanPay = query.Select(x=> new MoneySpendDetailDto
+                {
+                    Quantity = x.Quantity,
+                    Amount = x.Amount,
+                    Id = x.Id,
+                    IsPaid = x.IsPaid,
+                    MoneySpendId = x.MoneySpendId,
+                    Price = x.Price,
+                    Reason = x.Reason,
+                }).First();
                 var data = _mapper.Map<MoneySpendDetailDto>(loanPay);
              
                 result.BuildResult(data);
@@ -73,7 +78,12 @@ namespace BudgetManBackEnd.Service.Implementation
                     .Select(x => new MoneySpendDetailDto
                     {
                         Id = x.Id,
-                      
+                        Quantity = x.Quantity,
+                        Amount = x.Amount,
+                        IsPaid = x.IsPaid,
+                        MoneySpendId = x.MoneySpendId,
+                        Price = x.Price,
+                        Reason = x.Reason,
                     })
                     .ToList();
                 result.BuildResult(list);

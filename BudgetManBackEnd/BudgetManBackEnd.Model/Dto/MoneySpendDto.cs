@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MayNghien.Common.Models;
 using MayNghien.Common.Models.Entity;
 
 namespace BudgetManBackEnd.Model.Dto
 {
-    public class MoneySpendDto:BaseEntity
+    public class MoneySpendDto:BaseDto
     {
         public Guid BudgetId { get; set; }
         public string BudgetName { get; set; }
