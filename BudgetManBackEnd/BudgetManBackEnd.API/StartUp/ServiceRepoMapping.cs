@@ -41,6 +41,10 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<ILoanPayRepository, LoanPayRepository>();
             builder.Services.AddScoped<IMoneyHolderRepository, MoneyHolderRepository>();
             builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
+            builder.Services.AddScoped<IMoneySpendDetailRepository, MoneySpendDetailRepository>();
+            builder.Services.AddScoped<IMoneySpendRepository, MoneySpendRepository>();
+            builder.Services.AddScoped<ILocalTransferRepository, LocalTransferRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             
             #endregion Repository Mapping
         }
