@@ -43,8 +43,9 @@ namespace BudgetManBackEnd.Service.Implementation
                     Amount = x.Amount,
                     FromMoneyHolderId = x.FromMoneyHolderId,
                     Id = x.Id,
-                    FromMoneyHolderName  = x.FromMoneyHolder.BankName,
+                    FromMoneyHolderName  = x.FromMoneyHolder.Name,
                     ToMoneyHolderName = x.ToMoneyHolder.Name,
+                    ToMoneyHolderId = x.ToMoneyHolderId,
                 } ).First();
                 result.BuildResult(data);
 
@@ -122,6 +123,8 @@ namespace BudgetManBackEnd.Service.Implementation
                  var localTransfer = _mapper.Map<LocalTransfer>(request);
                 localTransfer.Id = Guid.NewGuid();
                 localTransfer.AccountId = accountInfo.Id;
+                localTransfer.FromMoneyHolder = null;
+                localTransfer.ToMoneyHolder = null;
                 _localTransferRepository.Add(localTransfer, accountInfo.Name);
 
                 request.Id = localTransfer.Id;
@@ -140,8 +143,11 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<LocalTransferDto>();
             try
             {
-                var loanPay = _mapper.Map<LocalTransfer>(request);
-                _localTransferRepository.Edit(loanPay);
+                var localTransfer = _localTransferRepository.Get((Guid)request.Id);
+                localTransfer.FromMoneyHolderId = request.FromMoneyHolderId;
+                localTransfer.ToMoneyHolderId = request.ToMoneyHolderId;
+                localTransfer.Amount = request.Amount;
+                _localTransferRepository.Edit(localTransfer);
                 result.BuildResult(request);
             }
             catch (Exception ex)

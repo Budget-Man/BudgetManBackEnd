@@ -95,7 +95,13 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<DebtsPayDto>();
             try
             {
-                var debtsPay = _mapper.Map<DebtsPay>(request);
+                var debtsPay = _debtsPayRepository.Get((Guid)request.Id);
+                debtsPay.DebtsId = request.DebtsId;
+                debtsPay.PaidAmount = request.PaidAmount;
+                debtsPay.RatePeriod = request.RatePeriod;
+                debtsPay.InterestRate = request.InterestRate;
+                debtsPay.Interest = request.Interest;
+                debtsPay.IsPaid = (bool)request.IsPaid;
                 _debtsPayRepository.Edit(debtsPay);
 
                 result.BuildResult(request);
@@ -155,6 +161,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.PaidAmount = request.PaidAmount;
                 debtsPay.RatePeriod = request.RatePeriod;
                 debtsPay.IsPaid = request.IsPaid??true;
+                debtsPay.Debts = null;
                 _debtsPayRepository.Add(debtsPay, accountInfo.Name);
 
 

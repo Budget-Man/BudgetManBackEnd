@@ -31,7 +31,6 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPost]
-        [Route("{Id}")]
         public IActionResult Create(LocalTransferDto request)
         {
             var result = _localTransferService.CreateLocalTransfer(request);

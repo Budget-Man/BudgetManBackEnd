@@ -135,7 +135,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var moneySpend = _mapper.Map<MoneySpend>(request);
                 moneySpend.Id = Guid.NewGuid();
                 moneySpend.Budget = null;
-                moneySpend.Modifiedby = null;
+                moneySpend.MoneyHolder = null;
 
                 _moneySpendRepository.Add(moneySpend, userId);
 
@@ -154,7 +154,13 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<MoneySpendDto>();
             try
             {
-                var moneySpend = _mapper.Map<MoneySpend>(request);
+                var moneySpend = _moneySpendRepository.Get((Guid)request.Id);
+                moneySpend.BudgetId = request.BudgetId;
+                moneySpend.Amount = request.Amount;
+                moneySpend.MoneyHolderId = request.MoneyHolderId;
+                moneySpend.Reason = request.Reason;
+                moneySpend.Description = request.Description;
+                moneySpend.IsPaid = request.IsPaid;
                 _moneySpendRepository.Edit(moneySpend);
                 result.BuildResult(request);
             }

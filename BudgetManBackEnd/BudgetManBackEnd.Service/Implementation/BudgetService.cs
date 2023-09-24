@@ -95,7 +95,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<BudgetDto>();
             try
             {
-                var budget = _mapper.Map<Budget>(request);
+                var budget = _budgetRepository.Get((Guid)request.Id);
+                budget.BudgetCategoryId = request.BudgetCategoryId;
+                budget.Balance = request.Balance;
 
                 _budgetRepository.Edit(budget);
 
@@ -125,8 +127,8 @@ namespace BudgetManBackEnd.Service.Implementation
                         Id = x.Id,
                         BudgetCategoryId = x.BudgetCategory.Id,
                     } )
-
                     .ToList();
+                result.BuildResult(list);
             }
             catch (Exception ex)
             {

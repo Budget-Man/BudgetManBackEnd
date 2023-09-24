@@ -112,6 +112,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var income = _mapper.Map<Income>(request);
                 income.Id = Guid.NewGuid();
                 income.AccountId = accountInfo.Id;
+                income.MoneyHolder = null;
                 _incomeRepository.Add(income, accountInfo.Name);
 
                 request.Id = income.Id;
@@ -130,7 +131,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<IncomeDto>();
             try
             {
-                var income = _mapper.Map<Income>(request);
+                var income = _incomeRepository.Get((Guid)request.Id);
+                income.Name = request.Name;
+                income.MoneyHolderId = request.MoneyHolderId;
                 _incomeRepository.Edit(income);
                 result.BuildResult(request);
             }

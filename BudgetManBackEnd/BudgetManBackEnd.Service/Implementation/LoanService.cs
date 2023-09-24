@@ -82,7 +82,14 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<LoanDto>();
             try
             {
-                var loan = _mapper.Map<Loan>(request);
+                var loan = _loanRepository.Get((Guid)request.Id);
+                loan.Name = request.Name;
+                loan.TotalAmount = request.TotalAmount;
+                loan.RemainAmount = request.RemainAmount;
+                loan.LoanAmount = request.LoanAmount;
+                loan.TotalInterest = request.TotalInterest;
+                loan.InterestRate = request.InterestRate;
+                loan.RatePeriod = request.RatePeriod;
                 _loanRepository.Edit(loan);
                 result.BuildResult(request);
             }

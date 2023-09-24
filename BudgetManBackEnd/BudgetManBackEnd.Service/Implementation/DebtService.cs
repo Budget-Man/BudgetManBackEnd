@@ -85,7 +85,14 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<DebtDto>();
             try
             {
-                var debt = _mapper.Map<Debt>(request);
+                var debt = _debtRepository.Get((Guid)request.Id);
+                debt.Name = request.Name;
+                debt.RatePeriod = request.RatePeriod;
+                debt.InterestRate = request.InterestRate;
+                debt.PaidAmount = request.PaidAmount;
+                debt.TotalAmount = request.TotalAmount;
+                debt.RemainAmount = request.RemainAmount;
+                debt.TotalInterest = request.TotalInterest;
 
                 _debtRepository.Edit(debt);
 

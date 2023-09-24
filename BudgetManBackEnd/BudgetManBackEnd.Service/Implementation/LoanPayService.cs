@@ -120,6 +120,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
                 loanPay.Loan = loan.First();
+                loanPay.Loan = null;
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
 
                 request.Id = loanPay.Id;
@@ -138,7 +139,13 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<LoanPayDto>();
             try
             {
-                var loanPay =  _mapper.Map<LoanPay>(request);
+                var loanPay = _loanPayRepository.Get((Guid)request.Id);
+                loanPay.LoanId = request.LoanId;
+                loanPay.PaidAmount = request.PaidAmount;
+                loanPay.Interest = request.Interest;
+                loanPay.InterestRate = request.InterestRate;
+                loanPay.RatePeriod = request.RatePeriod;
+                loanPay.IsPaid = request.IsPaid;
                 _loanPayRepository.Edit(loanPay);
                 result.BuildResult(request);
             }

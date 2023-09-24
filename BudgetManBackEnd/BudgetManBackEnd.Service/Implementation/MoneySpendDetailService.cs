@@ -117,14 +117,14 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find debt");
                 }
               
-                var loanPay = _mapper.Map<MoneySpendDetail>(request);
-                loanPay.Id = Guid.NewGuid();
-                loanPay.AccountId = accountInfo.Id;
-                loanPay.MoneySpend = loan.First();
+                var moneySpendDetail = _mapper.Map<MoneySpendDetail>(request);
+                moneySpendDetail.Id = Guid.NewGuid();
+                moneySpendDetail.AccountId = accountInfo.Id;
+                moneySpendDetail.MoneySpend = loan.First();
+                moneySpendDetail.MoneySpend = null;
+                _moneySpendDetailRepository.Add(moneySpendDetail, accountInfo.Name);
 
-                _moneySpendDetailRepository.Add(loanPay, accountInfo.Name);
-
-                request.Id = loanPay.Id;
+                request.Id = moneySpendDetail.Id;
                 result.BuildResult(request);
 
             }
@@ -140,8 +140,14 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<MoneySpendDetailDto>();
             try
             {
-                var loanPay = _mapper.Map<MoneySpendDetail>(request);
-                _moneySpendDetailRepository.Edit(loanPay);
+                var moneySpendDetail = _moneySpendDetailRepository.Get((Guid)request.Id);
+                moneySpendDetail.MoneySpendId = request.MoneySpendId;
+                moneySpendDetail.Price = request.Price;
+                moneySpendDetail.Quantity = request.Quantity;
+                moneySpendDetail.Amount = request.Amount;
+                moneySpendDetail.Reason = request.Reason;
+                moneySpendDetail.IsPaid = request.IsPaid;
+                _moneySpendDetailRepository.Edit(moneySpendDetail);
                 result.BuildResult(request);
             }
             catch (Exception ex)

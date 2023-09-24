@@ -28,6 +28,8 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IMoneySpendDetailService, MoneySpendDetailService>();
             builder.Services.AddScoped<IIncomeService, IncomeService>();
             builder.Services.AddScoped<ILocalTransferService,  LocalTransferService>();
+            builder.Services.AddScoped<IMoneySpendService, MoneySpendService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             
             #endregion Service Mapping
 

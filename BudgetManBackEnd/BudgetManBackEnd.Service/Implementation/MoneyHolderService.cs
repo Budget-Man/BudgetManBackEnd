@@ -83,7 +83,9 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<MoneyHolderDto>();
             try
             {
-                var moneyHolder = _mapper.Map<MoneyHolder>(request);
+                var moneyHolder = _moneyHolderRepository.Get((Guid)request.Id);
+                moneyHolder.Name = request.Name;
+                moneyHolder.BankName = request.BankName;
                 _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult(request);
             }
@@ -107,6 +109,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     Id = m.Id,
                     Name = m.Name,
                 }).ToList();
+                result.BuildResult(list);
             }
             catch (Exception ex)
             {
