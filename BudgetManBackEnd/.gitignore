@@ -370,3 +370,5 @@ obj/
 obj\
 .VS/*
 .vs\*
+*/obj/*
+*\obj\*
