@@ -1,5 +1,6 @@
 ﻿using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,13 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
 
+        }
+        [HttpPost]
+        [Route("search")]
+        public IActionResult Search(SearchRequest request)
+        {
+            var result =_budgetCategoryService.Search(request);
+            return Ok(result);
         }
     }
 }

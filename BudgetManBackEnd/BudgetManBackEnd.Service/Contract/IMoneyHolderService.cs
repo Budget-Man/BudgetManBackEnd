@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BudgetManBackEnd.Model.Dto;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 
 namespace BudgetManBackEnd.Service.Contract
@@ -15,5 +16,7 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<MoneyHolderDto> CreateMoneyHolder(MoneyHolderDto request);
         AppResponse<MoneyHolderDto> EditMoneyHolder(MoneyHolderDto request);
         AppResponse<string> DeleteMoneyHolder(Guid Id);
-    }
+        AppResponse<SearchResponse<MoneyHolderDto>> Search(SearchRequest request);
+
+	}
 }

@@ -1,22 +1,19 @@
-﻿using AutoMapper;
+﻿using System.Data.Entity;
+using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
-using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using LinqKit;
 using MayNghien.Common.Helpers;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
-    public class IncomeService : IIncomeService
+	public class IncomeService : IIncomeService
     {
         private readonly IIncomeRepository _incomeRepository;
         private IMapper _mapper;
@@ -160,5 +157,73 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
-    }
+		public AppResponse<SearchResponse<IncomeDto>> Search(SearchRequest request)
+		{
+			var result = new AppResponse<SearchResponse<IncomeDto>>();
+			try
+			{
+				var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+				var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+				if (accountInfoQuery.Count() == 0)
+				{
+					return result.BuildError("Cannot find Account Info by this user");
+				}
+				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
+				var numOfRecords = -_incomeRepository.CountRecordsByPredicate(query);
+				var model = _incomeRepository.FindByPredicate(query).Include(x=>x.MoneyHolder);
+				int pageIndex = request.PageIndex ?? 1;
+				int pageSize = request.PageSize ?? 1;
+				int startIndex = (pageIndex - 1) * (int)pageSize;
+				var List = model.Skip(startIndex).Take(pageSize)
+					.Select(x => new IncomeDto
+					{
+						Id = x.Id,
+						Name = x.Name,
+                        MoneyHolderId = x.MoneyHolderId,
+                        MoneyHolderName = x.MoneyHolder.Name
+					})
+					.ToList();
+
+
+				var searchUserResult = new SearchResponse<IncomeDto>
+				{
+					TotalRows = 0,
+					TotalPages = CalculateNumOfPages(0, pageSize),
+					CurrentPage = pageIndex,
+					Data = List,
+				};
+				result.BuildResult(searchUserResult);
+			}
+			catch (Exception ex)
+			{
+				result.BuildError(ex.Message);
+			}
+			return result;
+		}
+		private ExpressionStarter<Income> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
+		{
+			try
+			{
+				var predicate = PredicateBuilder.New<Income>(true);
+
+				foreach (var filter in Filters)
+				{
+					switch (filter.FieldName)
+					{
+						case "Name":
+							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
+							break;
+						default:
+							break;
+					}
+				}
+				return predicate;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+	}
 }

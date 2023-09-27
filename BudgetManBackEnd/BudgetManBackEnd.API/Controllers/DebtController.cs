@@ -2,6 +2,7 @@
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using MayNghien.Models.Request.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,13 @@ namespace BudgetManBackEnd.API.Controllers
         public IActionResult DeleteDebt(Guid Id)
         {
             var result = _debtService.DeleteDebt(Id);
+            return Ok(result);
+        }
+        [HttpPost]
+        [Route("Search")]
+        public IActionResult Search(SearchRequest request)
+        {
+            var result = _debtService.Search(request);
             return Ok(result);
         }
     }

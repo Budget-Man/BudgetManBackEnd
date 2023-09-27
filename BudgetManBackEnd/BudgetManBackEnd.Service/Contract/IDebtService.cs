@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 
 namespace BudgetManBackEnd.Service.Contract
@@ -16,5 +17,7 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<DebtDto> EditDebt(DebtDto request);
         AppResponse<string> DeleteDebt(Guid Id);
         AppResponse<DebtDto> CreateDebt(DebtDto request);
-    }
+        AppResponse<SearchResponse<DebtDto>> Search(SearchRequest request);
+
+	}
 }

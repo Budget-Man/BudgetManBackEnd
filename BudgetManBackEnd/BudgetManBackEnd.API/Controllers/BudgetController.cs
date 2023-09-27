@@ -1,5 +1,7 @@
 ﻿using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using BudgetManBackEnd.Service.Implementation;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -53,5 +55,12 @@ namespace BudgetManBackEnd.API.Controllers
             var result =_budgetService.DeleteBudget(Id);
             return Ok(result);
         }
-    }
+		[HttpPost]
+		[Route("Search")]
+		public IActionResult Search(SearchRequest request)
+		{
+			var result = _budgetService.Search(request);
+			return Ok(result);
+		}
+	}
 }

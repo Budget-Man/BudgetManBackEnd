@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BudgetManBackEnd.Model.Dto;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 
 namespace BudgetManBackEnd.Service.Contract
@@ -15,5 +16,7 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<BudgetDto> CreateBudget(BudgetDto request);
         AppResponse<BudgetDto> EditBudget(BudgetDto request);
         AppResponse<string> DeleteBudget(Guid Id);
-    }
+        AppResponse<SearchResponse<BudgetDto>> Search(SearchRequest request);
+
+	}
 }

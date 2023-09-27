@@ -1,5 +1,7 @@
 ﻿using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using BudgetManBackEnd.Service.Implementation;
+using MayNghien.Models.Request.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,5 +51,12 @@ namespace BudgetManBackEnd.API.Controllers
             var reusult = _moneySpendDetailService.DeleteMoneySpendDetail(Id);
             return Ok(reusult);
         }
-    }
+		[HttpPost]
+		[Route("Search")]
+		public IActionResult Search(SearchRequest request)
+		{
+			var result = _moneySpendDetailService.Search(request);
+			return Ok(result);
+		}
+	}
 }
