@@ -15,5 +15,7 @@ namespace MayNghien.Common.CommonMessage
         public const string ERR_MSG_EmailIsNullOrEmpty = "Phải nhập email";
         public const string INFO_MSG_UserCreated = "Tạo tài khoản thành công, vui xòng chờ admin kích hoạt";
         public const string INFO_MSG_UserDeleted = "Xóa tài khoản thành công";
+        public const string ERR_MSG_RoleNotFound = "Quyền của người dùng không tồn tại";
+        public const string ERR_MSG_NotHavePermision = "Bạn không đủ quyền để thực hiện thao tác này";
     }
 }

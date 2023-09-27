@@ -10,6 +10,7 @@ using LinqKit;
 using MayNghien.Common.Helpers;
 using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using static MayNghien.Common.CommonMessage.AuthResponseMessage;
@@ -24,9 +25,12 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserService(IConfiguration config, UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager, IAccountInfoRepository accountInfoRepository,
-            IUserRepository userRepository, IMapper mapper)
+            IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _config = config;
             _userManager = userManager;
@@ -34,6 +38,7 @@ namespace BudgetManBackEnd.Service.Implementation
             _accountInfoRepository = accountInfoRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<AppResponse<string>> CreateUser(UserModel user)
         {
@@ -49,11 +54,21 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError(ERR_MSG_UserExisted);
                 }
-                var newIdentityUser = new IdentityUser { Email = user.Email, UserName = user.Email };
+                if (user.Role != nameof(UserRoleEnum.TenantAdmin) && user.Role != nameof(UserRoleEnum.Admin) && user.Role != nameof(UserRoleEnum.SuperAdmin))
+                {
+                    return result.BuildError(ERR_MSG_RoleNotFound);
+                }
+                var UserId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var role = ClaimHelper.GetClainByName(_httpContextAccessor, "Role");
+                if (role == nameof(UserRoleEnum.TenantAdmin) || (role == nameof(UserRoleEnum.Admin) && user.Role == nameof(UserRoleEnum.SuperAdmin)))
+                {
+                    return result.BuildError(ERR_MSG_NotHavePermision);
+                }
+                var newIdentityUser = new IdentityUser { Email = user.UserName, UserName = user.UserName };
                 var createResult = await _userManager.CreateAsync(newIdentityUser);
                 await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
 
-                newIdentityUser = await _userManager.FindByEmailAsync(user.Email);
+                newIdentityUser = await _userManager.FindByNameAsync(user.UserName);
                 if (newIdentityUser != null)
                 {
                     if (user.Role != null && user.Role == nameof(UserRoleEnum.TenantAdmin))
@@ -62,8 +77,8 @@ namespace BudgetManBackEnd.Service.Implementation
                         {
                             Id = Guid.NewGuid(),
                             Balance = 0,
-                            Email = user.Email,
-                            CreatedBy = user.Email,
+                            Email = user.UserName,
+                            CreatedBy = user.UserName,
                             CreatedOn = DateTime.Now,
                             Name = user.UserName,
                             IsDeleted = false,
@@ -71,8 +86,12 @@ namespace BudgetManBackEnd.Service.Implementation
                         };
                         _accountInfoRepository.Add(AccountInfo);
                     }
+
                     await _userManager.AddToRoleAsync(newIdentityUser, user.Role);
+
+
                 }
+
                 return result.BuildResult(INFO_MSG_UserCreated);
             }
             catch (Exception ex)
@@ -247,8 +266,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     switch (filter.FieldName)
                     {
-                        case "Email":
-                            predicate = predicate.And(m => m.Email.Equals(filter.Value));
+                        case "UserName":
+                            predicate = predicate.And(m => m.UserName.Contains(filter.Value));
                             break;
 
                         default:

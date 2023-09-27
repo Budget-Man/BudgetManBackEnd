@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using static MayNghien.Common.CommonMessage.AuthResponseMessage;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.Common.Enum;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -83,7 +84,21 @@ namespace BudgetManBackEnd.Service.Implementation
                 IdentityUser identityUser = new IdentityUser();
                 //Validate the User Credentials    
                 //Demo Purpose, I have Passed HardCoded User Information    
-
+                if (!(await _roleManager.RoleExistsAsync(nameof(UserRoleEnum.SuperAdmin))))
+                {
+                    IdentityRole role = new IdentityRole { Name = nameof(UserRoleEnum.SuperAdmin) };
+                    await _roleManager.CreateAsync(role);
+                }
+                if (!(await _roleManager.RoleExistsAsync(nameof(UserRoleEnum.TenantAdmin))))
+                {
+                    IdentityRole role = new IdentityRole { Name = nameof(UserRoleEnum.TenantAdmin) };
+                    await _roleManager.CreateAsync(role);
+                }
+                if (!(await _roleManager.RoleExistsAsync(nameof(UserRoleEnum.Admin))))
+                {
+                    IdentityRole role = new IdentityRole { Name = nameof(UserRoleEnum.Admin) };
+                    await _roleManager.CreateAsync(role);
+                }
                 identityUser = await _userManager.FindByNameAsync(login.UserName);
                 if (identityUser != null )
                 {
@@ -108,11 +123,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     var newIdentity = new IdentityUser { UserName = login.UserName, Email = login.Email, EmailConfirmed = true };
                     await _userManager.CreateAsync(newIdentity);
                     await _userManager.AddPasswordAsync(newIdentity, "CdzuOsSbBH");
-                    if (!(await _roleManager.RoleExistsAsync("superadmin")))
-                    {
-                        IdentityRole role = new IdentityRole { Name = "superadmin" };
-                        await _roleManager.CreateAsync(role);
-                    }
+                    
                     await _userManager.AddToRoleAsync(newIdentity, "superadmin");
                 }
                 if (user != null)

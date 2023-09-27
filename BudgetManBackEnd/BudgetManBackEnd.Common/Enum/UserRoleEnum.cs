@@ -10,6 +10,7 @@ namespace BudgetManBackEnd.Common.Enum
     {
         Admin,
         TenantAdmin,
-        TenantUser
+        TenantUser,
+        SuperAdmin
     }
 }
