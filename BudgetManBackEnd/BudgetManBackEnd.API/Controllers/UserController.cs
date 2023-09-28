@@ -59,7 +59,7 @@ namespace BudgetManBackEnd.API.Controllers
         [Route("search")]
         public async Task<IActionResult> SearchUser([FromBody] SearchRequest request)
         {
-            var result = _userService.Search(request);
+            var result = await _userService.Search(request);
 
             return Ok(result);
         }

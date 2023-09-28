@@ -222,7 +222,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var numOfRecords = _userRepository.CountRecordsByPredicate(query);
 
                 var users = _userRepository.FindByPredicate(query);
-                int pageIndex = request.PageSize ?? 1;
+                int pageIndex = request.PageIndex ?? 1;
                 int pageSize = request.PageSize ?? 1;
                 int startIndex = (pageIndex - 1) * (int)pageSize;
                 var UserList = users.Skip(startIndex).Take(pageSize).ToList();
@@ -233,7 +233,12 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         var dtouser = dtoList[i];
                         var identityUser = UserList[i];
-                        dtouser.Role = (await _userManager.GetRolesAsync(identityUser)).First();
+                        var listrole = await _userManager.GetRolesAsync(identityUser);
+                        if (listrole.Count > 0)
+                        {
+                            dtouser.Role = listrole.First();
+                        }
+                        
                     }
                 }
                 var searchUserResult = new SearchUserResponse
@@ -256,24 +261,27 @@ namespace BudgetManBackEnd.Service.Implementation
 
 
 
-        private ExpressionStarter<IdentityUser> BuildFilterExpression(IList<Filter> Filters)
+        private ExpressionStarter<IdentityUser> BuildFilterExpression(IList<Filter>? Filters)
         {
             try
             {
                 var predicate = PredicateBuilder.New<IdentityUser>(true);
-
-                foreach (var filter in Filters)
+                if (Filters != null)
                 {
-                    switch (filter.FieldName)
+                    foreach (var filter in Filters)
                     {
-                        case "UserName":
-                            predicate = predicate.And(m => m.UserName.Contains(filter.Value));
-                            break;
+                        switch (filter.FieldName)
+                        {
+                            case "UserName":
+                                predicate = predicate.And(m => m.UserName.Contains(filter.Value));
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
                 }
+                
                 return predicate;
             }
             catch (Exception)

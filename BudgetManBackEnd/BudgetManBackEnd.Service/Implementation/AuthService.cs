@@ -165,10 +165,10 @@ namespace BudgetManBackEnd.Service.Implementation
             //var userTenantMappings = (await _userTenantMapingRepository.FindByAsync(u => u.User.Id == user.Id)).ToList().FirstOrDefault(t => t.IsUsing);
             var claims = new List<Claim>
             {
-                new Claim("UserName", user.UserName),
-                new Claim("UserId", user.Id),
+                new Claim("UserName", identityUser.UserName),
+                new Claim("UserId", identityUser.Id),
 
-                new Claim("Email", user.Email),
+                new Claim("Email", identityUser.Email),
 
             };
             var roles = await _userManager.GetRolesAsync(identityUser);
