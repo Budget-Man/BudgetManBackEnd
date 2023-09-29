@@ -272,8 +272,8 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         switch (filter.FieldName)
                         {
-                            case "UserName":
-                                predicate = predicate.And(m => m.UserName.Contains(filter.Value));
+                            case "userName":
+                                predicate = predicate.And(m => m.UserName.Equals(filter.Value));
                                 break;
 
                             default:
