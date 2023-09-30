@@ -361,21 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-.vs\
-.vs/
-obj/
-obj\
-
-*/obj
-obj/
-obj\
-.VS/
-.vs\
-*/obj/*
-*\obj\*
-*/.vs/*
-*\.vs\*
-.vs\*
-.vs/*
-\.vs\*
-/.vs/*
