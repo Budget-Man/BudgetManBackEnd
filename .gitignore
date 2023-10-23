@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BudgetManBackEnd/BudgetManBackEnd.API/obj/Debug/net6.0/BudgetManBackEnd.API.csproj.AssemblyReference.cache
