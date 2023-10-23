@@ -367,4 +367,4 @@ FodyWeavers.xsd
 */.vs/*
 .vs/*
 /BudgetManBackEnd/.vs/*
-/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.csproj.AssemblyReference.cache
+*/obj*

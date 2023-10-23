@@ -145,12 +145,26 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
             }
+            if(model.Role == null)
+            {
+                return result.BuildError(ERR_MSG_RoleIsNullOrEmpty);
+            }
+            if(! await _roleManager.RoleExistsAsync(model.Role))
+            {
+                return result.BuildError(ERR_MSG_RoleNotFound);
+            }
             try
             {
                 var identityUser = await _userManager.FindByIdAsync(model.Id);
                 if (identityUser != null)
                 {
-                    //identityUser.PhoneNumber=model.
+                  var role= (await  _userManager.GetRolesAsync(identityUser)).FirstOrDefault();
+                    if (role != null)
+                    {
+                        await _userManager.RemoveFromRoleAsync(identityUser, role);
+
+                    }
+                    await _userManager.AddToRoleAsync(identityUser, model.Role);
                 }
                 return result.BuildResult("ok");
             }

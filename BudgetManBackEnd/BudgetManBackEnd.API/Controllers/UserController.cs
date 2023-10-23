@@ -34,13 +34,13 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
         }
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateUser([FromBody] UserModel request)
-        //{
-        //    var result = _userService.EditUser(request);
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UserModel request)
+        {
+            var result = await _userService.EditUser(request);
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
