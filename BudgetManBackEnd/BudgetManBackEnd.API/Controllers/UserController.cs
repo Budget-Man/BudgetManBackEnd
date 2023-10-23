@@ -22,7 +22,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
-            var result = _userService.GetAllUser();
+            var result = await _userService.GetAllUser();
 
             return Ok(result);
         }
@@ -51,7 +51,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(string id)
         {
-            var result = _userService.GetUser(id);
+            var result = await _userService.GetUser(id);
 
             return Ok(result);
         }
