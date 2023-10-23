@@ -30,7 +30,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserModel request)
         {
-            var result = _userService.CreateUser(request);
+            var result = await _userService.CreateUser(request);
 
             return Ok(result);
         }
@@ -44,7 +44,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var result = _userService.DeleteUser(id);
+            var result = await _userService.DeleteUser(id);
 
             return Ok(result);
         }

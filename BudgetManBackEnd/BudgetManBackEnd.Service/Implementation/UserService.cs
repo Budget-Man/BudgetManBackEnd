@@ -45,10 +45,10 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
-                if (string.IsNullOrEmpty(user.Email))
-                {
-                    return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
-                }
+                //if (string.IsNullOrEmpty(user.Email))
+                //{
+                //    return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
+                //}
                 var identityUser = await _userManager.FindByNameAsync(user.UserName);
                 if (identityUser != null)
                 {
@@ -66,7 +66,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var newIdentityUser = new IdentityUser { Email = user.UserName, UserName = user.UserName };
                 var createResult = await _userManager.CreateAsync(newIdentityUser);
-                await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
+                await _userManager.AddPasswordAsync(newIdentityUser, "Abc@123");
 
                 newIdentityUser = await _userManager.FindByNameAsync(user.UserName);
                 if (newIdentityUser != null)
@@ -121,7 +121,11 @@ namespace BudgetManBackEnd.Service.Implementation
                             AccountInfo.IsDeleted = true;
                             _accountInfoRepository.Edit(AccountInfo);
                         }
-                        await _userManager.SetLockoutEnabledAsync(identityUser, true);
+                        await _userManager.DeleteAsync(identityUser);
+                    }
+                    else
+                    {
+                        await _userManager.DeleteAsync(identityUser);
                     }
 
                 }
@@ -266,6 +270,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var predicate = PredicateBuilder.New<IdentityUser>(true);
+                //predicate = predicate.And(m=>m.)
                 if (Filters != null)
                 {
                     foreach (var filter in Filters)
