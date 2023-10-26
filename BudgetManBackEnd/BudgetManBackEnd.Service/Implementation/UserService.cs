@@ -181,7 +181,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 List<Filter> Filters = new List<Filter>();
-                var query = BuildFilterExpression(Filters);
+                var query = await BuildFilterExpression(Filters);
                 var users = _userRepository.FindByPredicate(query);
                 var UserList = users.ToList();
                 var dtoList = _mapper.Map<List<UserModel>>(UserList);
@@ -236,7 +236,7 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<SearchUserResponse>();
             try
             {
-                var query = BuildFilterExpression(request.Filters);
+                var query = await BuildFilterExpression(request.Filters);
                 var numOfRecords = _userRepository.CountRecordsByPredicate(query);
 
                 var users = _userRepository.FindByPredicate(query);
@@ -279,11 +279,13 @@ namespace BudgetManBackEnd.Service.Implementation
 
 
 
-        private ExpressionStarter<IdentityUser> BuildFilterExpression(IList<Filter>? Filters)
+        private async Task<ExpressionStarter<IdentityUser>> BuildFilterExpression(IList<Filter>? Filters)
         {
             try
             {
                 var predicate = PredicateBuilder.New<IdentityUser>(true);
+
+                
                 //predicate = predicate.And(m=>m.)
                 if (Filters != null)
                 {
@@ -294,7 +296,10 @@ namespace BudgetManBackEnd.Service.Implementation
                             case "userName":
                                 predicate = predicate.And(m => m.UserName.Equals(filter.Value));
                                 break;
-
+                            case "role":
+                                var userIdsbyrole = (await _userManager.GetUsersInRoleAsync((filter.Value))).Select(m=>m.Id).ToList();
+                                predicate = predicate.And(m => userIdsbyrole.Contains(m.Id));
+                                break;
                             default:
                                 break;
                         }
