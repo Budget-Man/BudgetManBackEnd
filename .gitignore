@@ -368,3 +368,4 @@ FodyWeavers.xsd
 .vs/*
 /BudgetManBackEnd/.vs/*
 */obj*
+/BudgetManBackEnd/.vs/ProjectEvaluation/budgetmanbackend.projects.v7.bin
