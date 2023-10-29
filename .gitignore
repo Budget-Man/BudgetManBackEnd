@@ -369,10 +369,6 @@ FodyWeavers.xsd
 .vs/*
 /BudgetManBackEnd/.vs/*
 */obj*
-/BudgetManBackEnd/BudgetManBackEnd.Service/obj/project.nuget.cache
-/BudgetManBackEnd/BudgetManBackEnd.Service/obj/project.assets.json
-/BudgetManBackEnd/BudgetManBackEnd.Service/obj/BudgetManBackEnd.Service.csproj.nuget.dgspec.json
-/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/project.nuget.cache
-/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/project.assets.json
-/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/BudgetManBackEnd.DAL.csproj.nuget.dgspec.json
-/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/Debug/net6.0/BudgetManBackEnd.DAL.assets.cache
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj*
+/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/*
+
