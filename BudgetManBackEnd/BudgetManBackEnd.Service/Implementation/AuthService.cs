@@ -64,7 +64,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         IsDeleted = false,
                         UserId = newIdentityUser.Id,
                     };
-                    _accountInfoRepository.Add(AccountInfo);
+                    _accountInfoRepository.Add(AccountInfo, "");
                 }
                 return result.BuildResult(INFO_MSG_UserCreated);
             }
@@ -113,7 +113,11 @@ namespace BudgetManBackEnd.Service.Implementation
                     }
                     if (await _userManager.CheckPasswordAsync(identityUser, login.Password))
                     {
-                        user = new UserModel { UserName = identityUser.UserName, Email = identityUser.Email };
+                        user = new UserModel { 
+                            UserName = identityUser.UserName,
+                            Email = identityUser.Email,
+                            Id = identityUser.Id,
+                            };
 
                     }
 
@@ -125,6 +129,19 @@ namespace BudgetManBackEnd.Service.Implementation
                     await _userManager.AddPasswordAsync(newIdentity, "CdzuOsSbBH");
                     
                     await _userManager.AddToRoleAsync(newIdentity, "superadmin");
+                    var accountInfor = new AccountInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Balance = 0,
+                        Email = newIdentity.Email,
+                        CreatedBy = newIdentity.Email,
+                        CreatedOn = DateTime.Now,
+                        Name = newIdentity.UserName,
+                        IsDeleted = false,
+                        UserId = newIdentity.Id,
+                    };
+                    _accountInfoRepository.Add(accountInfor, "");
+
                 }
                 if (user != null)
                 {

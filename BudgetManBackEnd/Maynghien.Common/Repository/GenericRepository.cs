@@ -33,14 +33,14 @@ namespace Maynghien.Common.Repository
         #endregion
 
         #region Method
-        public virtual void Add(TEntity item)
+        public virtual void Add(TEntity item, string userName)
         {
             if (item != null)
             {
                 item.CreatedOn = DateTime.UtcNow;
                 if (item.CreatedBy == null)
                 {
-                    item.CreatedBy = "";
+                    item.CreatedBy = userName;
                 }
                 _context.Add(item);
                 _context.SaveChanges();
@@ -183,6 +183,14 @@ namespace Maynghien.Common.Repository
             return GetSet().AsQueryable();
         }
 
-        #endregion
-    }
+		#endregion
+		public IQueryable<TEntity> FindByPredicate(Expression<Func<TEntity, bool>> predicate)
+		{
+			return GetSet().Where(predicate).AsQueryable();
+		}
+		public int CountRecordsByPredicate(Expression<Func<TEntity, bool>> predicate)
+		{
+			return GetSet().Where(predicate).Count();
+		}
+	}
 }

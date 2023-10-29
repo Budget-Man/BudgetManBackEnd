@@ -12,7 +12,7 @@ namespace Maynghien.Common.Repository
         void ClearTracker();
         DbSet<T> GetSet();
         T? Get(Guid id);
-        void Add(T entity);
+        void Add(T entity, string userName);
 
         void Delete(T entity);
 
@@ -28,5 +28,7 @@ namespace Maynghien.Common.Repository
         Task BulkUpdate(IList<T> entities, CancellationToken cancellationToken);
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetAll();
-    }
+		IQueryable<T> FindByPredicate(Expression<Func<T, bool>> predicate);
+		int CountRecordsByPredicate(Expression<Func<T, bool>> predicate);
+	}
 }

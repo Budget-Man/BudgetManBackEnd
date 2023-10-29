@@ -22,6 +22,26 @@ namespace BudgetManBackEnd.Service.Mapper
                 .ReverseMap();
             CreateMap<IdentityUser, UserModel>()
                 .ReverseMap();
+            CreateMap<Debt, DebtDto>()
+                .ReverseMap();
+            CreateMap<DebtsPay, DebtsPayDto>()
+                .ReverseMap();
+            CreateMap<Budget, BudgetDto>()
+                .ReverseMap();
+            CreateMap<Loan, LoanDto>()
+                .ReverseMap();
+            CreateMap<LoanPay, LoanPayDto>()
+                .ReverseMap();
+            CreateMap<MoneyHolder, MoneyHolderDto>()
+                .ReverseMap();
+            CreateMap<MoneySpend, MoneySpendDto>()
+                .ReverseMap();
+            CreateMap<MoneySpendDetail, MoneySpendDetailDto>()
+                .ReverseMap();
+            CreateMap<LocalTransfer, LocalTransferDto>()
+                .ReverseMap();
+            CreateMap<Income, IncomeDto>()
+                .ReverseMap();
 
         }
     }

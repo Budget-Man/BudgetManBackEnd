@@ -1,5 +1,6 @@
 ﻿using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Net;
 namespace BudgetManBackEnd.API.Controllers
 {
 
-    [Route("api/campaign")]
+    [Route("api/BudgetCategory")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class BudgetCategoryController : Controller
@@ -39,8 +40,7 @@ namespace BudgetManBackEnd.API.Controllers
 
         }
         [HttpPost]
-        [Route("{id}")]
-        public IActionResult CreateCampain([FromBody] BudgetCategoryDto request)
+        public IActionResult CreateBugdgetCate([FromBody] BudgetCategoryDto request)
         {
 
             var result = _budgetCategoryService.CreatebudgetCategory(request);
@@ -51,7 +51,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpPut]
         [Route("{id}")]
 
-        public IActionResult EditCampain([FromBody] BudgetCategoryDto request)
+        public IActionResult EditBugdgetCate([FromBody] BudgetCategoryDto request)
         {
 
             var result = _budgetCategoryService.EditbudgetCategory(request);
@@ -60,13 +60,20 @@ namespace BudgetManBackEnd.API.Controllers
 
         }
         [HttpDelete]
-        public IActionResult DeleteCampain(Guid id)
+        public IActionResult DeleteBugdgetCate(Guid id)
         {
 
             var result = _budgetCategoryService.DeletebudgetCategory(id);
 
             return Ok(result);
 
+        }
+        [HttpPost]
+        [Route("search")]
+        public IActionResult Search(SearchRequest request)
+        {
+            var result =_budgetCategoryService.Search(request);
+            return Ok(result);
         }
     }
 }

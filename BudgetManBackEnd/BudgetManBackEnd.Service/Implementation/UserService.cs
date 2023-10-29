@@ -84,7 +84,7 @@ namespace BudgetManBackEnd.Service.Implementation
                             IsDeleted = false,
                             UserId = newIdentityUser.Id,
                         };
-                        _accountInfoRepository.Add(AccountInfo);
+                        _accountInfoRepository.Add(AccountInfo, accountInfo.Name);
                     }
 
                     await _userManager.AddToRoleAsync(newIdentityUser, user.Role);
