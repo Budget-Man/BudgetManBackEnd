@@ -145,11 +145,11 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
             }
-            if(model.Role == null)
+            if (model.Role == null)
             {
                 return result.BuildError(ERR_MSG_RoleIsNullOrEmpty);
             }
-            if(! await _roleManager.RoleExistsAsync(model.Role))
+            if (!await _roleManager.RoleExistsAsync(model.Role))
             {
                 return result.BuildError(ERR_MSG_RoleNotFound);
             }
@@ -158,7 +158,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var identityUser = await _userManager.FindByIdAsync(model.Id);
                 if (identityUser != null)
                 {
-                  var role= (await  _userManager.GetRolesAsync(identityUser)).FirstOrDefault();
+                    var role = (await _userManager.GetRolesAsync(identityUser)).FirstOrDefault();
                     if (role != null)
                     {
                         await _userManager.RemoveFromRoleAsync(identityUser, role);
@@ -256,7 +256,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         {
                             dtouser.Role = listrole.First();
                         }
-                        
+
                     }
                 }
                 var searchUserResult = new SearchUserResponse
@@ -285,7 +285,7 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 var predicate = PredicateBuilder.New<IdentityUser>(true);
 
-                
+
                 //predicate = predicate.And(m=>m.)
                 if (Filters != null)
                 {
@@ -297,7 +297,7 @@ namespace BudgetManBackEnd.Service.Implementation
                                 predicate = predicate.And(m => m.UserName.Equals(filter.Value));
                                 break;
                             case "role":
-                                var userIdsbyrole = (await _userManager.GetUsersInRoleAsync((filter.Value))).Select(m=>m.Id).ToList();
+                                var userIdsbyrole = (await _userManager.GetUsersInRoleAsync((filter.Value))).Select(m => m.Id).ToList();
                                 predicate = predicate.And(m => userIdsbyrole.Contains(m.Id));
                                 break;
                             default:
@@ -305,13 +305,38 @@ namespace BudgetManBackEnd.Service.Implementation
                         }
                     }
                 }
-                
+
                 return predicate;
             }
             catch (Exception)
             {
 
                 throw;
+            }
+        }
+
+        public async Task<AppResponse<string>> ResetUser(UserModel model)
+        {
+            var result = new AppResponse<string>();
+            if (model.Id == null)
+            {
+                return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
+            }
+
+            try
+            {
+                var identityUser = await _userManager.FindByIdAsync(model.Id);
+                if (identityUser != null)
+                {
+                    await _userManager.RemovePasswordAsync(identityUser);
+                    await _userManager.AddPasswordAsync(identityUser, "Abc@123");
+                }
+                return result.BuildResult("ok");
+            }
+            catch (Exception ex)
+            {
+
+                return result.BuildError(ex.ToString());
             }
         }
     }

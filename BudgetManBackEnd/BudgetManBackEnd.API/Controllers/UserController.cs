@@ -63,6 +63,13 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
         }
+        [HttpPut]
+        [Route("reset")]
+        public async Task<IActionResult> Reset([FromBody] UserModel request)
+        {
+            var result = await _userService.ResetUser(request);
 
+            return Ok(result);
+        }
     }
 }
