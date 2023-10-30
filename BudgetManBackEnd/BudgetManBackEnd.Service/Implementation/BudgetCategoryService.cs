@@ -204,23 +204,27 @@ namespace BudgetManBackEnd.Service.Implementation
 			}
 			return result;
 		}
-		private ExpressionStarter<BudgetCategory> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
+		private ExpressionStarter<BudgetCategory> BuildFilterExpression(IList<Filter>? Filters, Guid accountId)
 		{
 			try
 			{
 				var predicate = PredicateBuilder.New<BudgetCategory>(true);
-
-				foreach (var filter in Filters)
-				{
-					switch (filter.FieldName)
-					{
-						case "Name":
-							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
-							break;
-						default:
-							break;
-					}
-				}
+                if(Filters!= null)
+                {
+                    foreach (var filter in Filters)
+                    {
+                        switch (filter.FieldName)
+                        {
+                            case "Name":
+                                predicate = predicate.And(m => m.Name.Contains(filter.Value));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                predicate = predicate.And(m => m.IsDeleted == false);
+                predicate = predicate.And(m => m.AccountId == accountId);
 				return predicate;
 			}
 			catch (Exception)

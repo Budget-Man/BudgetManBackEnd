@@ -49,7 +49,6 @@ namespace BudgetManBackEnd.API.Controllers
 
         }
         [HttpPut]
-        [Route("{id}")]
 
         public IActionResult EditBugdgetCate([FromBody] BudgetCategoryDto request)
         {
@@ -59,7 +58,7 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
 
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteBugdgetCate(Guid id)
         {
 
