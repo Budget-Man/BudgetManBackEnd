@@ -12,7 +12,7 @@ using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
-	public class MoneyHolderService : IMoneyHolderService
+    public class MoneyHolderService : IMoneyHolderService
     {
         private readonly IMoneyHolderRepository _moneyHolderRepository;
         private readonly IAccountInfoRepository _accountInfoRepository;
@@ -62,12 +62,12 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var moneyHolder = _moneyHolderRepository.Get(Id);
-                moneyHolder.IsDeleted =  true;
+                moneyHolder.IsDeleted = true;
 
                 _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult("Delete Sucessfuly");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.BuildError(ex.Message);
             }
@@ -129,70 +129,75 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
-		public AppResponse<SearchResponse<MoneyHolderDto>> Search(SearchRequest request)
-		{
-			var result = new AppResponse<SearchResponse<MoneyHolderDto>>();
-			try
-			{
-				var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-				var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
-				if (accountInfoQuery.Count() == 0)
-				{
-					return result.BuildError("Cannot find Account Info by this user");
-				}
-				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
-				var numOfRecords = -_moneyHolderRepository.CountRecordsByPredicate(query);
-				var model = _moneyHolderRepository.FindByPredicate(query);
-				int pageIndex = request.PageIndex ?? 1;
-				int pageSize = request.PageSize ?? 1;
-				int startIndex = (pageIndex - 1) * (int)pageSize;
-				var List = model.Skip(startIndex).Take(pageSize)
-					.Select(x => new MoneyHolderDto
-					{
-						Id = x.Id,
-					})
-					.ToList();
+        public AppResponse<SearchResponse<MoneyHolderDto>> Search(SearchRequest request)
+        {
+            var result = new AppResponse<SearchResponse<MoneyHolderDto>>();
+            try
+            {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
+                var numOfRecords = -_moneyHolderRepository.CountRecordsByPredicate(query);
+                var model = _moneyHolderRepository.FindByPredicate(query);
+                int pageIndex = request.PageIndex ?? 1;
+                int pageSize = request.PageSize ?? 1;
+                int startIndex = (pageIndex - 1) * (int)pageSize;
+                var List = model.Skip(startIndex).Take(pageSize)
+                    .Select(x => new MoneyHolderDto
+                    {
+                        Id = x.Id,
+                    })
+                    .ToList();
 
 
-				var searchUserResult = new SearchResponse<MoneyHolderDto>
-				{
-					TotalRows = 0,
-					TotalPages = CalculateNumOfPages(0, pageSize),
-					CurrentPage = pageIndex,
-					Data = List,
-				};
-				result.BuildResult(searchUserResult);
-			}
-			catch (Exception ex)
-			{
-				result.BuildError(ex.Message);
-			}
-			return result;
-		}
-		private ExpressionStarter<MoneyHolder> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
-		{
-			try
-			{
-				var predicate = PredicateBuilder.New<MoneyHolder>(true);
+                var searchUserResult = new SearchResponse<MoneyHolderDto>
+                {
+                    TotalRows = 0,
+                    TotalPages = CalculateNumOfPages(0, pageSize),
+                    CurrentPage = pageIndex,
+                    Data = List,
+                };
+                result.BuildResult(searchUserResult);
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
+        private ExpressionStarter<MoneyHolder> BuildFilterExpression(IList<Filter>? Filters, Guid accountId)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<MoneyHolder>(true);
+                predicate = predicate.And(m => m.AccountId == accountId);
+                predicate = predicate.And(m => m.IsDeleted == false);
+                if (Filters != null)
+                {
+                    foreach (var filter in Filters)
+                    {
+                        switch (filter.FieldName)
+                        {
+                            case "Name":
+                                predicate = predicate.And(m => m.Name.Contains(filter.Value));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
 
-				foreach (var filter in Filters)
-				{
-					switch (filter.FieldName)
-					{
-						case "Name":
-							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
-							break;
-						default:
-							break;
-					}
-				}
-				return predicate;
-			}
-			catch (Exception)
-			{
+                return predicate;
+            }
+            catch (Exception)
+            {
 
-				throw;
-			}
-		}
-	}
+                throw;
+            }
+        }
+    }
 }

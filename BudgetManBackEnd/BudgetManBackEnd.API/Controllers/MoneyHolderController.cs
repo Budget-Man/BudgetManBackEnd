@@ -39,7 +39,6 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPut]
-        [Route("{Id}")]
         public IActionResult EditMoneyHolder(MoneyHolderDto request)
         {
             var result = _moneyHolderService.EditMoneyHolder(request);
