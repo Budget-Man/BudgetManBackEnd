@@ -150,6 +150,8 @@ namespace BudgetManBackEnd.Service.Implementation
                     .Select(x => new MoneyHolderDto
                     {
                         Id = x.Id,
+                        BankName=x.BankName,
+                        Name=x.Name
                     })
                     .ToList();
 
