@@ -205,18 +205,23 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
 			{
 				var predicate = PredicateBuilder.New<Income>(true);
-
-				foreach (var filter in Filters)
-				{
-					switch (filter.FieldName)
-					{
-						case "Name":
-							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
-							break;
-						default:
-							break;
-					}
-				}
+                predicate = predicate.And(m => m.IsDeleted == false);
+                predicate=predicate.And(m=>m.AccountId == accountId);
+                if (Filters != null)
+                {
+                    foreach (var filter in Filters)
+                    {
+                        switch (filter.FieldName)
+                        {
+                            case "Name":
+                                predicate = predicate.And(m => m.Name.Contains(filter.Value));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+				
 				return predicate;
 			}
 			catch (Exception)
