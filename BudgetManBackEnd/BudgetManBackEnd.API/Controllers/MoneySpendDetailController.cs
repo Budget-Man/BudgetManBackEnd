@@ -38,7 +38,7 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPut]
-        [Route("{Id}")]
+        //[Route("{Id}")]
         public IActionResult Edit(MoneySpendDetailDto request)
         {
             var result = _moneySpendDetailService.EditMoneySpendDetail(request);

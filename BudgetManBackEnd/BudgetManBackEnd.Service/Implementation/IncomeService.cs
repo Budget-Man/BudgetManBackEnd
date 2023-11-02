@@ -170,7 +170,7 @@ namespace BudgetManBackEnd.Service.Implementation
 				}
 				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
 				var numOfRecords = -_incomeRepository.CountRecordsByPredicate(query);
-				var model = _incomeRepository.FindByPredicate(query).Include(x=>x.MoneyHolder);
+				var model = _incomeRepository.FindByPredicate(query).Include(x=>x.MoneyHolder).OrderByDescending(x=>x.CreatedOn);
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
 				int startIndex = (pageIndex - 1) * (int)pageSize;
@@ -187,8 +187,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
 				var searchUserResult = new SearchResponse<IncomeDto>
 				{
-					TotalRows = 0,
-					TotalPages = CalculateNumOfPages(0, pageSize),
+					TotalRows = numOfRecords,
+					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
 					CurrentPage = pageIndex,
 					Data = List,
 				};
@@ -205,16 +205,20 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
 			{
 				var predicate = PredicateBuilder.New<Income>(true);
-
-				foreach (var filter in Filters)
+				predicate = predicate.And(m => m.IsDeleted == false);
+				predicate = predicate.And(m => m.AccountId == accountId);
+				if (Filters != null)
 				{
-					switch (filter.FieldName)
+					foreach (var filter in Filters)
 					{
-						case "Name":
-							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
-							break;
-						default:
-							break;
+						switch (filter.FieldName)
+						{
+							case "Name":
+								predicate = predicate.And(m => m.Name.Contains(filter.Value));
+								break;
+							default:
+								break;
+						}
 					}
 				}
 				return predicate;

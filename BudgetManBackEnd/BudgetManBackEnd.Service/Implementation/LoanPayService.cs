@@ -182,7 +182,7 @@ namespace BudgetManBackEnd.Service.Implementation
 				}
 				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
 				var numOfRecords = -_loanPayRepository.CountRecordsByPredicate(query);
-				var model = _loanPayRepository.FindByPredicate(query);
+				var model = _loanPayRepository.FindByPredicate(query).OrderByDescending(x=>x.CreatedOn);
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
 				int startIndex = (pageIndex - 1) * (int)pageSize;
@@ -203,8 +203,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
 				var searchUserResult = new SearchResponse<LoanPayDto>
 				{
-					TotalRows = 0,
-					TotalPages = CalculateNumOfPages(0, pageSize),
+					TotalRows = numOfRecords,
+					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
 					CurrentPage = pageIndex,
 					Data = List,
 				};
@@ -221,7 +221,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
 			{
 				var predicate = PredicateBuilder.New<LoanPay>(true);
-
+                if(Filters!= null)
 				foreach (var filter in Filters)
 				{
 					switch (filter.FieldName)
@@ -233,6 +233,8 @@ namespace BudgetManBackEnd.Service.Implementation
 							break;
 					}
 				}
+				predicate = predicate.And(m => m.IsDeleted == false);
+				predicate = predicate.And(m => m.AccountId == accountId);
 				return predicate;
 			}
 			catch (Exception)

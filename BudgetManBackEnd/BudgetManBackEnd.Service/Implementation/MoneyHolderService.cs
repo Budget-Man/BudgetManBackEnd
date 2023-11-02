@@ -142,7 +142,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
                 var numOfRecords = -_moneyHolderRepository.CountRecordsByPredicate(query);
-                var model = _moneyHolderRepository.FindByPredicate(query);
+                var model = _moneyHolderRepository.FindByPredicate(query).OrderByDescending(x=>x.CreatedOn);
                 int pageIndex = request.PageIndex ?? 1;
                 int pageSize = request.PageSize ?? 1;
                 int startIndex = (pageIndex - 1) * (int)pageSize;
@@ -158,8 +158,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 var searchUserResult = new SearchResponse<MoneyHolderDto>
                 {
-                    TotalRows = 0,
-                    TotalPages = CalculateNumOfPages(0, pageSize),
+                    TotalRows = numOfRecords,
+                    TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
                     CurrentPage = pageIndex,
                     Data = List,
                 };

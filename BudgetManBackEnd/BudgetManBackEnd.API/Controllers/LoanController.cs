@@ -38,7 +38,7 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPut]
-        [Route("{Id}")]
+        //[Route("{Id}")]
         public IActionResult EditLoan(LoanDto request)
         {
             var result = _loanService.EditLoan(request);
