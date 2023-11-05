@@ -184,7 +184,7 @@ namespace BudgetManBackEnd.Service.Implementation
 				}
 				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
 				var numOfRecords = _debtsPayRepository.CountRecordsByPredicate(query);
-				var model = _debtsPayRepository.FindByPredicate(query).Include(x=>x.Debts);
+				var model = _debtsPayRepository.FindByPredicate(query).Include(x=>x.Debts).OrderByDescending(x=>x.CreatedOn);
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
 				int startIndex = (pageIndex - 1) * (int)pageSize;
@@ -205,8 +205,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
 				var searchUserResult = new SearchResponse<DebtsPayDto>
 				{
-					TotalRows = 0,
-					TotalPages = CalculateNumOfPages(0, pageSize),
+					TotalRows = numOfRecords,
+					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
 					CurrentPage = pageIndex,
 					Data = List,
 				};
@@ -223,7 +223,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
 			{
 				var predicate = PredicateBuilder.New<DebtsPay>(true);
-
+                if(Filters!=null)
 				foreach (var filter in Filters)
 				{
 					switch (filter.FieldName)
@@ -235,6 +235,8 @@ namespace BudgetManBackEnd.Service.Implementation
 							break;
 					}
 				}
+				predicate = predicate.And(m => m.IsDeleted == false);
+				predicate = predicate.And(m => m.AccountId == accountId);
 				return predicate;
 			}
 			catch (Exception)

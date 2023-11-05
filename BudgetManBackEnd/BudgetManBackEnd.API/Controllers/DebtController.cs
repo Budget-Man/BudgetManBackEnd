@@ -40,7 +40,7 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPut]
-        [Route("{Id}")]
+        //[Route("{Id}")]
         public IActionResult EditDebt(DebtDto request)
         {
             var result = _debtService.EditDebt(request);

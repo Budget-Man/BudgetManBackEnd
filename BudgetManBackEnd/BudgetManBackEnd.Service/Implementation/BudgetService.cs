@@ -208,7 +208,7 @@ namespace BudgetManBackEnd.Service.Implementation
 				}
 				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
 				var numOfRecords = _budgetRepository.CountRecordsByPredicate(query);
-				var model = _budgetRepository.FindByPredicate(query).Include(x=>x.BudgetCategory);
+				var model = _budgetRepository.FindByPredicate(query).Include(x=>x.BudgetCategory)OrderByDescending(x => x.CreatedOn);
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
 				int startIndex = (pageIndex - 1) * (int)pageSize;
@@ -243,7 +243,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
 			{
 				var predicate = PredicateBuilder.New<Budget>(true);
-
+                if(Filters != null)
 				foreach (var filter in Filters)
 				{
 					switch (filter.FieldName)
@@ -255,6 +255,8 @@ namespace BudgetManBackEnd.Service.Implementation
 							break;
 					}
 				}
+				predicate = predicate.And(m => m.IsDeleted == false);
+				predicate = predicate.And(m => m.AccountId == accountId);
 				return predicate;
 			}
 			catch (Exception)
