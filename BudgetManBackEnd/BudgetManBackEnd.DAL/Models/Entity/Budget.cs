@@ -15,5 +15,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public virtual BudgetCategory BudgetCategory { get; set; }
 
         public double Balance { get; set; }
+        public string? Name { get; set; }
+        public bool IsActive { get; set; } 
     }
 }

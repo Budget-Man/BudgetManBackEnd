@@ -243,6 +243,11 @@ namespace BudgetManBackEnd.Service.Implementation
                 int pageIndex = request.PageIndex ?? 1;
                 int pageSize = request.PageSize ?? 1;
                 int startIndex = (pageIndex - 1) * (int)pageSize;
+                if(request.SortBy!= null)
+                {
+                    users = addSort(users, request.SortBy);
+                }
+                
                 var UserList = users.Skip(startIndex).Take(pageSize).ToList();
                 var dtoList = _mapper.Map<List<UserModel>>(UserList);
                 if (dtoList != null && dtoList.Count > 0)
@@ -277,7 +282,23 @@ namespace BudgetManBackEnd.Service.Implementation
             }
         }
 
-
+        private IQueryable<IdentityUser> addSort(IQueryable<IdentityUser> input, SortByInfo sortByInfo)
+        {
+            var result = input.AsQueryable();
+            if (sortByInfo.FieldName == "userName")
+            {
+                if(sortByInfo.Ascending!=null && sortByInfo.Ascending.Value)
+                {
+                    result = result.OrderBy(m => m.UserName);
+                    
+                }
+                else
+                {
+                    result = result.OrderByDescending(m => m.UserName);
+                }
+            }
+            return result;
+        }
 
         private async Task<ExpressionStarter<IdentityUser>> BuildFilterExpression(IList<Filter>? Filters)
         {

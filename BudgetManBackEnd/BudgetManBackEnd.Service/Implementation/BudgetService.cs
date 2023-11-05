@@ -35,7 +35,7 @@ namespace BudgetManBackEnd.Service.Implementation
             _httpContextAccessor = httpContextAccessor;
             _budgetCategoryRepository = budgetCategoryRepository;
         }
-
+        
         public AppResponse<BudgetDto> CreateBudget(BudgetDto request)
         {
             var result = new AppResponse<BudgetDto>();
@@ -50,18 +50,22 @@ namespace BudgetManBackEnd.Service.Implementation
                 var accountInfo = accountInfoQuery.First();
                 if (request.BudgetCategoryId == null)
                 {
-                    return result.BuildError("Debt Cannot be null");
+                    return result.BuildError("category Cannot be null");
+                }
+                if (request.Name == null)
+                {
+                    return result.BuildError("Name Cannot be null");
                 }
                 var budgetCategories = _budgetCategoryRepository.FindBy(m => m.Id == request.BudgetCategoryId && m.IsDeleted != true);
                 if (budgetCategories.Count() == 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("Cannot find category");
                 }
 
                 var budget = _mapper.Map<Budget>(request);
                 budget.Id = Guid.NewGuid();
                 budget.AccountId = accountInfo.Id;
-                budget.BudgetCategory = budgetCategories.First();
+                budget.IsActive = true;
                 _budgetRepository.Add(budget, accountInfo.Name);
                 request.Id = budget.Id;
                 result.BuildResult(request);
@@ -98,10 +102,35 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<BudgetDto>();
             try
             {
+                if (request.Id == null)
+                {
+                    return result.BuildError("id Cannot be null");
+                }
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var accountInfo = accountInfoQuery.First();
+                if (request.BudgetCategoryId == null)
+                {
+                    return result.BuildError("category Cannot be null");
+                }
+                if (request.Name == null)
+                {
+                    return result.BuildError("Name Cannot be null");
+                }
+                var budgetCategories = _budgetCategoryRepository.FindBy(m => m.Id == request.BudgetCategoryId && m.IsDeleted != true);
+                if (budgetCategories.Count() == 0)
+                {
+                    return result.BuildError("Cannot find category");
+                }
+
                 var budget = _budgetRepository.Get((Guid)request.Id);
                 budget.BudgetCategoryId = request.BudgetCategoryId;
                 budget.Balance = request.Balance;
-
+                budget.Name = request.Name;
                 _budgetRepository.Edit(budget);
 
                 result.BuildResult(request);
