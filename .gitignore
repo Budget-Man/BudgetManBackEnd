@@ -372,3 +372,6 @@ FodyWeavers.xsd
 /BudgetManBackEnd/BudgetManBackEnd.Service/obj*
 /BudgetManBackEnd/BudgetManBackEnd.DAL/obj/*
 
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.assets.cache
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.GeneratedMSBuildEditorConfig.editorconfig
+/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/Debug/net6.0/BudgetManBackEnd.DAL.GeneratedMSBuildEditorConfig.editorconfig
