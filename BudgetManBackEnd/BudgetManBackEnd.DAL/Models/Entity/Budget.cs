@@ -16,6 +16,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
 
         public double Balance { get; set; }
         public string? Name { get; set; }
-        public bool IsActive { get; set; } 
+        public bool IsActive { get; set; }
+        public double UseCredit { get; set; }
     }
 }
