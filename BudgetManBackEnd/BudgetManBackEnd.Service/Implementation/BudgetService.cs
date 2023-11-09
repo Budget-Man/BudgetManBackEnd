@@ -129,7 +129,7 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 var budget = _budgetRepository.Get((Guid)request.Id);
                 budget.BudgetCategoryId = request.BudgetCategoryId;
-                budget.Balance = request.Balance;
+                budget.Balance = (double)request.Balance;
                 budget.Name = request.Name;
                 _budgetRepository.Edit(budget);
 
@@ -154,7 +154,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
             {
                 var query = _budgetRepository.GetAll()
-                    .Where(x => x.Account.UserId == userId)
+                    .Where(x => x.Account.UserId == userId && x.IsDeleted!=true)
                     .Include(x=>x.BudgetCategory);
                 var list = query
                     .Select(x=> new BudgetDto
@@ -265,5 +265,26 @@ namespace BudgetManBackEnd.Service.Implementation
 				throw;
 			}
 		}
-	}
+
+        public AppResponse<string> StatusChange(Guid Id)
+        {
+            var result = new AppResponse<string>();
+            try
+            {
+                var budget = _budgetRepository.Get(Id);
+                budget.IsActive = !budget.IsActive;
+
+                _budgetRepository.Edit(budget);
+                if (budget.IsActive)
+                    result.BuildResult("activated");
+                else
+                    result.BuildResult("disabled");
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
+    }
 }

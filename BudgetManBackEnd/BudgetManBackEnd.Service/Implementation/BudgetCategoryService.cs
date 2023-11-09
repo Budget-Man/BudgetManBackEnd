@@ -122,7 +122,7 @@ namespace BudgetManBackEnd.Service.Implementation
             string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId"); ;
             try
             {
-                var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId);
+                var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId && m.IsDeleted!=true);
                 var list = query.Select(m => new BudgetCategoryDto
                 {
                     Name = m.Name,

@@ -69,7 +69,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _loanPayRepository.GetAll().Where(x=>x.AccountId == accountInfo.Id).Include(x=>x.Loan);
+                var query = _loanPayRepository.GetAll().Where(x=>x.AccountId == accountInfo.Id && x.IsDeleted != true).Include(x=>x.Loan);
                 var list = query
                     .Select(x=>new LoanPayDto
                     {

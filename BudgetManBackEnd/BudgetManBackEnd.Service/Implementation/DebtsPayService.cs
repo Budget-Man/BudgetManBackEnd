@@ -39,7 +39,7 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var query = _debtsPayRepository.GetAll()
-                    .Where(x => x.Account.UserId == userId)
+                    .Where(x => x.Account.UserId == userId && x.IsDeleted != true)
                     .Include(x=>x.Debts);
                 var list = query.Select(x=> new DebtsPayDto
                 {

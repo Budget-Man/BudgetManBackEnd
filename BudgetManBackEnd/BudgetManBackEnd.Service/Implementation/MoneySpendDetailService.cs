@@ -71,7 +71,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _moneySpendDetailRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.MoneySpend);
+                var query = _moneySpendDetailRepository.GetAll().Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true).Include(x => x.MoneySpend);
                 var list = query
                     .Select(x => new MoneySpendDetailDto
                     {

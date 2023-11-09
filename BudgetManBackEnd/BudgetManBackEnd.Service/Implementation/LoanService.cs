@@ -103,7 +103,14 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<List<LoanDto>>();
             try
             {
-                var query = _loanRepository.GetAll();
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var accountInfo = accountInfoQuery.First();
+                var query = _loanRepository.GetAll().Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true);
                 var list = query
                     .Select(x => new LoanDto
                     {

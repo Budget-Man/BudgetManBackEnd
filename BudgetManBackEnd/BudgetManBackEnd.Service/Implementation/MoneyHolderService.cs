@@ -98,7 +98,7 @@ namespace BudgetManBackEnd.Service.Implementation
             string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             try
             {
-                var query = _moneyHolderRepository.GetAll().Where(m => m.Account.UserId == userId);
+                var query = _moneyHolderRepository.GetAll().Where(m => m.Account.UserId == userId && m.IsDeleted != true);
                 var list = query.Select(m => new MoneyHolderDto
                 {
                     BankName = m.BankName,

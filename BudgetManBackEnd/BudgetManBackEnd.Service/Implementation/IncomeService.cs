@@ -66,7 +66,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _incomeRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.MoneyHolder);
+                var query = _incomeRepository.GetAll().Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true).Include(x => x.MoneyHolder);
                 var list = query
                     .Select(x => new IncomeDto
                     {

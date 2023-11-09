@@ -110,7 +110,7 @@ namespace BudgetManBackEnd.Service.Implementation
             string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             try
             {
-                var query = _debtRepository.GetAll().Where(x=>x.Account.UserId == userId);
+                var query = _debtRepository.GetAll().Where(x=>x.Account.UserId == userId && x.IsDeleted != true);
                 var list =  query.Select(x => new DebtDto
                 {
                     Id = x.Id,

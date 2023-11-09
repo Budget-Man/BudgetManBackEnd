@@ -52,15 +52,23 @@ namespace BudgetManBackEnd.API.Controllers
         [Route("{Id}")]
         public IActionResult DeleteBudget(Guid Id)
         {
-            var result =_budgetService.DeleteBudget(Id);
+            var result = _budgetService.DeleteBudget(Id);
             return Ok(result);
         }
-		[HttpPost]
-		[Route("Search")]
-		public IActionResult Search(SearchRequest request)
-		{
-			var result = _budgetService.Search(request);
-			return Ok(result);
-		}
-	}
+        [HttpPost]
+        [Route("Search")]
+        public IActionResult Search(SearchRequest request)
+        {
+            var result = _budgetService.Search(request);
+            return Ok(result);
+        }
+        [HttpPut]
+        [Route("{Id}")]
+        public IActionResult StatusChange(Guid Id)
+        {
+            var result =_budgetService.StatusChange(Id);
+            return Ok(result);
+        }
+
+    }
 }

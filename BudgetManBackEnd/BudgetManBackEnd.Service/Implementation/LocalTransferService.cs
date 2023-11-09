@@ -67,7 +67,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
 
-                var query = _localTransferRepository.GetAll().Where(x => x.AccountId == accountInfo.Id).Include(x => x.ToMoneyHolder).Include(x => x.FromMoneyHolder);
+                var query = _localTransferRepository.GetAll().Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true).Include(x => x.ToMoneyHolder).Include(x => x.FromMoneyHolder);
                 var list = query
                     .Select(x => new LocalTransferDto
                     {
