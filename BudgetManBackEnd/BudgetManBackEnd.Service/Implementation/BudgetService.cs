@@ -131,6 +131,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.BudgetCategoryId = request.BudgetCategoryId;
                 budget.Balance = (double)request.Balance;
                 budget.Name = request.Name;
+                budget.ModifiedOn = DateTime.UtcNow;
+                budget.Modifiedby = accountInfo.Email;
+                budget.UseCredit = (double)request.UseCredit;
                 _budgetRepository.Edit(budget);
 
                 result.BuildResult(request);
@@ -163,6 +166,9 @@ namespace BudgetManBackEnd.Service.Implementation
                         Balance = x.Balance,
                         Id = x.Id,
                         BudgetCategoryId = x.BudgetCategory.Id,
+                        IsActive = x.IsActive,
+                        Name = x.Name,
+                        UseCredit = x.UseCredit,
                     } )
                     .ToList();
                 result.BuildResult(list);
@@ -185,7 +191,10 @@ namespace BudgetManBackEnd.Service.Implementation
                     BudgetCategoryName= x.BudgetCategory.Name,
                     Balance= x.Balance,
                     BudgetCategoryId = x.BudgetCategory.Id,
-                    Id = x.Id
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    Name= x.Name,
+                    UseCredit= x.UseCredit,
                 }).First();
                 result.BuildResult(data);
             }
@@ -215,11 +224,14 @@ namespace BudgetManBackEnd.Service.Implementation
 				var List = model.Skip(startIndex).Take(pageSize)
 					.Select(x => new BudgetDto
 					{
-						Id = x.Id,
+                        BudgetCategoryName = x.BudgetCategory.Name,
                         Balance = x.Balance,
-                        BudgetCategoryId = x.BudgetCategoryId,
-                        BudgetCategoryName = x.BudgetCategory.Name
-					})
+                        BudgetCategoryId = x.BudgetCategory.Id,
+                        Id = x.Id,
+                        IsActive = x.IsActive,
+                        Name = x.Name,
+                        UseCredit = x.UseCredit,
+                    })
 					.ToList();
 
 
