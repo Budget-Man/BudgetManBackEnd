@@ -120,31 +120,12 @@ namespace BudgetManBackEnd.Service.Implementation
                 loanPay.Loan = null;
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
 
-                request.Id = loanPay.Id;
-                result.BuildResult(request);
 
-            }
-            catch (Exception ex)
-            {
-                result.BuildError(ex.Message);
-            }
-            return result;
-        }
+                var Loan = loan.First();
+                Loan.RemainAmount -= loanPay.PaidAmount;
+                Loan.LoanAmount += loanPay.PaidAmount;
+                _loanRepository.Edit(Loan);
 
-        public AppResponse<LoanPayDto> EditLoanPay(LoanPayDto request)
-        {
-            var result = new AppResponse<LoanPayDto>();
-            try
-            {
-                var loanPay = _loanPayRepository.Get((Guid)request.Id);
-                loanPay.LoanId = request.LoanId;
-                loanPay.PaidAmount = request.PaidAmount;
-                loanPay.Interest = request.Interest;
-                loanPay.InterestRate = request.InterestRate;
-                loanPay.RatePeriod = request.RatePeriod;
-                loanPay.IsPaid = request.IsPaid;
-                _loanPayRepository.Edit(loanPay);
-                result.BuildResult(request);
             }
             catch (Exception ex)
             {

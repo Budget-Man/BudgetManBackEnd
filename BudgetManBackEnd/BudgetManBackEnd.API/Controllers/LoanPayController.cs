@@ -38,13 +38,6 @@ namespace BudgetManBackEnd.API.Controllers
             var result = _loanPayService.CreateLoanPay(request);
             return Ok(result);
         }
-        [HttpPut]
-        //[Route("{Id}")]
-        public IActionResult EditLoanPay(LoanPayDto request)
-        {
-            var result = _loanPayService.EditLoanPay(request);
-            return Ok(result);
-        }
         [HttpDelete]
         [Route("{Id}")]
         public IActionResult DeleteLoanPay(Guid Id)

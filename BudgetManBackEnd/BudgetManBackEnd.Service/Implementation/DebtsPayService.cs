@@ -88,29 +88,6 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        public AppResponse<DebtsPayDto> EditDebtsPay(DebtsPayDto request)
-        {
-            var result = new AppResponse<DebtsPayDto>();
-            try
-            {
-                var debtsPay = _debtsPayRepository.Get((Guid)request.Id);
-                debtsPay.DebtsId = request.DebtsId;
-                debtsPay.PaidAmount = request.PaidAmount;
-                debtsPay.RatePeriod = request.RatePeriod;
-                debtsPay.InterestRate = request.InterestRate;
-                debtsPay.Interest = request.Interest;
-                debtsPay.IsPaid = (bool)request.IsPaid;
-                _debtsPayRepository.Edit(debtsPay);
-
-                result.BuildResult(request);
-            }
-            catch( Exception ex )
-            {
-                result.BuildError(ex.Message);
-            }
-            return result;
-        }
-
         public AppResponse<string> DeleteDebtsPay(Guid Id)
         {
             var result = new AppResponse<string>();
@@ -162,7 +139,10 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.Debts = null;
                 _debtsPayRepository.Add(debtsPay, accountInfo.Name);
 
-
+                var debt = _debtRepository.Get(debtsPay.DebtsId);
+                debt.RemainAmount -= debtsPay.PaidAmount;
+                debt.PaidAmount += debtsPay.PaidAmount;
+                _debtRepository.Edit(debt);
                 result.BuildResult(request);
             }
             catch(Exception ex)
