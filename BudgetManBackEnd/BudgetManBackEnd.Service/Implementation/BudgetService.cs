@@ -66,6 +66,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.Id = Guid.NewGuid();
                 budget.AccountId = accountInfo.Id;
                 budget.IsActive = true;
+                budget.BudgetCategory = null;
                 _budgetRepository.Add(budget, accountInfo.Name);
                 request.Id = budget.Id;
                 result.BuildResult(request);
