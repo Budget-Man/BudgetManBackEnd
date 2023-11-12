@@ -127,6 +127,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find debt");
                 }
+                
                 var debtsPay = new DebtsPay();
                 debtsPay.Id = Guid.NewGuid();
                 debtsPay.AccountId = accountInfo.Id;
@@ -137,6 +138,12 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.RatePeriod = request.RatePeriod;
                 debtsPay.IsPaid = request.IsPaid??true;
                 debtsPay.Debts = null;
+
+                if (debts.First().RemainAmount - debtsPay.PaidAmount < 0)
+                {
+                    return result.BuildError("The amount paid is not greater than the remaining amount");
+                }
+
                 _debtsPayRepository.Add(debtsPay, accountInfo.Name);
 
                 var debt = _debtRepository.Get(debtsPay.DebtsId);

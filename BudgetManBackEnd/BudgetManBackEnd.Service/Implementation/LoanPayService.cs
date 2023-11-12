@@ -113,11 +113,16 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find debt");
                 }
+                
                 var loanPay =_mapper.Map<LoanPay>(request);
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
                 loanPay.Loan = loan.First();
                 loanPay.Loan = null;
+                if (loan.First().RemainAmount - loanPay.PaidAmount < 0)
+                {
+                    return result.BuildError("The amount paid is not greater than the remaining amount");
+                }
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
 
 
