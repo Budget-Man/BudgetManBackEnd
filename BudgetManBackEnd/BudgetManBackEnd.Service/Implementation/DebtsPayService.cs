@@ -97,6 +97,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 debtsPay.IsDeleted = true;
 
                 _debtsPayRepository.Edit(debtsPay);
+                var debt = _debtRepository.Get(debtsPay.DebtsId);
+                debt.RemainAmount += debtsPay.PaidAmount;
+                _debtRepository.Edit(debt);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)
@@ -148,7 +151,6 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 var debt = _debtRepository.Get(debtsPay.DebtsId);
                 debt.RemainAmount -= debtsPay.PaidAmount;
-                debt.PaidAmount += debtsPay.PaidAmount;
                 _debtRepository.Edit(debt);
                 result.BuildResult(request);
             }

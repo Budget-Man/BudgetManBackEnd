@@ -128,7 +128,6 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 var Loan = loan.First();
                 Loan.RemainAmount -= loanPay.PaidAmount;
-                Loan.LoanAmount += loanPay.PaidAmount;
                 _loanRepository.Edit(Loan);
 
             }
@@ -147,6 +146,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 var loanPay = _loanPayRepository.Get(Id);
                 loanPay.IsDeleted = true;
                 _loanPayRepository.Edit(loanPay);
+                var loan = _loanRepository.Get(loanPay.LoanId);
+                loan.RemainAmount += loanPay.PaidAmount;
+                _loanRepository.Edit(loan);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)
