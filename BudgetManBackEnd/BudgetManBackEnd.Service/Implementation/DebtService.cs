@@ -45,7 +45,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 var debt = _mapper.Map<Debt>(request);
                 debt.Id = Guid.NewGuid();
                 debt.AccountId = accountInfo.Id;
-
+                debt.TotalInterest = 0;
+                debt.TotalAmount = 0;
+                debt.RemainAmount = debt.PaidAmount;
                 request.Id = debt.Id;
 
                 _debtRepository.Add(debt, accountInfo.Name);

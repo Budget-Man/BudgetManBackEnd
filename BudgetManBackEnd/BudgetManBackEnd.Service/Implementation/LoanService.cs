@@ -43,6 +43,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 var accountInfo = accountInfoQuery.First();
                 var loan = _mapper.Map<Loan>(request);
+                loan.TotalInterest = 0;
+                loan.TotalAmount = 0;
+                loan.RemainAmount = loan.LoanAmount;
                 loan.Id = Guid.NewGuid();
                 loan.AccountId = accountInfo.Id;
 
