@@ -213,8 +213,11 @@ namespace BudgetManBackEnd.Service.Implementation
 					switch (filter.FieldName)
 					{
 						case "LoanName":
-							predicate = predicate.And(m => m.Loan.Name.Contains(filter.Value) && m.AccountId == accountId);
+							    predicate = predicate.And(m => m.Loan.Name.Contains(filter.Value) && m.AccountId == accountId);
 							break;
+                        case "LoanId":
+                                predicate = predicate.And(m=>m.Loan.Id.Equals(Guid.Parse(filter.Value)));
+                            break;
 						default:
 							break;
 					}

@@ -218,7 +218,10 @@ namespace BudgetManBackEnd.Service.Implementation
 						case "DebtsName":
 							predicate = predicate.And(m => m.Debts.Name.Contains(filter.Value) && m.AccountId == accountId);
 							break;
-						default:
+                         case "DebtsId":
+                            predicate = predicate.And(m => m.Debts.Id.Equals(Guid.Parse(filter.Value)) && m.AccountId == accountId);
+                            break;
+                            default:
 							break;
 					}
 				}
