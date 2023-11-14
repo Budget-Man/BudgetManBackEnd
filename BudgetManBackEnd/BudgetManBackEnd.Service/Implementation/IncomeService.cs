@@ -13,7 +13,7 @@ using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
-	public class IncomeService : IIncomeService
+    public class IncomeService : IIncomeService
     {
         private readonly IIncomeRepository _incomeRepository;
         private IMapper _mapper;
@@ -35,14 +35,14 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var query = _incomeRepository.FindBy(x => x.Id == Id).Include(x => x.MoneyHolder);
-                var data = query.Select(x=>new IncomeDto
+                var data = query.Select(x => new IncomeDto
                 {
                     Id = x.Id,
                     MoneyHolderId = x.MoneyHolderId,
-                    MoneyHolderName =x.MoneyHolder.Name,
+                    MoneyHolderName = x.MoneyHolder.Name,
                     Name = x.Name,
                 }).First();
-                
+
                 result.BuildResult(data);
 
             }
@@ -71,9 +71,9 @@ namespace BudgetManBackEnd.Service.Implementation
                     .Select(x => new IncomeDto
                     {
                         Id = x.Id,
-                       Name = x.Name,
+                        Name = x.Name,
                         MoneyHolderId = accountInfo.Id,
-                       MoneyHolderName = x.MoneyHolder.Name,
+                        MoneyHolderName = x.MoneyHolder.Name,
                     })
                     .ToList();
                 result.BuildResult(list);
@@ -157,77 +157,80 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
-		public AppResponse<SearchResponse<IncomeDto>> Search(SearchRequest request)
-		{
-			var result = new AppResponse<SearchResponse<IncomeDto>>();
-			try
-			{
-				var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-				var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
-				if (accountInfoQuery.Count() == 0)
-				{
-					return result.BuildError("Cannot find Account Info by this user");
-				}
-				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
-				var numOfRecords = -_incomeRepository.CountRecordsByPredicate(query);
-				var model = _incomeRepository.FindByPredicate(query).Include(x=>x.MoneyHolder).OrderByDescending(x=>x.CreatedOn);
-				int pageIndex = request.PageIndex ?? 1;
-				int pageSize = request.PageSize ?? 1;
-				int startIndex = (pageIndex - 1) * (int)pageSize;
-				var List = model.Skip(startIndex).Take(pageSize)
-					.Select(x => new IncomeDto
-					{
-						Id = x.Id,
-						Name = x.Name,
+        public AppResponse<SearchResponse<IncomeDto>> Search(SearchRequest request)
+        {
+            var result = new AppResponse<SearchResponse<IncomeDto>>();
+            try
+            {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
+                var numOfRecords = -_incomeRepository.CountRecordsByPredicate(query);
+                var model = _incomeRepository.FindByPredicate(query).Include(x => x.MoneyHolder).OrderByDescending(x => x.CreatedOn);
+                int pageIndex = request.PageIndex ?? 1;
+                int pageSize = request.PageSize ?? 1;
+                int startIndex = (pageIndex - 1) * (int)pageSize;
+                var List = model.Skip(startIndex).Take(pageSize)
+                    .Select(x => new IncomeDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
                         MoneyHolderId = x.MoneyHolderId,
                         MoneyHolderName = x.MoneyHolder.Name
-					})
-					.ToList();
+                    })
+                    .ToList();
 
 
-				var searchUserResult = new SearchResponse<IncomeDto>
-				{
-					TotalRows = numOfRecords,
-					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
-					CurrentPage = pageIndex,
-					Data = List,
-				};
-				result.BuildResult(searchUserResult);
-			}
-			catch (Exception ex)
-			{
-				result.BuildError(ex.Message);
-			}
-			return result;
-		}
-		private ExpressionStarter<Income> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
-		{
-			try
-			{
-				var predicate = PredicateBuilder.New<Income>(true);
-				predicate = predicate.And(m => m.IsDeleted == false);
-				predicate = predicate.And(m => m.AccountId == accountId);
-				if (Filters != null)
-				{
-					foreach (var filter in Filters)
-					{
-						switch (filter.FieldName)
-						{
-							case "Name":
-								predicate = predicate.And(m => m.Name.Contains(filter.Value));
-								break;
-							default:
-								break;
-						}
-					}
-				}
-				return predicate;
-			}
-			catch (Exception)
-			{
+                var searchUserResult = new SearchResponse<IncomeDto>
+                {
+                    TotalRows = numOfRecords,
+                    TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
+                    CurrentPage = pageIndex,
+                    Data = List,
+                };
+                result.BuildResult(searchUserResult);
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
+        private ExpressionStarter<Income> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<Income>(true);
+                predicate = predicate.And(m => m.IsDeleted == false);
+                predicate = predicate.And(m => m.AccountId == accountId);
+                if (Filters != null)
+                {
+                    foreach (var filter in Filters)
+                    {
+                        switch (filter.FieldName)
+                        {
+                            case "Name":
+                                predicate = predicate.And(m => m.Name.Contains(filter.Value));
+                                break;
+                            case "moneyHolderId":
+                                predicate = predicate.And(m => m.MoneyHolderId.ToString() == filter.Value);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                return predicate;
+            }
+            catch (Exception)
+            {
 
-				throw;
-			}
-		}
-	}
+                throw;
+            }
+        }
+    }
 }
