@@ -39,12 +39,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     Id = x.Id,
                     Interest = x.Interest,
-                    InterestRate = x.InterestRate,
-                    IsPaid = x.IsPaid,
-                    LoanId = x.LoanId,
-                    LoanName = x.Loan.Name,
                     PaidAmount = x.PaidAmount,
-                    RatePeriod = x.RatePeriod,
                 }).First();
                 result.BuildResult(data);
 
@@ -75,12 +70,8 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         Id = x.Id,
                         Interest = x.Interest,
-                        InterestRate = x.InterestRate,
-                        IsPaid = x.IsPaid,
-                        LoanId = accountInfo.Id,
-                        LoanName = x.Loan.Name,
                         PaidAmount = x.PaidAmount,
-                        RatePeriod = x.RatePeriod,
+                        RatePeriodName=nameof(x.RatePeriod),
                     })
                     .ToList();
                 result.BuildResult(list);
@@ -92,7 +83,7 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        public AppResponse<LoanPayDto> CreateLoanPay(LoanPayDto request)
+        public AppResponse<LoanPayDto> CreateLoanPay(LoanPayDto request, Guid loanId)
         {
             var result = new AppResponse<LoanPayDto>();
             try
@@ -104,32 +95,36 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
-                if (request.LoanId == null)
+                if (loanId == null)
                 {
                     return result.BuildError("Debt Cannot be null");
                 }
-                var loan = _loanRepository.FindBy(m => m.Id == request.LoanId && m.IsDeleted != true);
+                var loan = _loanRepository.FindBy(m => m.Id == loanId && m.IsDeleted != true);
                 if (loan.Count() == 0)
                 {
-                    return result.BuildError("Cannot find debt");
+                    return result.BuildError("Cannot find Loan");
                 }
-                
+                var Loan = loan.First();
                 var loanPay =_mapper.Map<LoanPay>(request);
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
-                loanPay.Loan = loan.First();
-                loanPay.Loan = null;
-                if (loan.First().RemainAmount - loanPay.PaidAmount < 0)
+                loanPay.LoanId = loanId;
+                if (Loan.RemainAmount - loanPay.PaidAmount < 0)
                 {
                     return result.BuildError("The amount paid is not greater than the remaining amount");
                 }
+                loanPay.Interest=request.Interest;
+                loanPay.InterestRate = Loan.InterestRate;
+                loanPay.RatePeriod = Loan.RatePeriod;
+                
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
 
 
-                var Loan = loan.First();
+                
                 Loan.RemainAmount -= loanPay.PaidAmount;
                 _loanRepository.Edit(Loan);
-
+                request.Id = loanPay.Id;
+                return result.BuildResult(request);
             }
             catch (Exception ex)
             {
@@ -169,7 +164,7 @@ namespace BudgetManBackEnd.Service.Implementation
 					return result.BuildError("Cannot find Account Info by this user");
 				}
 				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
-				var numOfRecords = -_loanPayRepository.CountRecordsByPredicate(query);
+				var numOfRecords = _loanPayRepository.CountRecordsByPredicate(query);
 				var model = _loanPayRepository.FindByPredicate(query).OrderByDescending(x=>x.CreatedOn);
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
@@ -179,12 +174,8 @@ namespace BudgetManBackEnd.Service.Implementation
 					{
 						Id = x.Id,
 						Interest = x.Interest,
-                        InterestRate = x.InterestRate,
-                        IsPaid = x.IsPaid,
-                        LoanId = x.LoanId,
-                        LoanName = x.Loan.Name,
                         PaidAmount = x.PaidAmount,
-                        RatePeriod = x.RatePeriod,
+                        RatePeriodName=nameof(x.RatePeriod),
 					})
 					.ToList();
 

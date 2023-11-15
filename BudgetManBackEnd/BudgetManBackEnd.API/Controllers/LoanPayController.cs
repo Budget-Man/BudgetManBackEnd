@@ -33,9 +33,11 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult CreateLoanPay(LoanPayDto request)
+        [Route("{loanId}")]
+        public IActionResult CreateLoanPay(string loanId,[FromBody]LoanPayDto request)
         {
-            var result = _loanPayService.CreateLoanPay(request);
+            Guid id = Guid.Parse(loanId);
+            var result = _loanPayService.CreateLoanPay(request,id);
             return Ok(result);
         }
         [HttpDelete]

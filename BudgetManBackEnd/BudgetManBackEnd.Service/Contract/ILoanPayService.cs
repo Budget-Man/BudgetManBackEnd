@@ -13,7 +13,7 @@ namespace BudgetManBackEnd.Service.Contract
     {
         AppResponse<LoanPayDto> GetLoanPay(Guid Id);
         AppResponse<List<LoanPayDto>> GetAllLoanPay();
-        AppResponse<LoanPayDto> CreateLoanPay(LoanPayDto request);
+        AppResponse<LoanPayDto> CreateLoanPay(LoanPayDto request,Guid loanId);
         AppResponse<string> DeleteLoanPay(Guid Id);
         AppResponse<SearchResponse<LoanPayDto>> Search(SearchRequest request);
 
