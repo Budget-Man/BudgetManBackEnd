@@ -42,6 +42,7 @@ namespace Maynghien.Common.Repository
                 {
                     item.CreatedBy = userName;
                 }
+                item.IsDeleted = false;
                 _context.Add(item);
                 _context.SaveChanges();
             }

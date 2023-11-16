@@ -20,13 +20,18 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
         private ILoanRepository _loanRepository;
-        public LoanPayService(ILoanPayRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, ILoanRepository loanRepository)
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
+        public LoanPayService(ILoanPayRepository loanPayRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IAccountInfoRepository accountInfoRepository, ILoanRepository loanRepository ,IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository)
         {
             _loanPayRepository = loanPayRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
             _loanRepository = loanRepository;
+            _budgetRepository = budgetRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<LoanPayDto> GetLoanPay(Guid Id)
@@ -105,7 +110,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Loan");
                 }
                 var Loan = loan.First();
-                var loanPay =_mapper.Map<LoanPay>(request);
+                var loanPay = new LoanPay();
                 loanPay.Id = Guid.NewGuid();
                 loanPay.AccountId = accountInfo.Id;
                 loanPay.LoanId = loanId;
@@ -113,16 +118,44 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("The amount paid is not greater than the remaining amount");
                 }
+
+                if (request.MoneyHolderId == null)
+                {
+                    return result.BuildError("Money Holder cannot be null");
+                }
+                if (request.BudgetId == null)
+                {
+                    return result.BuildError("Budget cannot be null");
+                }
+                var budget = _budgetRepository.Get(request.BudgetId.Value);
+                if (budget == null)
+                {
+                    return result.BuildError("Cannot find Buddget");
+                }
+                var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId.Value);
+                if (moneyHolder == null)
+                {
+                    return result.BuildError("Cannot find Money Holder");
+                }
+                loanPay.MoneyHolderId = moneyHolder.Id;
+                loanPay.BudgetId = budget.Id;
                 loanPay.Interest=request.Interest;
                 loanPay.InterestRate = Loan.InterestRate;
                 loanPay.RatePeriod = Loan.RatePeriod;
+                loanPay.PaidAmount = request.PaidAmount;
+                loanPay.IsPaid = true;
                 
-                _loanPayRepository.Add(loanPay, accountInfo.Name);
-
 
                 
                 Loan.RemainAmount -= loanPay.PaidAmount;
+                
+                budget.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
+                moneyHolder.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
+
+                _loanPayRepository.Add(loanPay, accountInfo.Name);
                 _loanRepository.Edit(Loan);
+                _budgetRepository.Edit(budget);
+                _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = loanPay.Id;
                 return result.BuildResult(request);
             }
