@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -20,16 +21,20 @@ namespace BudgetManBackEnd.Service.Implementation
         private IMapper _mapper;
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
 
         public DebtsPayService(IDebtsPayRepository debtsPayRepository, IMapper mapper, 
             IAccountInfoRepository accountInfoRepository, IDebtRepository debtRepository
-            , IHttpContextAccessor httpContextAccessor)
+            , IHttpContextAccessor httpContextAccessor, IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository)
         {
             _debtsPayRepository = debtsPayRepository;
             _mapper = mapper;
             _accountInfoRepository = accountInfoRepository;
             _httpContextAccessor = httpContextAccessor;
             _debtRepository = debtRepository;
+            _budgetRepository = budgetRepository;   
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<List<DebtsPayDto>> GetAllDebtsPay()
@@ -109,7 +114,7 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        public AppResponse<DebtsPayDto> CreateDebtsPay(DebtsPayDto request)
+        public AppResponse<DebtsPayDto> CreateDebtsPay(DebtsPayDto request, Guid DebtsId)
         {
             var result = new AppResponse<DebtsPayDto>();
             try
@@ -130,29 +135,56 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find debt");
                 }
-                
-                var debtsPay = new DebtsPay();
-                debtsPay.Id = Guid.NewGuid();
-                debtsPay.AccountId = accountInfo.Id;
-                debtsPay.DebtsId = request.DebtsId;
-                debtsPay.InterestRate = request.InterestRate;
-                debtsPay.Interest= request.Interest;
-                debtsPay.PaidAmount = request.PaidAmount;
-                debtsPay.RatePeriod = request.RatePeriod;
-                debtsPay.IsPaid = request.IsPaid??true;
-                debtsPay.Debts = null;
 
-                if (debts.First().RemainAmount - debtsPay.PaidAmount < 0)
+                var debt = debts.First();
+                var debtPay = new DebtsPay();
+                debtPay.Id = Guid.NewGuid();
+                debtPay.AccountId = accountInfo.Id;
+                debtPay.DebtsId = DebtsId;
+                if (debt.RemainAmount - debtPay.PaidAmount < 0)
                 {
                     return result.BuildError("The amount paid is not greater than the remaining amount");
                 }
 
-                _debtsPayRepository.Add(debtsPay, accountInfo.Name);
+                if (request.MoneyHolderId == null)
+                {
+                    return result.BuildError("Money Holder cannot be null");
+                }
+                if (request.BudgetId == null)
+                {
+                    return result.BuildError("Budget cannot be null");
+                }
+                var budget = _budgetRepository.Get(request.BudgetId.Value);
+                if (budget == null)
+                {
+                    return result.BuildError("Cannot find Buddget");
+                }
+                var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId.Value);
+                if (moneyHolder == null)
+                {
+                    return result.BuildError("Cannot find Money Holder");
+                }
+                debtPay.MoneyHolderId = moneyHolder.Id;
+                debtPay.BudgetId = budget.Id;
+                debtPay.Interest = request.Interest;
+                debtPay.InterestRate = debt.InterestRate;
+                debtPay.RatePeriod = debt.RatePeriod;
+                debtPay.PaidAmount = request.PaidAmount;
+                debtPay.IsPaid = true;
 
-                var debt = _debtRepository.Get(debtsPay.DebtsId);
-                debt.RemainAmount -= debtsPay.PaidAmount;
+
+
+                debt.RemainAmount -= debtPay.PaidAmount;
+
+                budget.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
+                moneyHolder.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
+
+                _debtsPayRepository.Add(debtPay, accountInfo.Name);
                 _debtRepository.Edit(debt);
-                result.BuildResult(request);
+                _budgetRepository.Edit(budget);
+                _moneyHolderRepository.Edit(moneyHolder);
+                request.Id = debtPay.Id;
+                return result.BuildResult(request);
             }
             catch(Exception ex)
             {

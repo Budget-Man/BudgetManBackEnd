@@ -85,7 +85,7 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 var loan = _loanRepository.Get((Guid)request.Id);
                 loan.Name = request.Name;
-                loan.TotalAmount = request.TotalAmount;
+                loan.TotalAmount = (double)request.TotalAmount;
                 loan.RemainAmount = request.RemainAmount;
                 loan.LoanAmount = request.LoanAmount;
                 loan.TotalInterest = request.TotalInterest;

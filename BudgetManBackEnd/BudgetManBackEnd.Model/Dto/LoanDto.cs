@@ -11,7 +11,7 @@ namespace BudgetManBackEnd.Model.Dto
     public class LoanDto:BaseDto
     {
         public string Name { get; set; }
-        public double TotalAmount { get; set; }
+        public double? TotalAmount { get; set; }
         public double? RemainAmount { get; set; }
         public double? LoanAmount { get; set; }
         public double? TotalInterest { get; set; }

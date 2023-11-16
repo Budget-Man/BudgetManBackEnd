@@ -91,7 +91,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 debt.RatePeriod = request.RatePeriod;
                 debt.InterestRate = request.InterestRate;
                 debt.PaidAmount = request.PaidAmount;
-                debt.TotalAmount = request.TotalAmount;
+                debt.TotalAmount = (double)request.TotalAmount;
                 debt.RemainAmount = request.RemainAmount;
                 debt.TotalInterest = request.TotalInterest;
 

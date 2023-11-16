@@ -1,4 +1,5 @@
-﻿using BudgetManBackEnd.Model.Dto;
+﻿using BudgetManBackEnd.DAL.Models.Entity;
+using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using MayNghien.Models.Request.Base;
@@ -34,9 +35,11 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult CreateDebtsPay(DebtsPayDto request)
+        [Route("{debtsId}")]
+        public IActionResult CreateDebtsPay(string debtsId, DebtsPayDto request)
         {
-            var result = _debtsPayService.CreateDebtsPay(request);
+            Guid id = Guid.Parse(debtsId);
+            var result = _debtsPayService.CreateDebtsPay(request, id);
             return Ok(result);
         }
         
