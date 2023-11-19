@@ -13,9 +13,16 @@ namespace BudgetManBackEnd.Model.Dto
         public string Name { get; set; }
         public double? TotalAmount { get; set; }
         public double? RemainAmount { get; set; }
+
+        /// <summary>
+        /// paid ammount
+        /// </summary>
         public double? LoanAmount { get; set; }
         public double? TotalInterest { get; set; }
         public double InterestRate { get; set; } = 0;
         public TimePeriod RatePeriod { get; set; }
+
+        public Guid? MoneyHolderId { get; set; }
+        public string? MoneyHolderName { get; set; }
     }
 }

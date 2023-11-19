@@ -17,5 +17,8 @@ namespace BudgetManBackEnd.Model.Dto
         public double? TotalInterest { get; set; }
         public double InterestRate { get; set; } = 0;
         public TimePeriod RatePeriod { get; set; }
+
+        public Guid? MoneyHolderId { get; set; }
+        public string? MoneyHolderName { get; set; }
     }
 }

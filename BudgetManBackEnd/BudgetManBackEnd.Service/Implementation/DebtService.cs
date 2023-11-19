@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Service.Contract;
@@ -16,16 +17,22 @@ namespace BudgetManBackEnd.Service.Implementation
 	public class DebtService : IDebtService
     {
         private IDebtRepository _debtRepository;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
         private IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
 
-        public DebtService(IDebtRepository debtRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository)
+        public DebtService(IDebtRepository debtRepository, IMapper mapper, 
+            IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository,
+            IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository)
         {
             _debtRepository = debtRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
+            _budgetRepository = budgetRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<DebtDto> CreateDebt(DebtDto request)
@@ -48,10 +55,12 @@ namespace BudgetManBackEnd.Service.Implementation
                 debt.TotalInterest = 0;
                 debt.TotalAmount = 0;
                 debt.RemainAmount = debt.PaidAmount;
+                debt.MoneyHolderId=request.MoneyHolderId;
                 request.Id = debt.Id;
-
+                var moneyHolder = _moneyHolderRepository.Get(debt.MoneyHolderId.Value);
+                moneyHolder.Balance += debt.TotalAmount;
                 _debtRepository.Add(debt, accountInfo.Name);
-
+                _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult(request);
 
 
@@ -139,9 +148,15 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<DebtDto>();
             try
             {
-                var debt = _debtRepository.Get(Id);
-                var data = _mapper.Map<DebtDto>(debt);
-                result.BuildResult(data);
+                var debt = _debtRepository.GetDto(Id);
+                if(debt!=null)
+                {
+                    return result.BuildResult(debt);
+                }
+                else
+                {
+                    return result.BuildError("Debt not found");
+                }
             }
             catch (Exception ex)
             {
@@ -177,7 +192,9 @@ namespace BudgetManBackEnd.Service.Implementation
                         RemainAmount = x.RemainAmount,
                         TotalAmount = x.TotalAmount,
                         TotalInterest = x.TotalInterest,
-					})
+                        MoneyHolderId = x.MoneyHolderId,
+                        MoneyHolderName = x.MoneyHolder != null ? x.MoneyHolder.Name : null,
+                    })
 					.ToList();
 
 

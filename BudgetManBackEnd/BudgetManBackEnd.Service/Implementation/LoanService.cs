@@ -13,20 +13,26 @@ using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
-	public class LoanService:ILoanService
+    public class LoanService : ILoanService
     {
         private readonly ILoanRepository _loanRepository;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IMapper _mapper;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoanService(ILoanRepository loanRepository, IAccountInfoRepository accountInfoRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public LoanService(ILoanRepository loanRepository, IAccountInfoRepository accountInfoRepository,
+            IMapper mapper, IHttpContextAccessor httpContextAccessor,
+            IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository)
         {
             _loanRepository = loanRepository;
             _accountInfoRepository = accountInfoRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _budgetRepository = budgetRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
 
         public AppResponse<LoanDto> CreateLoan(LoanDto request)
@@ -48,13 +54,15 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.RemainAmount = loan.LoanAmount;
                 loan.Id = Guid.NewGuid();
                 loan.AccountId = accountInfo.Id;
-
+                loan.MoneyHolderId = request.MoneyHolderId;
+                var moneyHolder = _moneyHolderRepository.Get(loan.MoneyHolderId.Value);
+                moneyHolder.Balance -= loan.TotalAmount;
                 _loanRepository.Add(loan, accountInfo.Name);
-
+                _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = loan.Id;
                 result.BuildResult(request);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.BuildError(ex.Message);
             }
@@ -91,6 +99,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.TotalInterest = request.TotalInterest;
                 loan.InterestRate = request.InterestRate;
                 loan.RatePeriod = request.RatePeriod;
+                loan.MoneyHolderId = request.MoneyHolderId;
                 _loanRepository.Edit(loan);
                 result.BuildResult(request);
             }
@@ -142,10 +151,11 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<LoanDto>();
             try
             {
-                var query = _loanRepository.Get(Id);
-                var data = _mapper.Map<LoanDto>(query);
-
-                result.BuildResult(data);
+                var data = _loanRepository.GetDto(Id);
+                if (data != null)
+                    result.BuildResult(data);
+                else
+                    return result.BuildError("Loan not found");
             }
             catch (Exception ex)
             {
@@ -154,79 +164,82 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-		public AppResponse<SearchResponse<LoanDto>> Search(SearchRequest request)
-		{
-			var result = new AppResponse<SearchResponse<LoanDto>>();
-			try
-			{
-				var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-				var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
-				if (accountInfoQuery.Count() == 0)
-				{
-					return result.BuildError("Cannot find Account Info by this user");
-				}
-				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
-				var numOfRecords = -_loanRepository.CountRecordsByPredicate(query);
-				var model = _loanRepository.FindByPredicate(query).OrderByDescending(x => x.CreatedOn);
-				int pageIndex = request.PageIndex ?? 1;
-				int pageSize = request.PageSize ?? 1;
-				int startIndex = (pageIndex - 1) * (int)pageSize;
-				var List = model.Skip(startIndex).Take(pageSize)
-					.Select(x => new LoanDto
-					{
-						Id = x.Id,
-						InterestRate = x.InterestRate,
+        public AppResponse<SearchResponse<LoanDto>> Search(SearchRequest request)
+        {
+            var result = new AppResponse<SearchResponse<LoanDto>>();
+            try
+            {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
+                var numOfRecords = -_loanRepository.CountRecordsByPredicate(query);
+                var model = _loanRepository.FindByPredicate(query).OrderByDescending(x => x.CreatedOn);
+                int pageIndex = request.PageIndex ?? 1;
+                int pageSize = request.PageSize ?? 1;
+                int startIndex = (pageIndex - 1) * (int)pageSize;
+                var List = model.Skip(startIndex).Take(pageSize)
+                    .Select(x => new LoanDto
+                    {
+                        Id = x.Id,
+                        InterestRate = x.InterestRate,
                         LoanAmount = x.LoanAmount,
                         Name = x.Name,
                         RatePeriod = x.RatePeriod,
                         RemainAmount = x.RemainAmount,
                         TotalAmount = x.TotalAmount,
                         TotalInterest = x.TotalInterest,
-					})
-					.ToList();
+                        MoneyHolderId = x.MoneyHolderId,
+                        MoneyHolderName = x.MoneyHolder != null ? x.MoneyHolder.Name : null,
+
+                    })
+                    .ToList();
 
 
-				var searchUserResult = new SearchResponse<LoanDto>
-				{
-					TotalRows = numOfRecords,
-					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
-					CurrentPage = pageIndex,
-					Data = List,
-				};
-				result.BuildResult(searchUserResult);
-			}
-			catch (Exception ex)
-			{
-				result.BuildError(ex.Message);
-			}
-			return result;
-		}
-		private ExpressionStarter<Loan> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
-		{
-			try
-			{
-				var predicate = PredicateBuilder.New<Loan>(true);
-                if (Filters != null) 
-				foreach (var filter in Filters)
-				{
-					switch (filter.FieldName)
-					{
-						case "Name":
-							predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
-							break;
-						default:
-							break;
-					}
-				}
-				predicate = predicate.And(m => m.IsDeleted == false);
-				predicate = predicate.And(m => m.AccountId == accountId);
-				return predicate;
-			}
-			catch (Exception)
-			{
+                var searchUserResult = new SearchResponse<LoanDto>
+                {
+                    TotalRows = numOfRecords,
+                    TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
+                    CurrentPage = pageIndex,
+                    Data = List,
+                };
+                result.BuildResult(searchUserResult);
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
+        private ExpressionStarter<Loan> BuildFilterExpression(IList<Filter> Filters, Guid accountId)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<Loan>(true);
+                if (Filters != null)
+                    foreach (var filter in Filters)
+                    {
+                        switch (filter.FieldName)
+                        {
+                            case "Name":
+                                predicate = predicate.And(m => m.Name.Contains(filter.Value) && m.AccountId == accountId);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                predicate = predicate.And(m => m.IsDeleted == false);
+                predicate = predicate.And(m => m.AccountId == accountId);
+                return predicate;
+            }
+            catch (Exception)
+            {
 
-				throw;
-			}
-		}
-	}
+                throw;
+            }
+        }
+    }
 }

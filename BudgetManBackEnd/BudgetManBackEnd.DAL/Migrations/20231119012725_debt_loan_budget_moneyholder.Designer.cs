@@ -4,6 +4,7 @@ using BudgetManBackEnd.DAL.Models.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetManBackEnd.DAL.Migrations
 {
     [DbContext(typeof(BudgetManDbContext))]
-    partial class BudgetManDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119012725_debt_loan_budget_moneyholder")]
+    partial class debt_loan_budget_moneyholder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,6 +159,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BudgetId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -200,6 +205,8 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("MoneyHolderId");
 
@@ -316,6 +323,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BudgetId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -359,6 +369,8 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("MoneyHolderId");
 
@@ -853,12 +865,19 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
                         .WithMany()
                         .HasForeignKey("MoneyHolderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
+
+                    b.Navigation("Budget");
 
                     b.Navigation("MoneyHolder");
                 });
@@ -923,12 +942,19 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
                         .WithMany()
                         .HasForeignKey("MoneyHolderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
+
+                    b.Navigation("Budget");
 
                     b.Navigation("MoneyHolder");
                 });

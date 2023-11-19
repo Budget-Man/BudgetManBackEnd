@@ -1,4 +1,5 @@
 ﻿using BudgetManBackEnd.CommonClass.Enum;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
@@ -11,5 +12,11 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public double? TotalInterest { get; set; }
         public double InterestRate { get; set; } = 0;
         public TimePeriod RatePeriod { get; set; }
+
+        [ForeignKey("MoneyHolder")]
+        public Guid? MoneyHolderId { get; set; }
+        [ForeignKey("MoneyHolderId")]
+        public virtual MoneyHolder? MoneyHolder { get; set; }
+
     }
 }

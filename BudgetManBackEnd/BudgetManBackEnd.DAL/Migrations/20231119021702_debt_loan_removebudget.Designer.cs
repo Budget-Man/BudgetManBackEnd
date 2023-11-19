@@ -4,6 +4,7 @@ using BudgetManBackEnd.DAL.Models.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetManBackEnd.DAL.Migrations
 {
     [DbContext(typeof(BudgetManDbContext))]
-    partial class BudgetManDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231119021702_debt_loan_removebudget")]
+    partial class debt_loan_removebudget
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

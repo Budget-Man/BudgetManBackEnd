@@ -20,7 +20,8 @@ namespace BudgetManBackEnd.Model.Dto
         public bool? IsPaid { get; set; } = false;
 
         public Guid? MoneyHolderId { get; set; }
-
+        public string? MoneyHolderName { get; set; }
         public Guid? BudgetId { get; set; }
+        public string? BudgetName { get; set; }
     }
 }
