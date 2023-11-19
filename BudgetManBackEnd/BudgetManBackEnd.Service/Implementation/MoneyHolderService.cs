@@ -152,7 +152,8 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         Id = x.Id,
                         BankName=x.BankName,
-                        Name=x.Name
+                        Name=x.Name,
+                        Balance=x.Balance,
                     })
                     .ToList();
 
