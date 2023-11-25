@@ -3,6 +3,7 @@ using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
+using BudgetManBackEnd.Model.Request;
 using BudgetManBackEnd.Service.Contract;
 using LinqKit;
 using MayNghien.Common.Helpers;
@@ -16,13 +17,17 @@ namespace BudgetManBackEnd.Service.Implementation
 	public class MoneySpendService:IMoneySpendService
     {
         private IMoneySpendRepository _moneySpendRepository;
+        private IMoneySpendDetailRepository _moneySpendDetailRepository;
         private IMoneyHolderRepository _moneyHolderRepository;
         private IBudgetRepository _budgetRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
 
-        public MoneySpendService(IMoneySpendRepository moneySpendRepository, IMoneyHolderRepository moneyHolderRepository, IBudgetRepository budgetRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository)
+        public MoneySpendService(IMoneySpendRepository moneySpendRepository, 
+            IMoneyHolderRepository moneyHolderRepository, IBudgetRepository budgetRepository,
+            IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IAccountInfoRepository accountInfoRepository, IMoneySpendDetailRepository moneySpendDetailRepository)
         {
             _moneySpendRepository = moneySpendRepository;
             _moneyHolderRepository = moneyHolderRepository;
@@ -30,6 +35,7 @@ namespace BudgetManBackEnd.Service.Implementation
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
+            _moneySpendDetailRepository = moneySpendDetailRepository;
         }
 
         public AppResponse<MoneySpendDto> GetMoneySpend(Guid Id)
@@ -99,9 +105,9 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        public AppResponse<MoneySpendDto> CreateMoneySpend(MoneySpendDto request)
+        public AppResponse<CreateMoneySpendRequest> CreateMoneySpend(CreateMoneySpendRequest request)
         {
-            var result = new AppResponse<MoneySpendDto>();
+            var result = new AppResponse<CreateMoneySpendRequest>();
             try
             {
                 var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
@@ -115,8 +121,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Budget cannot null");
                 }
-                var budget = _budgetRepository.FindBy(m => m.Id == request.BudgetId && m.IsDeleted == false);
-                if (budget.Count()== 0)
+                var budgets = _budgetRepository.FindBy(m => m.Id == request.BudgetId && m.IsDeleted == false);
+                if (budgets.Count()== 0)
                 {
                     return result.BuildError("cannot find budget");
                 }
@@ -124,8 +130,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Money holder cannot null");
                 }
-                var moneyHolder = _moneyHolderRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted == false);
-                if (moneyHolder.Count()== 0)
+                var moneyHolders = _moneyHolderRepository.FindBy(m => m.Id == request.MoneyHolderId && m.IsDeleted == false);
+                if (moneyHolders.Count()== 0)
                 {
                     return result.BuildError("Cannot find money holder");
                 }
@@ -133,9 +139,31 @@ namespace BudgetManBackEnd.Service.Implementation
                 moneySpend.Id = Guid.NewGuid();
                 moneySpend.Budget = null;
                 moneySpend.MoneyHolder = null;
+                moneySpend.Reason = "";
+                var listDetails = new List<MoneySpendDetail>();
+
+                foreach (var item in request.Details)
+                {
+                    var detail = new MoneySpendDetail();
+                    detail.Id= Guid.NewGuid();
+                    detail.Quantity = item.Quantity;
+                    detail.Price= item.Price;
+                    detail.Amount = item.Quantity.Value * item.Price.Value;
+                    detail.CreatedBy = userId;
+                    detail.CreatedOn = DateTime.UtcNow;
+                    listDetails.Add(detail);
+                }
+                moneySpend.Amount = listDetails.Sum(m => m.Amount);
+                var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId);
+                moneyHolder.Balance-=moneySpend.Amount;
+                var budget =_budgetRepository.Get(moneyHolder.Id);
+                budget.Balance-=moneySpend.Amount;
+
 
                 _moneySpendRepository.Add(moneySpend, userId);
-
+                _moneySpendDetailRepository.AddRange(listDetails);
+                _budgetRepository.Edit(budget);
+                _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult(request);
 
             }
