@@ -175,7 +175,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
 
                 debt.RemainAmount -= debtPay.PaidAmount;
-
+                if (budget.Balance == null) budget.Balance = 0;
+                if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
                 budget.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
                 moneyHolder.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
 

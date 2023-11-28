@@ -113,6 +113,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 income.Amount = request.Amount;
                 _incomeRepository.Add(income, accountInfo.Name);
                 var moneyHolder = query.First();
+                if (moneyHolder.Balance == 0) moneyHolder.Balance = 0;
                 moneyHolder.Balance += request.Amount;
                 _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = income.Id;

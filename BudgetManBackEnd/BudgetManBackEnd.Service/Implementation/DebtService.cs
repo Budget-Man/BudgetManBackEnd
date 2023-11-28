@@ -58,6 +58,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 debt.MoneyHolderId=request.MoneyHolderId;
                 request.Id = debt.Id;
                 var moneyHolder = _moneyHolderRepository.Get(debt.MoneyHolderId.Value);
+                //if (budget.Balance == null) budget.Balance = 0;
+                if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
                 moneyHolder.Balance += debt.TotalAmount;
                 _debtRepository.Add(debt, accountInfo.Name);
                 _moneyHolderRepository.Edit(moneyHolder);

@@ -105,6 +105,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     BankName = m.BankName,
                     Id = m.Id,
                     Name = m.Name,
+                    Balance=m.Balance,
                 }).ToList();
                 result.BuildResult(list);
             }

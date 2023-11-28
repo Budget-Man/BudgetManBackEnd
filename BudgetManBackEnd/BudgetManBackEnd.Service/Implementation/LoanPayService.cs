@@ -148,7 +148,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 
                 Loan.RemainAmount -= loanPay.PaidAmount;
-                
+                if (budget.Balance == null) budget.Balance = 0;
+                if(moneyHolder.Balance==null) moneyHolder.Balance = 0;
                 budget.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
                 moneyHolder.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
 

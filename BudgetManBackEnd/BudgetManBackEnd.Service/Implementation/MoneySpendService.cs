@@ -158,6 +158,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId);
                 moneyHolder.Balance-=moneySpend.Amount;
                 var budget =_budgetRepository.Get(moneyHolder.Id);
+                if (budget.Balance == null) budget.Balance = 0;
                 budget.Balance-=moneySpend.Amount;
 
 

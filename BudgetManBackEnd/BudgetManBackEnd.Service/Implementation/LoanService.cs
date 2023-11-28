@@ -56,6 +56,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.AccountId = accountInfo.Id;
                 loan.MoneyHolderId = request.MoneyHolderId;
                 var moneyHolder = _moneyHolderRepository.Get(loan.MoneyHolderId.Value);
+                //if (budget.Balance == null) budget.Balance = 0;
+                if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
                 moneyHolder.Balance -= loan.TotalAmount;
                 _loanRepository.Add(loan, accountInfo.Name);
                 _moneyHolderRepository.Edit(moneyHolder);

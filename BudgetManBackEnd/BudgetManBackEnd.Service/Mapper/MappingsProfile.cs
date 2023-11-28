@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
+using BudgetManBackEnd.Model.Request;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ namespace BudgetManBackEnd.Service.Mapper
             CreateMap<LocalTransfer, LocalTransferDto>()
                 .ReverseMap();
             CreateMap<Income, IncomeDto>()
+                .ReverseMap();
+            CreateMap<MoneySpend, CreateMoneySpendRequest>()
                 .ReverseMap();
 
         }
