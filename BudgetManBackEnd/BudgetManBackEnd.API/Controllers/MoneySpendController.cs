@@ -1,4 +1,5 @@
 ﻿using BudgetManBackEnd.Model.Dto;
+using BudgetManBackEnd.Model.Request;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using MayNghien.Models.Request.Base;
@@ -32,7 +33,7 @@ namespace BudgetManBackEnd.API.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult CreateLoanPay(MoneySpendDto request)
+        public IActionResult CreateMoneySpend(CreateMoneySpendRequest request)
         {
             var result = _moneySpendService.CreateMoneySpend(request);
             return Ok(result);

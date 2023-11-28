@@ -41,8 +41,6 @@ namespace BudgetManBackEnd.Service.Implementation
                     Quantity = x.Quantity,
                     Amount = x.Amount,
                     Id = x.Id,
-                    IsPaid = x.IsPaid,
-                    MoneySpendId = x.MoneySpendId,
                     Price = x.Price,
                     Reason = x.Reason,
                 }).First();
@@ -78,8 +76,6 @@ namespace BudgetManBackEnd.Service.Implementation
                         Id = x.Id,
                         Quantity = x.Quantity,
                         Amount = x.Amount,
-                        IsPaid = x.IsPaid,
-                        MoneySpendId = x.MoneySpendId,
                         Price = x.Price,
                         Reason = x.Reason,
                     })
@@ -105,20 +101,11 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
-                if (request.MoneySpendId == null)
-                {
-                    return result.BuildError("Debt Cannot be null");
-                }
-                var loan = _moneySpendRepository.FindBy(m => m.Id == request.MoneySpendId && m.IsDeleted != true);
-                if (loan.Count() == 0)
-                {
-                    return result.BuildError("Cannot find debt");
-                }
+                
               
                 var moneySpendDetail = _mapper.Map<MoneySpendDetail>(request);
                 moneySpendDetail.Id = Guid.NewGuid();
                 moneySpendDetail.AccountId = accountInfo.Id;
-                moneySpendDetail.MoneySpend = loan.First();
                 moneySpendDetail.MoneySpend = null;
                 _moneySpendDetailRepository.Add(moneySpendDetail, accountInfo.Name);
 
@@ -139,12 +126,11 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var moneySpendDetail = _moneySpendDetailRepository.Get((Guid)request.Id);
-                moneySpendDetail.MoneySpendId = request.MoneySpendId;
+                
                 moneySpendDetail.Price = request.Price;
                 moneySpendDetail.Quantity = request.Quantity;
                 moneySpendDetail.Amount = request.Amount;
                 moneySpendDetail.Reason = request.Reason;
-                moneySpendDetail.IsPaid = request.IsPaid;
                 _moneySpendDetailRepository.Edit(moneySpendDetail);
                 result.BuildResult(request);
             }
@@ -195,8 +181,6 @@ namespace BudgetManBackEnd.Service.Implementation
 						Id = x.Id,
                         Quantity = x.Quantity,
                         Amount = x.Amount,
-                        IsPaid = x.IsPaid,
-                        MoneySpendId = x.MoneySpendId,
                         Price = x.Price,
                         Reason = x.Reason,
 					})

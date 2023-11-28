@@ -12,6 +12,6 @@ namespace BudgetManBackEnd.Model.Dto
         public string Name { get; set; }
         public string? BankName { get; set; }
 
-        public double? Balance { get; set; };
+        public double? Balance { get; set; }
     }
 }

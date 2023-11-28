@@ -12,5 +12,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         [ForeignKey("MoneyHolderId")]
         public virtual MoneyHolder MoneyHolder { get; set; }
 
+        public double Amount { get; set; }
+
     }
 }

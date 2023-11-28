@@ -110,8 +110,11 @@ namespace BudgetManBackEnd.Service.Implementation
                 income.Id = Guid.NewGuid();
                 income.AccountId = accountInfo.Id;
                 income.MoneyHolder = null;
+                income.Amount = request.Amount;
                 _incomeRepository.Add(income, accountInfo.Name);
-
+                var moneyHolder = query.First();
+                moneyHolder.Balance += request.Amount;
+                _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = income.Id;
                 result.BuildResult(request);
 

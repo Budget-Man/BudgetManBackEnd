@@ -15,5 +15,6 @@ namespace BudgetManBackEnd.Model.Dto
         public Guid MoneyHolderId { get; set; }
 
         public string? MoneyHolderName { get; set; }
+        public double Amount { get; set; }
     }
 }

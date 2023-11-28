@@ -151,6 +151,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     detail.Amount = item.Quantity.Value * item.Price.Value;
                     detail.CreatedBy = userId;
                     detail.CreatedOn = DateTime.UtcNow;
+                    detail.MoneySpendId= moneySpend.Id;
                     listDetails.Add(detail);
                 }
                 moneySpend.Amount = listDetails.Sum(m => m.Amount);
