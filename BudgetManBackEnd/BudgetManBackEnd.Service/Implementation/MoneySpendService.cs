@@ -139,7 +139,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 moneySpend.Id = Guid.NewGuid();
                 moneySpend.Budget = null;
                 moneySpend.MoneyHolder = null;
-                moneySpend.Reason = "";
+                moneySpend.Reason = request.Reason;
+                moneySpend.AccountId = accountInfo.Id;
                 var listDetails = new List<MoneySpendDetail>();
 
                 foreach (var item in request.Details)
@@ -152,12 +153,14 @@ namespace BudgetManBackEnd.Service.Implementation
                     detail.CreatedBy = userId;
                     detail.CreatedOn = DateTime.UtcNow;
                     detail.MoneySpendId= moneySpend.Id;
+                    detail.AccountId = accountInfo.Id;
+                    detail.Reason = item.Reason;
                     listDetails.Add(detail);
                 }
                 moneySpend.Amount = listDetails.Sum(m => m.Amount);
                 var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId);
                 moneyHolder.Balance-=moneySpend.Amount;
-                var budget =_budgetRepository.Get(moneyHolder.Id);
+                var budget =_budgetRepository.Get(request.BudgetId);
                 if (budget.Balance == null) budget.Balance = 0;
                 budget.Balance-=moneySpend.Amount;
 
@@ -237,6 +240,12 @@ namespace BudgetManBackEnd.Service.Implementation
 					{
 						Id = x.Id,
 						Reason = x.Reason,
+                        BudgetId = x.BudgetId,
+                        BudgetName=x.Budget.Name,
+                        MoneyHolderId=x.MoneyHolderId,
+                        MoneyHolderName=x.MoneyHolder.Name,
+                        Amount=x.Amount,
+                        
 					})
 					.ToList();
 
