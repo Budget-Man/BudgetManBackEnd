@@ -49,14 +49,16 @@ namespace BudgetManBackEnd.Service.Implementation
                 var accountInfo = accountInfoQuery.First();
 
 
-                var debt = _mapper.Map<Debt>(request);
+                var debt = new Debt();
                 debt.Id = Guid.NewGuid();
                 debt.AccountId = accountInfo.Id;
                 debt.TotalInterest = 0;
-                debt.TotalAmount = 0;
-                debt.RemainAmount = debt.PaidAmount;
+                debt.TotalAmount = request.TotalAmount.Value;
+                debt.RemainAmount = debt.TotalAmount;
                 debt.MoneyHolderId=request.MoneyHolderId;
                 request.Id = debt.Id;
+                debt.Name = request.Name;
+                
                 var moneyHolder = _moneyHolderRepository.Get(debt.MoneyHolderId.Value);
                 //if (budget.Balance == null) budget.Balance = 0;
                 if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
