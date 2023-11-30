@@ -28,7 +28,7 @@ namespace BudgetManBackEnd.DAL.Implementation
                         Id = m.Id,
                         Name = m.Name,
                         InterestRate = m.InterestRate,
-                        LoanAmount = m.LoanAmount,
+                        
                         MoneyHolderId = m.MoneyHolderId,
                         MoneyHolderName=m.MoneyHolder.Name,
                         RatePeriod = m.RatePeriod,

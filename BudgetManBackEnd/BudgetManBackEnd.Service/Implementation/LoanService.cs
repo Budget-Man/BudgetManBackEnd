@@ -48,13 +48,16 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError("Cannot find Account Info by this user");
                 }
                 var accountInfo = accountInfoQuery.First();
-                var loan = _mapper.Map<Loan>(request);
-                loan.TotalInterest = 0;
-                loan.TotalAmount = 0;
+                var loan = new Loan();
+                loan.TotalInterest =0;
+                loan.TotalAmount = request.TotalAmount.Value;
                 loan.RemainAmount = loan.LoanAmount;
                 loan.Id = Guid.NewGuid();
                 loan.AccountId = accountInfo.Id;
                 loan.MoneyHolderId = request.MoneyHolderId;
+                loan.RemainAmount = loan.TotalAmount;
+                loan.Name = request.Name;
+
                 var moneyHolder = _moneyHolderRepository.Get(loan.MoneyHolderId.Value);
                 //if (budget.Balance == null) budget.Balance = 0;
                 if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
@@ -97,7 +100,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.Name = request.Name;
                 loan.TotalAmount = (double)request.TotalAmount;
                 loan.RemainAmount = request.RemainAmount;
-                loan.LoanAmount = request.LoanAmount;
+
                 loan.TotalInterest = request.TotalInterest;
                 loan.InterestRate = request.InterestRate;
                 loan.RatePeriod = request.RatePeriod;
@@ -130,7 +133,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         Id = x.Id,
                         InterestRate = x.InterestRate,
-                        LoanAmount = x.LoanAmount,
+
                         Name = x.Name,
                         RatePeriod = x.RatePeriod,
                         RemainAmount = x.RemainAmount,
@@ -188,7 +191,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         Id = x.Id,
                         InterestRate = x.InterestRate,
-                        LoanAmount = x.LoanAmount,
+
                         Name = x.Name,
                         RatePeriod = x.RatePeriod,
                         RemainAmount = x.RemainAmount,
