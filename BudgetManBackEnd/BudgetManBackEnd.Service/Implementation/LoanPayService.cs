@@ -77,6 +77,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         Interest = x.Interest,
                         PaidAmount = x.PaidAmount,
                         RatePeriodName=nameof(x.RatePeriod),
+
                     })
                     .ToList();
                 result.BuildResult(list);
@@ -209,8 +210,9 @@ namespace BudgetManBackEnd.Service.Implementation
 						Id = x.Id,
 						Interest = x.Interest,
                         PaidAmount = x.PaidAmount,
-                        RatePeriodName=nameof(x.RatePeriod),
-					})
+                        RatePeriodName =nameof(x.RatePeriod),
+                        MoneyHolderName= x.MoneyHolder.Name,
+                    })
 					.ToList();
 
 

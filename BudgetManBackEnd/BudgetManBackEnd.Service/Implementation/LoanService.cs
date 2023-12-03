@@ -102,8 +102,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 loan.RemainAmount = request.RemainAmount;
 
                 loan.TotalInterest = request.TotalInterest;
-                loan.InterestRate = request.InterestRate;
-                loan.RatePeriod = request.RatePeriod;
+               /* loan.InterestRate = request.InterestRate;
+                loan.RatePeriod = request.RatePeriod*/;
                 loan.MoneyHolderId = request.MoneyHolderId;
                 _loanRepository.Edit(loan);
                 result.BuildResult(request);
