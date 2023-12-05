@@ -37,16 +37,16 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
-                if(string.IsNullOrEmpty(user.Email))
-                {
-                    return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
-                }
+                //if(string.IsNullOrEmpty(user.Email))
+                //{
+                //    return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
+                //}
                 var identityUser = await _userManager.FindByNameAsync(user.UserName);
                 if (identityUser != null)
                 {
                     return result.BuildError(ERR_MSG_UserExisted);
                 }
-                var newIdentityUser = new IdentityUser { Email = user.Email, UserName = user.Email };
+                var newIdentityUser = new IdentityUser { Email = user.UserName, UserName = user.UserName };
                 var createResult = await _userManager.CreateAsync(newIdentityUser);
                 await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
 
@@ -102,10 +102,10 @@ namespace BudgetManBackEnd.Service.Implementation
                 identityUser = await _userManager.FindByNameAsync(login.UserName);
                 if (identityUser != null )
                 {
-                    if (identityUser.EmailConfirmed != true)
+                    /*if (identityUser.EmailConfirmed != true)
                     {
                         return result.BuildError(ERR_MSG_UserNotConFirmed);
-                    }
+                    }*/
                     if(await _userManager.IsLockedOutAsync(identityUser))
                     {
                         return result.BuildError(ERR_MSG_UserLockedOut);

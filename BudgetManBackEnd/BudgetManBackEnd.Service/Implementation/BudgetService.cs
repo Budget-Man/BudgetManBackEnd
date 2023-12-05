@@ -261,7 +261,7 @@ namespace BudgetManBackEnd.Service.Implementation
 				{
 					switch (filter.FieldName)
 					{
-						case "BudgetCategoryName":
+						case "budgetCategoryName":
 							predicate = predicate.And(m => m.BudgetCategory.Name.Contains(filter.Value) && m.AccountId == accountId);
 							break;
 						default:

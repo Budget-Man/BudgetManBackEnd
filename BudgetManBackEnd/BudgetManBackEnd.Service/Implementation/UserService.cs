@@ -315,7 +315,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         switch (filter.FieldName)
                         {
                             case "userName":
-                                predicate = predicate.And(m => m.UserName.Equals(filter.Value));
+                                predicate = predicate.And(m => m.UserName.Contains(filter.Value));
                                 break;
                             case "role":
                                 var userIdsbyrole = (await _userManager.GetUsersInRoleAsync((filter.Value))).Select(m => m.Id).ToList();
