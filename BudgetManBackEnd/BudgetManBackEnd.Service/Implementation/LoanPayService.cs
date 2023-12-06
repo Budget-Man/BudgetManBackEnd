@@ -43,7 +43,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var data = query.Select(x=>new LoanPayDto
                 {
                     Id = x.Id,
-                    Interest = x.Interest,
+                    //Interest = x.Interest,
                     PaidAmount = x.PaidAmount,
                 }).First();
                 result.BuildResult(data);
@@ -74,7 +74,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     .Select(x=>new LoanPayDto
                     {
                         Id = x.Id,
-                        Interest = x.Interest,
+                        //Interest = x.Interest,
                         PaidAmount = x.PaidAmount,
                         RatePeriodName=nameof(x.RatePeriod),
 
@@ -124,23 +124,23 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Money Holder cannot be null");
                 }
-                if (request.BudgetId == null)
-                {
-                    return result.BuildError("Budget cannot be null");
-                }
-                var budget = _budgetRepository.Get(request.BudgetId.Value);
-                if (budget == null)
-                {
-                    return result.BuildError("Cannot find Buddget");
-                }
+                //if (request.BudgetId == null)
+                //{
+                //    return result.BuildError("Budget cannot be null");
+                //}
+                //var budget = _budgetRepository.Get(request.BudgetId.Value);
+                //if (budget == null)
+                //{
+                //    return result.BuildError("Cannot find Buddget");
+                //}
                 var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId.Value);
                 if (moneyHolder == null)
                 {
                     return result.BuildError("Cannot find Money Holder");
                 }
                 loanPay.MoneyHolderId = moneyHolder.Id;
-                loanPay.BudgetId = budget.Id;
-                loanPay.Interest=request.Interest;
+                //loanPay.BudgetId = budget.Id;
+                //loanPay.Interest=request.Interest;
                 loanPay.InterestRate = Loan.InterestRate;
                 loanPay.RatePeriod = Loan.RatePeriod;
                 loanPay.PaidAmount = request.PaidAmount;
@@ -149,14 +149,14 @@ namespace BudgetManBackEnd.Service.Implementation
 
                 
                 Loan.RemainAmount -= loanPay.PaidAmount;
-                if (budget.Balance == null) budget.Balance = 0;
+                //if (budget.Balance == null) budget.Balance = 0;
                 if(moneyHolder.Balance==null) moneyHolder.Balance = 0;
-                budget.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
-                moneyHolder.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
+                //budget.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
+                moneyHolder.Balance += loanPay.PaidAmount.Value;
 
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
                 _loanRepository.Edit(Loan);
-                _budgetRepository.Edit(budget);
+                //_budgetRepository.Edit(budget);
                 _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = loanPay.Id;
                 return result.BuildResult(request);
@@ -208,7 +208,7 @@ namespace BudgetManBackEnd.Service.Implementation
 					.Select(x => new LoanPayDto
 					{
 						Id = x.Id,
-						Interest = x.Interest,
+						//Interest = x.Interest,
                         PaidAmount = x.PaidAmount,
                         RatePeriodName =nameof(x.RatePeriod),
                         MoneyHolderName= x.MoneyHolder.Name,

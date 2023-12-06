@@ -15,7 +15,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         [ForeignKey("LoanId")]
         public virtual Loan Loan { get; set; }
         public double? PaidAmount { get; set; }
-        public double? Interest { get; set; }
+        //public double? Interest { get; set; }
         public double InterestRate { get; set; } = 0;
         public TimePeriod RatePeriod { get; set; }
         public bool IsPaid { get; set; } = false;
@@ -26,9 +26,9 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         [ForeignKey("MoneyHolderId")]
         public virtual MoneyHolder? MoneyHolder { get; set; }
 
-        [ForeignKey("Budget")]
-        public Guid? BudgetId { get; set; }
-        [ForeignKey("BudgetId")]
-        public virtual Budget? Budget { get; set; }
+        //[ForeignKey("Budget")]
+        //public Guid? BudgetId { get; set; }
+        //[ForeignKey("BudgetId")]
+        //public virtual Budget? Budget { get; set; }
     }
 }

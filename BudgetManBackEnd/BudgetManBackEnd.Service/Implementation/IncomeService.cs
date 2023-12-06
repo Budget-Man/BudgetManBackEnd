@@ -133,7 +133,23 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<IncomeDto>();
             try
             {
-                var income = _incomeRepository.Get((Guid)request.Id);
+                var income = _incomeRepository.FindBy(x => x.Id == request.Id.Value)
+                .Include(x => x.MoneyHolder)
+                .Include(x => x.MoneyHolder.Balance).FirstOrDefault();
+                var moneyHolder = _moneyHolderRepository.FindBy(x => x.Id == request.Id.Value)
+                //.Include(x => x.Balance)
+                .Include(x => x.Balance).FirstOrDefault();
+                if (moneyHolder == null)
+                {
+                    return result.BuildError("Cannot find Money Holder");
+                }
+                if (request.MoneyHolderId != income.MoneyHolderId)
+                {
+                    moneyHolder.Balance -= income.MoneyHolder.Balance;
+                }
+                if(request.MoneyHolderId == income.MoneyHolderId){
+                    moneyHolder.Balance += income.MoneyHolder.Balance;
+                }
                 income.Name = request.Name;
                 income.MoneyHolderId = request.MoneyHolderId;
                 _incomeRepository.Edit(income);

@@ -50,12 +50,12 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     Id = x.Id,
                     PaidAmount = x.PaidAmount,
-                    Interest = x.Interest,
-                    InterestRate = x.InterestRate,
+                    //Interest = x.Interest,
+                    //InterestRate = x.InterestRate,
                     IsPaid = x.IsPaid,
                     DebtsId = x.DebtsId,
                     DebtsName = x.Debts.Name,
-                    RatePeriod = x.RatePeriod,
+                    //RatePeriod = x.RatePeriod,
                 })
                     .ToList();
                 result.BuildResult(list);
@@ -78,11 +78,11 @@ namespace BudgetManBackEnd.Service.Implementation
                     DebtsName = x.Debts.Name,
                     Id = x.Id,
                     DebtsId= x.Debts.Id,
-                    Interest = x.Interest,
-                    InterestRate = x.InterestRate,
+                    //Interest = x.Interest,
+                    //InterestRate = x.InterestRate,
                     IsPaid = x.IsPaid,
                     PaidAmount  = x.PaidAmount,
-                    RatePeriod= x.RatePeriod,
+                    //RatePeriod= x.RatePeriod,
                 }).First();
                 result.BuildResult(debtsPay);
             }
@@ -150,39 +150,39 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Money Holder cannot be null");
                 }
-                if (request.BudgetId == null)
-                {
-                    return result.BuildError("Budget cannot be null");
-                }
-                var budget = _budgetRepository.Get(request.BudgetId.Value);
-                if (budget == null)
-                {
-                    return result.BuildError("Cannot find Buddget");
-                }
+                //if (request.BudgetId == null)
+                //{
+                //    return result.BuildError("Budget cannot be null");
+                //}
+                //var budget = _budgetRepository.Get(request.BudgetId.Value);
+                //if (budget == null)
+                //{
+                //    return result.BuildError("Cannot find Buddget");
+                //}
                 var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId.Value);
                 if (moneyHolder == null)
                 {
                     return result.BuildError("Cannot find Money Holder");
                 }
                 debtPay.MoneyHolderId = moneyHolder.Id;
-                debtPay.BudgetId = budget.Id;
-                debtPay.Interest = request.Interest;
-                debtPay.InterestRate = debt.InterestRate;
-                debtPay.RatePeriod = debt.RatePeriod;
+                //debtPay.BudgetId = budget.Id;
+                //debtPay.Interest = request.Interest;
+                //debtPay.InterestRate = debt.InterestRate;
+                //debtPay.RatePeriod = debt.RatePeriod;
                 debtPay.PaidAmount = request.PaidAmount;
                 debtPay.IsPaid = true;
 
 
 
                 debt.RemainAmount -= debtPay.PaidAmount;
-                if (budget.Balance == null) budget.Balance = 0;
+                //if (budget.Balance == null) budget.Balance = 0;
                 if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
-                budget.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
-                moneyHolder.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
+                //budget.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
+                moneyHolder.Balance += debtPay.PaidAmount.Value ;
 
                 _debtsPayRepository.Add(debtPay, accountInfo.Name);
                 _debtRepository.Edit(debt);
-                _budgetRepository.Edit(budget);
+                //_budgetRepository.Edit(budget);
                 _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = debtPay.Id;
                 return result.BuildResult(request);
@@ -214,12 +214,12 @@ namespace BudgetManBackEnd.Service.Implementation
 					.Select(x => new DebtsPayDto
 					{
 						Id = x.Id,
-						InterestRate = x.InterestRate,
+						//InterestRate = x.InterestRate,
 						PaidAmount = x.PaidAmount,
-						RatePeriod = x.RatePeriod,
+						//RatePeriod = x.RatePeriod,
                         DebtsId = x.DebtsId,
                         DebtsName = x.Debts.Name,
-                        Interest = x.Interest,
+                        //Interest = x.Interest,
                         IsPaid = x.IsPaid,
 					})
 					.ToList();
