@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BudgetManBackEnd.DAL.Migrations
 {
-    public partial class InitDb : Migration
+    public partial class t : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -94,72 +94,13 @@ namespace BudgetManBackEnd.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Debts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalAmount = table.Column<double>(type: "float", nullable: false),
-                    RemainAmount = table.Column<double>(type: "float", nullable: true),
-                    PaidAmount = table.Column<double>(type: "float", nullable: true),
-                    TotalInterest = table.Column<double>(type: "float", nullable: true),
-                    InterestRate = table.Column<double>(type: "float", nullable: false),
-                    RatePeriod = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Debts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Debts_AccountInfos_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "AccountInfos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Loans",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalAmount = table.Column<double>(type: "float", nullable: false),
-                    RemainAmount = table.Column<double>(type: "float", nullable: true),
-                    LoanAmount = table.Column<double>(type: "float", nullable: true),
-                    TotalInterest = table.Column<double>(type: "float", nullable: true),
-                    InterestRate = table.Column<double>(type: "float", nullable: false),
-                    RatePeriod = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Loans", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Loans_AccountInfos_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "AccountInfos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MoneyHolders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Balance = table.Column<double>(type: "float", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -291,6 +232,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BudgetCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Balance = table.Column<double>(type: "float", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    UseCredit = table.Column<double>(type: "float", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -316,16 +260,18 @@ namespace BudgetManBackEnd.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DebtsPays",
+                name: "Debts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DebtsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalAmount = table.Column<double>(type: "float", nullable: false),
+                    RemainAmount = table.Column<double>(type: "float", nullable: true),
                     PaidAmount = table.Column<double>(type: "float", nullable: true),
-                    Interest = table.Column<double>(type: "float", nullable: true),
+                    TotalInterest = table.Column<double>(type: "float", nullable: true),
                     InterestRate = table.Column<double>(type: "float", nullable: false),
                     RatePeriod = table.Column<int>(type: "int", nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
+                    MoneyHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -335,52 +281,17 @@ namespace BudgetManBackEnd.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DebtsPays", x => x.Id);
+                    table.PrimaryKey("PK_Debts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DebtsPays_AccountInfos_AccountId",
+                        name: "FK_Debts_AccountInfos_AccountId",
                         column: x => x.AccountId,
                         principalTable: "AccountInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DebtsPays_Debts_DebtsId",
-                        column: x => x.DebtsId,
-                        principalTable: "Debts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LoanPays",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaidAmount = table.Column<double>(type: "float", nullable: true),
-                    Interest = table.Column<double>(type: "float", nullable: true),
-                    InterestRate = table.Column<double>(type: "float", nullable: false),
-                    RatePeriod = table.Column<int>(type: "int", nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LoanPays", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LoanPays_AccountInfos_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "AccountInfos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_LoanPays_Loans_LoanId",
-                        column: x => x.LoanId,
-                        principalTable: "Loans",
+                        name: "FK_Debts_MoneyHolders_MoneyHolderId",
+                        column: x => x.MoneyHolderId,
+                        principalTable: "MoneyHolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -392,6 +303,7 @@ namespace BudgetManBackEnd.DAL.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MoneyHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -410,6 +322,43 @@ namespace BudgetManBackEnd.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Incomes_MoneyHolders_MoneyHolderId",
+                        column: x => x.MoneyHolderId,
+                        principalTable: "MoneyHolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Loans",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalAmount = table.Column<double>(type: "float", nullable: false),
+                    RemainAmount = table.Column<double>(type: "float", nullable: true),
+                    LoanAmount = table.Column<double>(type: "float", nullable: true),
+                    TotalInterest = table.Column<double>(type: "float", nullable: true),
+                    InterestRate = table.Column<double>(type: "float", nullable: false),
+                    RatePeriod = table.Column<int>(type: "int", nullable: false),
+                    MoneyHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Loans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Loans_AccountInfos_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AccountInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Loans_MoneyHolders_MoneyHolderId",
                         column: x => x.MoneyHolderId,
                         principalTable: "MoneyHolders",
                         principalColumn: "Id",
@@ -489,6 +438,86 @@ namespace BudgetManBackEnd.DAL.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_MoneySpends_MoneyHolders_MoneyHolderId",
+                        column: x => x.MoneyHolderId,
+                        principalTable: "MoneyHolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DebtsPays",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DebtsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PaidAmount = table.Column<double>(type: "float", nullable: true),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
+                    MoneyHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DebtsPays", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DebtsPays_AccountInfos_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AccountInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DebtsPays_Debts_DebtsId",
+                        column: x => x.DebtsId,
+                        principalTable: "Debts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DebtsPays_MoneyHolders_MoneyHolderId",
+                        column: x => x.MoneyHolderId,
+                        principalTable: "MoneyHolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoanPays",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PaidAmount = table.Column<double>(type: "float", nullable: true),
+                    InterestRate = table.Column<double>(type: "float", nullable: false),
+                    RatePeriod = table.Column<int>(type: "int", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
+                    MoneyHolderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modifiedby = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanPays", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoanPays_AccountInfos_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AccountInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LoanPays_Loans_LoanId",
+                        column: x => x.LoanId,
+                        principalTable: "Loans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LoanPays_MoneyHolders_MoneyHolderId",
                         column: x => x.MoneyHolderId,
                         principalTable: "MoneyHolders",
                         principalColumn: "Id",
@@ -590,6 +619,11 @@ namespace BudgetManBackEnd.DAL.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Debts_MoneyHolderId",
+                table: "Debts",
+                column: "MoneyHolderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DebtsPays_AccountId",
                 table: "DebtsPays",
                 column: "AccountId");
@@ -598,6 +632,11 @@ namespace BudgetManBackEnd.DAL.Migrations
                 name: "IX_DebtsPays_DebtsId",
                 table: "DebtsPays",
                 column: "DebtsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DebtsPays_MoneyHolderId",
+                table: "DebtsPays",
+                column: "MoneyHolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incomes_AccountId",
@@ -620,9 +659,19 @@ namespace BudgetManBackEnd.DAL.Migrations
                 column: "LoanId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LoanPays_MoneyHolderId",
+                table: "LoanPays",
+                column: "MoneyHolderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Loans_AccountId",
                 table: "Loans",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_MoneyHolderId",
+                table: "Loans",
+                column: "MoneyHolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocalTransfers_AccountId",

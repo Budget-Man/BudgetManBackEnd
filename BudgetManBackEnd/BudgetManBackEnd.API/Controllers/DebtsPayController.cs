@@ -36,7 +36,7 @@ namespace BudgetManBackEnd.API.Controllers
         }
         [HttpPost]
         [Route("{debtsId}")]
-        public IActionResult CreateDebtsPay(string debtsId, DebtsPayDto request)
+        public IActionResult CreateDebtsPay(string debtsId, [FromBody]DebtsPayDto request)
         {
             Guid id = Guid.Parse(debtsId);
             var result = _debtsPayService.CreateDebtsPay(request, id);

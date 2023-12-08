@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetManBackEnd.DAL.Migrations
 {
     [DbContext(typeof(BudgetManDbContext))]
-    [Migration("20231107092637_budgetusedcredit")]
-    partial class budgetusedcredit
+    [Migration("20231208085608_t")]
+    partial class t
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -177,6 +177,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<string>("Modifiedby")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("MoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -200,6 +203,8 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("MoneyHolderId");
+
                     b.ToTable("Debts");
                 });
 
@@ -221,12 +226,6 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<Guid>("DebtsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double?>("Interest")
-                        .HasColumnType("float");
-
-                    b.Property<double>("InterestRate")
-                        .HasColumnType("float");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -239,17 +238,19 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<string>("Modifiedby")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("MoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double?>("PaidAmount")
                         .HasColumnType("float");
-
-                    b.Property<int>("RatePeriod")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
                     b.HasIndex("DebtsId");
+
+                    b.HasIndex("MoneyHolderId");
 
                     b.ToTable("DebtsPays");
                 });
@@ -262,6 +263,9 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -324,6 +328,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<string>("Modifiedby")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("MoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -344,6 +351,8 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("MoneyHolderId");
+
                     b.ToTable("Loans");
                 });
 
@@ -361,9 +370,6 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<double?>("Interest")
-                        .HasColumnType("float");
 
                     b.Property<double>("InterestRate")
                         .HasColumnType("float");
@@ -383,6 +389,9 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<string>("Modifiedby")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("MoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double?>("PaidAmount")
                         .HasColumnType("float");
 
@@ -394,6 +403,8 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("LoanId");
+
+                    b.HasIndex("MoneyHolderId");
 
                     b.ToTable("LoanPays");
                 });
@@ -450,6 +461,9 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
 
                     b.Property<string>("BankName")
                         .HasColumnType("nvarchar(max)");
@@ -822,7 +836,14 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
+                        .WithMany()
+                        .HasForeignKey("MoneyHolderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Account");
+
+                    b.Navigation("MoneyHolder");
                 });
 
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.DebtsPay", b =>
@@ -839,9 +860,16 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
+                        .WithMany()
+                        .HasForeignKey("MoneyHolderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Account");
 
                     b.Navigation("Debts");
+
+                    b.Navigation("MoneyHolder");
                 });
 
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.Income", b =>
@@ -871,7 +899,14 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
+                        .WithMany()
+                        .HasForeignKey("MoneyHolderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Account");
+
+                    b.Navigation("MoneyHolder");
                 });
 
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.LoanPay", b =>
@@ -888,9 +923,16 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
+                        .WithMany()
+                        .HasForeignKey("MoneyHolderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Account");
 
                     b.Navigation("Loan");
+
+                    b.Navigation("MoneyHolder");
                 });
 
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.LocalTransfer", b =>

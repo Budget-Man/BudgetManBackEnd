@@ -141,7 +141,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 loanPay.MoneyHolderId = moneyHolder.Id;
                 //loanPay.BudgetId = budget.Id;
                 //loanPay.Interest=request.Interest;
-                loanPay.InterestRate = Loan.InterestRate;
+                //loanPay.InterestRate = Loan.InterestRate;
                 loanPay.RatePeriod = Loan.RatePeriod;
                 loanPay.PaidAmount = request.PaidAmount;
                 loanPay.IsPaid = true;

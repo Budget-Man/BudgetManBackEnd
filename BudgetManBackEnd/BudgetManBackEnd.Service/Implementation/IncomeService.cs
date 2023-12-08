@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Security.Cryptography;
 using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Models.Entity;
@@ -136,22 +137,34 @@ namespace BudgetManBackEnd.Service.Implementation
                 var income = _incomeRepository.FindBy(x => x.Id == request.Id.Value)
                 .Include(x => x.MoneyHolder)
                 .Include(x => x.MoneyHolder.Balance).FirstOrDefault();
-                var moneyHolder = _moneyHolderRepository.FindBy(x => x.Id == request.Id.Value)
+                var moneyHolder = _moneyHolderRepository.FindBy(x => x.Id == request.MoneyHolderId)
                 //.Include(x => x.Balance)
                 .Include(x => x.Balance).FirstOrDefault();
                 if (moneyHolder == null)
                 {
                     return result.BuildError("Cannot find Money Holder");
                 }
-                if (request.MoneyHolderId != income.MoneyHolderId)
+                if (request.MoneyHolderId == income.MoneyHolderId)
                 {
-                    moneyHolder.Balance -= income.MoneyHolder.Balance;
+                    income.Amount = request.Amount;
+                    moneyHolder.Balance -= income.Amount;
+                    var oldmoneyhoder = _moneyHolderRepository.FindByPredicate(x => x.Id == income.MoneyHolderId).First();
+                    oldmoneyhoder.Balance += income.Amount;
+                    _moneyHolderRepository.Edit(oldmoneyhoder);
+
                 }
-                if(request.MoneyHolderId == income.MoneyHolderId){
-                    moneyHolder.Balance += income.MoneyHolder.Balance;
+                if(request.MoneyHolderId != income.MoneyHolderId){
+                    income.Amount = request.Amount;
+                    moneyHolder.Balance += income.Amount;
+                  var oldmoneyhoder =  _moneyHolderRepository.FindByPredicate(x => x.Id == income.MoneyHolderId).First();
+                  oldmoneyhoder.Balance -= income.Amount;
+                    _moneyHolderRepository.Edit(oldmoneyhoder);
                 }
                 income.Name = request.Name;
+               
                 income.MoneyHolderId = request.MoneyHolderId;
+               
+                _moneyHolderRepository.Edit(moneyHolder);
                 _incomeRepository.Edit(income);
                 result.BuildResult(request);
             }

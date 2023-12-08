@@ -114,7 +114,7 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        public AppResponse<DebtsPayDto> CreateDebtsPay(DebtsPayDto request, Guid DebtsId)
+        public AppResponse<DebtsPayDto> CreateDebtsPay(DebtsPayDto request, Guid debtsId)
         {
             var result = new AppResponse<DebtsPayDto>();
             try
@@ -130,7 +130,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Debt Cannot be null");
                 }
-                var debts = _debtRepository.FindBy(m=>m.Id == request.DebtsId && m.IsDeleted!=true);
+                var debts = _debtRepository.FindBy(m=>m.Id == debtsId && m.IsDeleted!=true);
                 if (debts.Count() == 0)
                 {
                     return result.BuildError("Cannot find debt");
@@ -140,7 +140,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var debtPay = new DebtsPay();
                 debtPay.Id = Guid.NewGuid();
                 debtPay.AccountId = accountInfo.Id;
-                debtPay.DebtsId = DebtsId;
+                debtPay.DebtsId = debtsId;
                 if (debt.RemainAmount - debtPay.PaidAmount < 0)
                 {
                     return result.BuildError("The amount paid is not greater than the remaining amount");
@@ -179,7 +179,10 @@ namespace BudgetManBackEnd.Service.Implementation
                 if (moneyHolder.Balance == null) moneyHolder.Balance = 0;
                 //budget.Balance += debtPay.PaidAmount.Value + debtPay.Interest.Value;
                 moneyHolder.Balance += debtPay.PaidAmount.Value ;
-
+                if (debtPay == null || accountInfo == null)
+                {
+                    return result.BuildError("DebtPay or AccountInfo is null");
+                }
                 _debtsPayRepository.Add(debtPay, accountInfo.Name);
                 _debtRepository.Edit(debt);
                 //_budgetRepository.Edit(budget);
@@ -250,10 +253,10 @@ namespace BudgetManBackEnd.Service.Implementation
 				{
 					switch (filter.FieldName)
 					{
-						case "DebtsName":
+						case "debtsName":
 							predicate = predicate.And(m => m.Debts.Name.Contains(filter.Value) && m.AccountId == accountId);
 							break;
-                         case "DebtsId":
+                         case "debtsId":
                             predicate = predicate.And(m => m.Debts.Id.Equals(Guid.Parse(filter.Value)) && m.AccountId == accountId);
                             break;
                             default:
