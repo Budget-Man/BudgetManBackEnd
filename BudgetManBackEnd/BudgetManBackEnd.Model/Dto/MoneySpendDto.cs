@@ -20,5 +20,6 @@ namespace BudgetManBackEnd.Model.Dto
         public string Reason { get; set; }
         public string? Description { get; set; }
         public bool IsPaid { get; set; } = false;
+        public object CreatedOn { get; set; }
     }
 }

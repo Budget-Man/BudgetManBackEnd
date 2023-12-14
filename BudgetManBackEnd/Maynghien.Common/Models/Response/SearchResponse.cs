@@ -7,5 +7,10 @@
         public long TotalPages { get; set; }
         public long RowsPerPage { get; set; }
         public long TotalRows { get; set; }
+
+        public IEnumerable<object> GroupBy(Func<object, object> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

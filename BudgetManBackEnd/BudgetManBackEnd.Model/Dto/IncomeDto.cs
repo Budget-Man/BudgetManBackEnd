@@ -11,7 +11,7 @@ namespace BudgetManBackEnd.Model.Dto
     {
         public string? Name { get; set; }
 
-
+        public DateTime? CreatedOn { get; set; }
         public Guid MoneyHolderId { get; set; }
 
         public string? MoneyHolderName { get; set; }

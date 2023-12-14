@@ -13,6 +13,6 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public virtual MoneyHolder MoneyHolder { get; set; }
 
         public double Amount { get; set; }
-
+        public int Index { get; set; }
     }
 }

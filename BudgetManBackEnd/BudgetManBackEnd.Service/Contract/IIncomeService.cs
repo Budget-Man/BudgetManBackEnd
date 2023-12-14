@@ -17,6 +17,8 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<IncomeDto> EditIncome(IncomeDto request);
         AppResponse<string> DeleteIncome(Guid Id);
         AppResponse<SearchResponse<IncomeDto>> Search(SearchRequest request);
+        Task<byte[]> ExportToExcel(SearchRequest request);
 
-	}
+
+    }
 }

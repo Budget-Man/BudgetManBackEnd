@@ -11,6 +11,7 @@ using MayNghien.Common.Helpers;
 using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
@@ -76,6 +77,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         Name = x.Name,
                         MoneyHolderId = accountInfo.Id,
                         MoneyHolderName = x.MoneyHolder.Name,
+                        CreatedOn = x.CreatedOn.Value.Date
                     })
                     .ToList();
                 result.BuildResult(list);
@@ -153,17 +155,18 @@ namespace BudgetManBackEnd.Service.Implementation
                     _moneyHolderRepository.Edit(oldmoneyhoder);
 
                 }
-                if(request.MoneyHolderId != income.MoneyHolderId){
+                if (request.MoneyHolderId != income.MoneyHolderId)
+                {
                     income.Amount = request.Amount;
                     moneyHolder.Balance += income.Amount;
-                  var oldmoneyhoder =  _moneyHolderRepository.FindByPredicate(x => x.Id == income.MoneyHolderId).First();
-                  oldmoneyhoder.Balance -= income.Amount;
+                    var oldmoneyhoder = _moneyHolderRepository.FindByPredicate(x => x.Id == income.MoneyHolderId).First();
+                    oldmoneyhoder.Balance -= income.Amount;
                     _moneyHolderRepository.Edit(oldmoneyhoder);
                 }
                 income.Name = request.Name;
-               
+
                 income.MoneyHolderId = request.MoneyHolderId;
-               
+
                 _moneyHolderRepository.Edit(moneyHolder);
                 _incomeRepository.Edit(income);
                 result.BuildResult(request);
@@ -215,7 +218,8 @@ namespace BudgetManBackEnd.Service.Implementation
                         Name = x.Name,
                         MoneyHolderId = x.MoneyHolderId,
                         MoneyHolderName = x.MoneyHolder.Name,
-                        Amount=x.Amount
+                        Amount = x.Amount,
+                        CreatedOn = x.CreatedOn.Value.Date,
                     })
                     .ToList();
 
@@ -267,5 +271,52 @@ namespace BudgetManBackEnd.Service.Implementation
                 throw;
             }
         }
+
+        public async Task<byte[]> ExportToExcel(SearchRequest request)
+        {
+            var data = this.Search(request);
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("SelectedRows");
+                var UserName = ClaimHelper.GetClainByName(_httpContextAccessor, "UserName");
+
+                // Group data by date
+                var groupedData = data.Data.Data.GroupBy(d => d.CreatedOn.Value.Date);
+
+                // Iterate through each group and add data to the Excel file
+                int rowNumber = 2; // Starting row for data entries
+                foreach (var group in groupedData)
+                {
+                    // Calculate total amount for this group
+                    var totalAmount = group.Sum(dto => dto.Amount);
+
+                    // Set header row for the group
+                    worksheet.Cells[rowNumber, 1].Value = "Thời Gian";
+                    worksheet.Cells[rowNumber, 2].Value = "Sự Kiện";
+                    worksheet.Cells[rowNumber, 3].Value = "Nơi Giữ Tiền";
+                    worksheet.Cells[rowNumber, 4].Value = "Số Tiền";
+                    rowNumber++;
+
+                    // Set data rows for each income in the group
+                    foreach (var income in group)
+                    {
+                        worksheet.Cells[rowNumber, 1].Value = income.CreatedOn.Value.ToString("dd/MM/yyyy");
+                        worksheet.Cells[rowNumber, 2].Value = income.Name;
+                        worksheet.Cells[rowNumber, 3].Value = income.MoneyHolderName;
+                        worksheet.Cells[rowNumber, 4].Value = income.Amount;
+                        rowNumber++;
+                    }
+
+                    // Set total row for the group
+                    worksheet.Cells[rowNumber, 1].Value = "Tổng:";
+                    worksheet.Cells[rowNumber, 2].Value = totalAmount;
+                    rowNumber += 4;  // Add space between groups
+
+                }
+
+                return package.GetAsByteArray();
+            }
+        }
+
     }
 }

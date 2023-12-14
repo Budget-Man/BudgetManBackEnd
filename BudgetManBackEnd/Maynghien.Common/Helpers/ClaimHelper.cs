@@ -21,5 +21,10 @@ namespace MayNghien.Common.Helpers
         {
             return context.HttpContext.User.Claims.First(x => x.Type == clainName).Value;
         }
+
+        public static object GetClaimByName(IHttpContextAccessor httpContextAccessor, string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
