@@ -275,8 +275,16 @@ namespace BudgetManBackEnd.Service.Implementation
 				{
 					switch (filter.FieldName)
 					{
-
-						default:
+                            case "Reason":
+                                predicate = predicate.And(m => m.Reason.Contains(filter.Value));
+                                break;
+                            case "moneyHolderId":
+                                predicate = predicate.And(m => m.MoneyHolderId.ToString() == filter.Value);
+                                break;
+                            case "budgetId":
+                                predicate = predicate.And(m => m.BudgetId.ToString() == filter.Value);
+                                break;
+                            default:
 							break;
 					}
 				}
