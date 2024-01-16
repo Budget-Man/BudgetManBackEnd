@@ -364,3 +364,4 @@ MigrationBackup/
 FodyWeavers.xsd
 */obj/
 */obj/*
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.csproj.AssemblyReference.cache
