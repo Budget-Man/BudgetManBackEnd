@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{600BF305-35C4-4964-BE5B-F26307F4BC74}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		..\.github\workflows\docker-vps.yml = ..\.github\workflows\docker-vps.yml
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.TransferCronjob", "BudgetManBackEnd.TransferCronjob\BudgetManBackEnd.TransferCronjob.csproj", "{B3AEE282-1A8E-42CB-B09F-79317A12082E}"
