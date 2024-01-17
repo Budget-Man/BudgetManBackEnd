@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+  </ItemGroup>
+
 </Project>
