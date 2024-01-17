@@ -8,6 +8,7 @@ COPY . ./
 
 # Restore NuGet packages for all projects
 RUN dotnet restore
+RUN dotnet build
 RUN dotnet publish -c Release -o out
 
 # Build the runtime image
