@@ -15,6 +15,12 @@ using static MayNghien.Common.CommonMessage.AuthResponseMessage;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.Common.Enum;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Oauth2.v2;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -196,6 +202,105 @@ namespace BudgetManBackEnd.Service.Implementation
             return claims;
         }
 
+        public async Task<AppResponse<LoginResponseModel>> LoginByGoogle(GoogleLoginDto loginInfo)
+        {
+            var result = new AppResponse<LoginResponseModel>();
+            var webAppClientId = "807507486424-ios762laefni6l7u7fgnl41a1fifgj4v.apps.googleusercontent.com";
+            var webAppClientSecret = "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";
+            var clientSecrets = new ClientSecrets
+            {
+                ClientId = webAppClientId,
+                ClientSecret = webAppClientSecret
+            };
 
+            // Set up the authorization code flow
+            var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = clientSecrets,
+                Scopes = new[] { Oauth2Service.Scope.UserinfoProfile, Oauth2Service.Scope.UserinfoEmail },
+                DataStore = new FileDataStore("Store") // You may want to store tokens securely
+            });
+            TokenResponse tokenResponse;
+            try
+            {
+                // Exchange the authorization code for tokens
+                tokenResponse = await flow.ExchangeCodeForTokenAsync(webAppClientId, loginInfo.code,
+                    loginInfo.redirectUri, CancellationToken.None);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                // Handle the exception or log the details
+                return result.BuildError(ex.ToString());
+            }
+            // Create a user credential from the token response
+            var credential = new UserCredential(flow, "user", tokenResponse);
+
+            // Create the Oauth2Service using the user's credential
+            var service = new Oauth2Service(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Budget Managment"
+            });
+
+            // Retrieve user information
+            var userInfoRequest = service.Userinfo.Get();
+            var userInfo = await userInfoRequest.ExecuteAsync();
+
+            // Use userInfo and perform server-side logic 
+            var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+
+
+            if (identityUser != null)
+            {
+                if (await _userManager.IsLockedOutAsync(identityUser))
+                {
+                    return result.BuildError(ERR_MSG_UserLockedOut);
+
+                }
+
+            }
+            else
+            {
+                identityUser = new IdentityUser { Email = userInfo.Email, UserName = userInfo.Email };
+                var createResult = await _userManager.CreateAsync(identityUser);
+                //await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
+
+                identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+                if (identityUser != null)
+                {
+                    var AccountInfo = new AccountInfo()
+                    {
+                        Id = Guid.NewGuid(),
+                        Balance = 0,
+                        Email = userInfo.Email,
+                        CreatedBy = userInfo.Email,
+                        CreatedOn = DateTime.Now,
+                        Name = userInfo.Name,
+                        IsDeleted = false,
+                        UserId = identityUser.Id,
+                    };
+                    _accountInfoRepository.Add(AccountInfo, "");
+                }
+                else
+                {
+                    return result.BuildError(ERR_MSG_CanNotCreateUser);
+                }
+            }
+            var user = new UserModel
+            {
+                UserName = userInfo.Email,
+                Email = userInfo.Email,
+                Id = identityUser.Id,
+            };
+
+            var tokenString = await GenerateJSONWebToken(user, identityUser);
+            LoginResponseModel loginResponse = new LoginResponseModel(){
+                userName = userInfo.Email,
+                accessToken = tokenString
+            };
+            return result.BuildResult(loginResponse);
+        }
     }
 }
