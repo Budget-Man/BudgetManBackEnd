@@ -135,6 +135,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var income = _incomeRepository.Get((Guid)request.Id);
                 income.Name = request.Name;
                 income.MoneyHolderId = request.MoneyHolderId;
+                income.Amount = request.Amount;
                 _incomeRepository.Edit(income);
                 result.BuildResult(request);
             }
