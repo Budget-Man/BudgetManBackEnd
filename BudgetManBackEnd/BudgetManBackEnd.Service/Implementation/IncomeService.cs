@@ -187,7 +187,8 @@ namespace BudgetManBackEnd.Service.Implementation
                         Id = x.Id,
                         Name = x.Name,
                         MoneyHolderId = x.MoneyHolderId,
-                        MoneyHolderName = x.MoneyHolder.Name
+                        MoneyHolderName = x.MoneyHolder.Name,
+                        Amount =x.Amount,
                     })
                     .ToList();
 
