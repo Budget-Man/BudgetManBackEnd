@@ -41,6 +41,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     MoneyHolderId = x.MoneyHolderId,
                     MoneyHolderName = x.MoneyHolder.Name,
                     Name = x.Name,
+                    Amount = x.Amount,
                 }).First();
 
                 result.BuildResult(data);
@@ -74,6 +75,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         Name = x.Name,
                         MoneyHolderId = accountInfo.Id,
                         MoneyHolderName = x.MoneyHolder.Name,
+                        Amount = x.Amount,
                     })
                     .ToList();
                 result.BuildResult(list);
