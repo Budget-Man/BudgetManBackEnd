@@ -32,6 +32,13 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpPost("google")]
+        public async Task<IActionResult> LoginByGoogle(GoogleLoginDto login)
+        {
+            var result = await _authService.LoginByGoogle(login);
 
+            return Ok(result);
+        }
     }
 }
