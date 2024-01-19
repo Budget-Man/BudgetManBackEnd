@@ -399,4 +399,4 @@ FodyWeavers.xsd
 *.sln.iml
 /BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/*
 /BudgetManBackEnd/BudgetManBackEnd.DAL/obj/Debug/net6.0/*
-/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.AssemblyInfoInputs.cache
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/*
