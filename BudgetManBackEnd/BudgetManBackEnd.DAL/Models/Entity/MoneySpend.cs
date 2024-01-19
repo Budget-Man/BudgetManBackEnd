@@ -23,8 +23,5 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public string Reason { get; set; }
         public string? Description { get; set; }
         public bool IsPaid { get; set; } = false;
-
-
-
     }
 }

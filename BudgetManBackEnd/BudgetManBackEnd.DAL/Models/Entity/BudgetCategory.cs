@@ -5,7 +5,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
 {
     public class BudgetCategory: BaseAccountEntity
     {
-        public int Name { get; set; }
+        public string Name { get; set; }
 
     }
 }
