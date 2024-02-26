@@ -142,22 +142,28 @@ namespace BudgetManBackEnd.Service.Implementation
                 moneySpend.Reason = request.Reason;
                 moneySpend.AccountId = accountInfo.Id;
                 var listDetails = new List<MoneySpendDetail>();
-
-                foreach (var item in request.Details)
+                if (request.Details.Count > 0)
                 {
-                    var detail = new MoneySpendDetail();
-                    detail.Id= Guid.NewGuid();
-                    detail.Quantity = item.Quantity;
-                    detail.Price= item.Price;
-                    detail.Amount = item.Quantity.Value * item.Price.Value;
-                    detail.CreatedBy = userId;
-                    detail.CreatedOn = DateTime.UtcNow;
-                    detail.MoneySpendId= moneySpend.Id;
-                    detail.AccountId = accountInfo.Id;
-                    detail.Reason = item.Reason;
-                    listDetails.Add(detail);
+                    foreach (var item in request.Details)
+                    {
+                        var detail = new MoneySpendDetail();
+                        detail.Id = Guid.NewGuid();
+                        detail.Quantity = item.Quantity;
+                        detail.Price = item.Price;
+                        detail.Amount = item.Quantity.Value * item.Price.Value;
+                        detail.CreatedBy = userId;
+                        detail.CreatedOn = DateTime.UtcNow;
+                        detail.MoneySpendId = moneySpend.Id;
+                        detail.AccountId = accountInfo.Id;
+                        detail.Reason = item.Reason;
+                        listDetails.Add(detail);
+                    }
+                    moneySpend.Amount = listDetails.Sum(m => m.Amount);
                 }
-                moneySpend.Amount = listDetails.Sum(m => m.Amount);
+                else
+                {
+                    moneySpend.Amount = request.Amount;
+                }
                 var moneyHolder = _moneyHolderRepository.Get(request.MoneyHolderId);
                 moneyHolder.Balance-=moneySpend.Amount;
                 var budget =_budgetRepository.Get(request.BudgetId);
