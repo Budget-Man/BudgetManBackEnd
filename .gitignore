@@ -366,3 +366,12 @@ FodyWeavers.xsd
 */obj/*
 /BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.csproj.AssemblyReference.cache
 /BudgetManBackEnd/.vs/BudgetManBackEnd/v17/.futdcache.v2
+*/.vs/*
+/BudgetManBackEnd/.vs/ProjectEvaluation/budgetmanbackend.metadata.v7.bin
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/*.json
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/project.assets.json
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/project.nuget.cache
+/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/BudgetManBackEnd.DAL.csproj.nuget.g.props
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.assets.cache
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.GeneratedMSBuildEditorConfig.editorconfig
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/BudgetManBackEnd.Service.csproj.nuget.g.props
