@@ -10,7 +10,7 @@ namespace BudgetManBackEnd.Service.Contract
 {
     public interface IAuthService
     {
-        Task<AppResponse<string>> AuthenticateUser(UserModel login);
+        Task<AppResponse<LoginResult>> AuthenticateUser(UserModel login);
         Task<AppResponse<string>> CreateUser(UserModel user);
 
         Task<AppResponse<LoginResponseModel>> LoginByGoogle(GoogleLoginDto token);

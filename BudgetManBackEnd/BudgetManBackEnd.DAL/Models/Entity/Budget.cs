@@ -18,5 +18,6 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public string? Name { get; set; }
         public bool IsActive { get; set; }
         public double UseCredit { get; set; }
+        public double? MonthlyLimit { get; set; }
     }
 }

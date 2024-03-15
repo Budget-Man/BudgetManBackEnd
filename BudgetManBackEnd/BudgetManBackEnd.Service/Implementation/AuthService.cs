@@ -81,9 +81,9 @@ namespace BudgetManBackEnd.Service.Implementation
             }
 
         }
-        public async Task<AppResponse<string>> AuthenticateUser(UserModel login)
+        public async Task<AppResponse<LoginResult>> AuthenticateUser(UserModel login)
         {
-            var result = new AppResponse<string>();
+            var result = new AppResponse<LoginResult>();
             try
             {
                 UserModel user = null;
@@ -123,6 +123,7 @@ namespace BudgetManBackEnd.Service.Implementation
                             UserName = identityUser.UserName,
                             Email = identityUser.Email,
                             Id = identityUser.Id,
+                            Role = (await _userManager.GetRolesAsync(identityUser)).First(),
                             };
 
                     }
@@ -152,7 +153,11 @@ namespace BudgetManBackEnd.Service.Implementation
                 if (user != null)
                 {
                     var tokenString = await GenerateJSONWebToken(user, identityUser);
-                    return result.BuildResult(tokenString);
+                    var loginResult = new LoginResult();
+                    loginResult.Token = tokenString;
+                    loginResult.UserName = user.UserName;
+                    loginResult.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
+                    return result.BuildResult(loginResult);
                 }
                 else
                 {
@@ -198,6 +203,7 @@ namespace BudgetManBackEnd.Service.Implementation
             foreach (var role in roles)
             {
                 claims.Add(new Claim("Role", role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
             return claims;
         }

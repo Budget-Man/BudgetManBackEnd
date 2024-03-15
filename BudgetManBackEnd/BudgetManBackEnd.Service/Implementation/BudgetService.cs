@@ -67,6 +67,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.AccountId = accountInfo.Id;
                 budget.IsActive = true;
                 budget.BudgetCategory = null;
+                budget.MonthlyLimit = budget.Balance;
                 _budgetRepository.Add(budget, accountInfo.Name);
                 request.Id = budget.Id;
                 result.BuildResult(request);
@@ -135,6 +136,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.ModifiedOn = DateTime.UtcNow;
                 budget.Modifiedby = accountInfo.Email;
                 budget.UseCredit = (double)request.UseCredit;
+                budget.MonthlyLimit = request.MonthlyLimit;
                 _budgetRepository.Edit(budget);
 
                 result.BuildResult(request);
@@ -222,9 +224,9 @@ namespace BudgetManBackEnd.Service.Implementation
 				int pageIndex = request.PageIndex ?? 1;
 				int pageSize = request.PageSize ?? 1;
 				int startIndex = (pageIndex - 1) * (int)pageSize;
-				var List = model.Skip(startIndex).Take(pageSize)
-					.Select(x => new BudgetDto
-					{
+                var List = model.Skip(startIndex).Take(pageSize)
+                    .Select(x => new BudgetDto
+                    {
                         BudgetCategoryName = x.BudgetCategory.Name,
                         Balance = x.Balance,
                         BudgetCategoryId = x.BudgetCategory.Id,
@@ -232,6 +234,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         IsActive = x.IsActive,
                         Name = x.Name,
                         UseCredit = x.UseCredit,
+                        MonthlyLimit = x.MonthlyLimit,
                     })
 					.ToList();
 
