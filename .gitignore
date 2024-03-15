@@ -388,3 +388,11 @@ FodyWeavers.xsd
 /BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/*
 /BudgetManBackEnd/BudgetManBackEnd.DAL/obj/Debug/net6.0/*
 /BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/*
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/BudgetManBackEnd.Common.csproj.nuget.dgspec.json
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/project.nuget.cache
+/BudgetManBackEnd/BudgetManBackEnd.DAL/obj/BudgetManBackEnd.DAL.csproj.nuget.g.props
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.assets.cache
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.GeneratedMSBuildEditorConfig.editorconfig
+/BudgetManBackEnd/BudgetManBackEnd.API/obj/Debug/net6.0/BudgetManBackEnd.API.GeneratedMSBuildEditorConfig.editorconfig
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.AssemblyInfoInputs.cache
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/BudgetManBackEnd.Service.csproj.nuget.g.props
