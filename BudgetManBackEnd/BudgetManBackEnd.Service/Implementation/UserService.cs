@@ -360,5 +360,10 @@ namespace BudgetManBackEnd.Service.Implementation
                 return result.BuildError(ex.ToString());
             }
         }
+
+        public async Task<AppResponse<string>> CreateNewUserStuff(UserModel user)
+        {
+
+        }
     }
 }
