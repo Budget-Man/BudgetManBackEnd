@@ -9,7 +9,7 @@ namespace BudgetManBackEnd.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin, SuperAdmin, superadmin")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
