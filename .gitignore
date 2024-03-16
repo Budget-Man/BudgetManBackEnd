@@ -365,3 +365,6 @@ FodyWeavers.xsd
 */obj/
 */obj/*
 /BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.csproj.AssemblyReference.cache
+/BudgetManBackEnd/.vs/BudgetManBackEnd/v17/.futdcache.v2
+/.gitignore
+/BudgetManBackEnd/.vs/ProjectEvaluation/budgetmanbackend.metadata.v7.bin
