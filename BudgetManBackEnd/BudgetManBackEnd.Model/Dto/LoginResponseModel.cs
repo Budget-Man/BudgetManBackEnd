@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BudgetManBackEnd.CommonClass.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,9 @@ namespace BudgetManBackEnd.Model.Dto
     {
         public string? userName { get; set; }
         public string? accessToken { get; set; }
-
-        public string? language { get; set; }
-
-        public string? currency { get; set; }
-
-        public string defaultMoneyHolderId { get; set; }
+        public bool isNewUser { get; set; } = false;
+        public Languages? language { get; set; }
+        public Currencies? currency { get; set; }
+        public Guid? defaultMoneyHolderId { get; set; }
     }
 }
