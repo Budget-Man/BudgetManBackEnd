@@ -1,4 +1,5 @@
-﻿using MayNghien.Common.Models.Entity;
+﻿using BudgetManBackEnd.CommonClass.Enum;
+using MayNghien.Common.Models.Entity;
 
 namespace BudgetManBackEnd.DAL.Models.Entity
 {
@@ -11,6 +12,9 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public string? Email { get; set; }
 
         public double Balance { get; set; }
-
+        public Languages? language { get; set; }
+        public Currencies? currency { get; set; }
+        public Guid? defaultMoneyHolderId { get; set; }
+        public bool IsNewUser { get; set; }
     }
 }
