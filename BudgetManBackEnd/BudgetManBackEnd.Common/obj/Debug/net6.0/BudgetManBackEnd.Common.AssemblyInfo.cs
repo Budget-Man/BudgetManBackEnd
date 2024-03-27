@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BudgetManBackEnd.Common")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6255766805f227c797845d4a549bb815d4fe09a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d2e3093807050b01a312d6cc8d15c8efa9286a8")]
 [assembly: System.Reflection.AssemblyProductAttribute("BudgetManBackEnd.Common")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BudgetManBackEnd.Common")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

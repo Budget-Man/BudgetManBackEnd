@@ -1,7 +1,4 @@
-﻿using MayNghien.Common.Models.Entity;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BudgetManBackEnd.DAL.Models.Entity
+﻿namespace BudgetManBackEnd.DAL.Models.Entity
 {
     public class MoneyHolder : BaseAccountEntity
     {

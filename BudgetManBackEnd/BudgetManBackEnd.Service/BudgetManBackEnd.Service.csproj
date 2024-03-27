@@ -9,9 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="..\BudgetManBackEnd.DAL\BudgetManBackEnd.DAL.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
-    <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
   
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
+  
+    <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
