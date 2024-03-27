@@ -83,6 +83,22 @@ namespace Maynghien.Common.Repository
             }
 
         }
+        public void EditRange(List<TEntity> entities, bool isCommit = true)
+        {
+            try
+            {
+                _context.UpdateRange(entities);
+                if (isCommit)
+                    _context.SaveChanges();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
         public void DeleteRange(List<TEntity> entities)
         {

@@ -18,6 +18,7 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<string> DeleteBudget(Guid Id);
         AppResponse<SearchResponse<BudgetDto>> Search(SearchRequest request);
         AppResponse<string> StatusChange(Guid Id);
+        AppResponse<string> MonthReset();
 
 
     }

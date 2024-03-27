@@ -69,6 +69,11 @@ namespace BudgetManBackEnd.API.Controllers
             var result =_budgetService.StatusChange(Id);
             return Ok(result);
         }
-
+        [HttpPatch]
+        public IActionResult MonthReset()
+        {
+            var result = _budgetService.MonthReset();
+            return Ok(result);
+        }
     }
 }

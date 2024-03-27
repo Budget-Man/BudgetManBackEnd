@@ -19,7 +19,7 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IMapper _mapper;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public BudgetCategoryService(IBudgetCategoryRepository budgetCategoryRepository, IMapper mapper,IAccountInfoRepository accountInfoRepository
+        public BudgetCategoryService(IBudgetCategoryRepository budgetCategoryRepository, IMapper mapper, IAccountInfoRepository accountInfoRepository
             , IHttpContextAccessor httpContextAccessor)
         {
             _budgetCategoryRepository = budgetCategoryRepository;
@@ -99,6 +99,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 budgetcat = _budgetCategoryRepository.Get(request.Id.Value);
                 budgetcat.Name = request.Name;
+                budgetcat.MonthlyLimit = request.MonthlyLimit;
                 //budgetcat.Id = Guid.NewGuid();
                 _budgetCategoryRepository.Edit(budgetcat);
 
@@ -118,14 +119,15 @@ namespace BudgetManBackEnd.Service.Implementation
         public AppResponse<List<BudgetCategoryDto>> GetAllBudgetCategory()
         {
             var result = new AppResponse<List<BudgetCategoryDto>>();
-            
+
             string userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId"); ;
             try
             {
-                var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId && m.IsDeleted!=true);
+                var query = _budgetCategoryRepository.GetAll().Where(m => m.Account.UserId == userId && m.IsDeleted != true);
                 var list = query.Select(m => new BudgetCategoryDto
                 {
                     Name = m.Name,
+                    MonthlyLimit = m.MonthlyLimit,
                     Id = m.Id,
                 }).ToList();
                 result.IsSuccess = true;
@@ -135,7 +137,7 @@ namespace BudgetManBackEnd.Service.Implementation
             catch (Exception ex)
             {
                 result.IsSuccess = false;
-                result.Message =ex.Message +" "+ ex.StackTrace;
+                result.Message = ex.Message + " " + ex.StackTrace;
                 return result;
             }
 
@@ -163,53 +165,54 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-		public AppResponse<SearchResponse<BudgetCategoryDto>> Search(SearchRequest request)
-		{
-			var result = new AppResponse<SearchResponse<BudgetCategoryDto>>();
-			try
-			{
-				var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
-				var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
-				if (accountInfoQuery.Count() == 0)
-				{
-					return result.BuildError("Cannot find Account Info by this user");
-				}
-				var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
-				var numOfRecords = _budgetCategoryRepository.CountRecordsByPredicate(query);
-				var budgetCate = _budgetCategoryRepository.FindByPredicate(query).OrderByDescending(x=>x.CreatedOn);
-				int pageIndex = request.PageIndex ?? 1;
-				int pageSize = request.PageSize ?? 1;
-				int startIndex = (pageIndex - 1) * (int)pageSize;
-				var List = budgetCate.Skip(startIndex).Take(pageSize)
-					.Select(x => new BudgetCategoryDto
-					{
-						Id = x.Id,
-						Name = x.Name,
-					})
-					.ToList();
+        public AppResponse<SearchResponse<BudgetCategoryDto>> Search(SearchRequest request)
+        {
+            var result = new AppResponse<SearchResponse<BudgetCategoryDto>>();
+            try
+            {
+                var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+                var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+                if (accountInfoQuery.Count() == 0)
+                {
+                    return result.BuildError("Cannot find Account Info by this user");
+                }
+                var query = BuildFilterExpression(request.Filters, (accountInfoQuery.First()).Id);
+                var numOfRecords = _budgetCategoryRepository.CountRecordsByPredicate(query);
+                var budgetCate = _budgetCategoryRepository.FindByPredicate(query).OrderByDescending(x => x.CreatedOn);
+                int pageIndex = request.PageIndex ?? 1;
+                int pageSize = request.PageSize ?? 1;
+                int startIndex = (pageIndex - 1) * (int)pageSize;
+                var List = budgetCate.Skip(startIndex).Take(pageSize)
+                    .Select(x => new BudgetCategoryDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        MonthlyLimit=x.MonthlyLimit,
+                    })
+                    .ToList();
 
 
-				var searchUserResult = new SearchResponse<BudgetCategoryDto>
-				{
-					TotalRows = numOfRecords,
-					TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
-					CurrentPage = pageIndex,
-					Data = List,
-				};
-				result.BuildResult(searchUserResult);
-			}
-			catch (Exception ex)
-			{
-				result.BuildError(ex.Message);
-			}
-			return result;
-		}
-		private ExpressionStarter<BudgetCategory> BuildFilterExpression(IList<Filter>? Filters, Guid accountId)
-		{
-			try
-			{
-				var predicate = PredicateBuilder.New<BudgetCategory>(true);
-                if(Filters!= null)
+                var searchUserResult = new SearchResponse<BudgetCategoryDto>
+                {
+                    TotalRows = numOfRecords,
+                    TotalPages = CalculateNumOfPages(numOfRecords, pageSize),
+                    CurrentPage = pageIndex,
+                    Data = List,
+                };
+                result.BuildResult(searchUserResult);
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
+        private ExpressionStarter<BudgetCategory> BuildFilterExpression(IList<Filter>? Filters, Guid accountId)
+        {
+            try
+            {
+                var predicate = PredicateBuilder.New<BudgetCategory>(true);
+                if (Filters != null)
                 {
                     foreach (var filter in Filters)
                     {
@@ -225,13 +228,13 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 predicate = predicate.And(m => m.IsDeleted == false);
                 predicate = predicate.And(m => m.AccountId == accountId);
-				return predicate;
-			}
-			catch (Exception)
-			{
+                return predicate;
+            }
+            catch (Exception)
+            {
 
-				throw;
-			}
-		}
-	}
+                throw;
+            }
+        }
+    }
 }
