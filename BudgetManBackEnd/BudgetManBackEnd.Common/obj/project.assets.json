@@ -2090,7 +2090,7 @@
           }
         }
       },
-      "MayNghien.Common/1.0.0": {
+      "Maynghien.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
@@ -2100,10 +2100,10 @@
           "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
-          "bin/placeholder/MayNghien.Common.dll": {}
+          "bin/placeholder/Maynghien.Common.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MayNghien.Common.dll": {}
+          "bin/placeholder/Maynghien.Common.dll": {}
         }
       }
     }
@@ -4635,15 +4635,15 @@
         "version.txt"
       ]
     },
-    "MayNghien.Common/1.0.0": {
+    "Maynghien.Common/1.0.0": {
       "type": "project",
-      "path": "../Maynghien.Common/MayNghien.Common.csproj",
-      "msbuildProject": "../Maynghien.Common/MayNghien.Common.csproj"
+      "path": "../Maynghien.Common/Maynghien.Common.csproj",
+      "msbuildProject": "../Maynghien.Common/Maynghien.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "MayNghien.Common >= 1.0.0"
+      "Maynghien.Common >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -4673,8 +4673,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
-              "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj"
+            "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
+              "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj"
             }
           }
         }

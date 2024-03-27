@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
-    <ProjectReference Include="..\Maynghien.Common\MayNghien.Common.csproj" />
+    <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
   </ItemGroup>
 
 </Project>

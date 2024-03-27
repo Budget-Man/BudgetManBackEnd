@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.Model", "BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj", "{32E83E45-2AC7-408E-AE55-EB23FC1C64F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MayNghien.Common", "Maynghien.Common\MayNghien.Common.csproj", "{48C19B53-561A-40CA-BE49-AC8266379F8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maynghien.Common", "Maynghien.Common\Maynghien.Common.csproj", "{48C19B53-561A-40CA-BE49-AC8266379F8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
