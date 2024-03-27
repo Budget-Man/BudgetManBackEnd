@@ -23,7 +23,7 @@
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj" />
-    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+    <ProjectReference Include="..\Maynghien.Common\MayNghien.Common.csproj" />
   </ItemGroup>
 
 </Project>
