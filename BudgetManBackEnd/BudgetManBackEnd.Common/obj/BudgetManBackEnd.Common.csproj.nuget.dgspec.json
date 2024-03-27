@@ -68,14 +68,14 @@
         }
       }
     },
-    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj": {
+    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
-        "projectName": "MayNghien.Common",
-        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\MayNghien.Common.csproj",
+        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
+        "projectName": "Maynghien.Common",
+        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
         "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
-        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\MayNghien.Common\\obj\\",
+        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",

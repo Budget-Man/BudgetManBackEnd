@@ -2090,7 +2090,7 @@
           }
         }
       },
-      "MayNghien.Common/1.0.0": {
+      "Maynghien.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
@@ -2100,10 +2100,10 @@
           "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
-          "bin/placeholder/MayNghien.Common.dll": {}
+          "bin/placeholder/Maynghien.Common.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MayNghien.Common.dll": {}
+          "bin/placeholder/Maynghien.Common.dll": {}
         }
       }
     }
@@ -4635,15 +4635,15 @@
         "version.txt"
       ]
     },
-    "MayNghien.Common/1.0.0": {
+    "Maynghien.Common/1.0.0": {
       "type": "project",
-      "path": "../MayNghien.Common/MayNghien.Common.csproj",
-      "msbuildProject": "../MayNghien.Common/MayNghien.Common.csproj"
+      "path": "../Maynghien.Common/Maynghien.Common.csproj",
+      "msbuildProject": "../Maynghien.Common/Maynghien.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "MayNghien.Common >= 1.0.0"
+      "Maynghien.Common >= 1.0.0"
     ]
   },
   "packageFolders": {

@@ -123,7 +123,7 @@ namespace BudgetManBackEnd.Service.Implementation
                             UserName = identityUser.UserName,
                             Email = identityUser.Email,
                             Id = identityUser.Id,
-                            Role = (await _userManager.GetRolesAsync(identityUser)).First(),
+                            Role = (await _userManager.GetRolesAsync(identityUser)).FirstOrDefault(),
                             };
 
                     }
