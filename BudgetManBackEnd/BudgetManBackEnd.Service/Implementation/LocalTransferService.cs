@@ -117,13 +117,19 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find from money holder");
                 }
+                var MoneyHolderSource = moneyHolder.FirstOrDefault();
+                var MoneyHolderDestination = moneyHolder2.FirstOrDefault();
                  var localTransfer = _mapper.Map<LocalTransfer>(request);
                 localTransfer.Id = Guid.NewGuid();
                 localTransfer.AccountId = accountInfo.Id;
-                localTransfer.FromMoneyHolder = null;
-                localTransfer.ToMoneyHolder = null;
+                localTransfer.FromMoneyHolderId = MoneyHolderSource.Id;
+                localTransfer.ToMoneyHolderId = MoneyHolderDestination.Id;
                 _localTransferRepository.Add(localTransfer, accountInfo.Name);
 
+                MoneyHolderSource.Balance -= request.Amount;
+                MoneyHolderDestination.Balance += request.Amount;
+                _moneyHolderRepository.Edit(MoneyHolderSource);
+                _moneyHolderRepository.Edit(MoneyHolderDestination);
                 request.Id = localTransfer.Id;
                 result.BuildResult(request);
 
