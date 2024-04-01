@@ -161,7 +161,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
             {
                 var query = _budgetRepository.GetAll()
-                    .Where(x => x.Account.UserId == userId && x.IsDeleted!=true)
+                    .Where(x => x.Account.UserId == userId && x.IsDeleted!=true && x.IsActive)
                     .Include(x=>x.BudgetCategory);
                 var list = query
                     .Select(x=> new BudgetDto
