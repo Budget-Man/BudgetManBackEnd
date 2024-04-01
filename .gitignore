@@ -400,3 +400,5 @@ FodyWeavers.xsd
 /BudgetManBackEnd/.vs/BudgetManBackEnd/v17/.futdcache.v2
 /.gitignore
 /BudgetManBackEnd/.vs/ProjectEvaluation/budgetmanbackend.metadata.v7.bin
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/Debug/net6.0/BudgetManBackEnd.Common.AssemblyInfo.cs
+/BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.AssemblyInfo.cs
