@@ -22,7 +22,7 @@ jobs:
       
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile -t maynghien/budgetmanapi
+      run: docker build . --file Dockerfile -t maynghien/budgetmanapi 
 
     - name: Login to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'

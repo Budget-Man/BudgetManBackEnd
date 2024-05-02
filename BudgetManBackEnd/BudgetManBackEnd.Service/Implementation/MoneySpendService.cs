@@ -23,11 +23,13 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
+        private IAccountBalanceTrackingRepository _accountBalanceTrackingRepository;
 
         public MoneySpendService(IMoneySpendRepository moneySpendRepository, 
             IMoneyHolderRepository moneyHolderRepository, IBudgetRepository budgetRepository,
             IMapper mapper, IHttpContextAccessor httpContextAccessor, 
-            IAccountInfoRepository accountInfoRepository, IMoneySpendDetailRepository moneySpendDetailRepository)
+            IAccountInfoRepository accountInfoRepository, IMoneySpendDetailRepository moneySpendDetailRepository,
+            IAccountBalanceTrackingRepository accountBalanceTrackingRepository)
         {
             _moneySpendRepository = moneySpendRepository;
             _moneyHolderRepository = moneyHolderRepository;
@@ -36,6 +38,7 @@ namespace BudgetManBackEnd.Service.Implementation
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
             _moneySpendDetailRepository = moneySpendDetailRepository;
+            _accountBalanceTrackingRepository = accountBalanceTrackingRepository;
         }
 
         public AppResponse<MoneySpendDto> GetMoneySpend(Guid Id)
@@ -177,6 +180,18 @@ namespace BudgetManBackEnd.Service.Implementation
                 _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult(request);
 
+                var accTracking = new AccountBalanceTracking
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountInfo.Id,
+                    Amount = moneySpend.Amount,
+                    MoneyHolderId = moneyHolder.Id,
+                    ChangeType = Common.Enum.ChangeType.Spent,
+                    CurrentBalance = moneyHolder.Balance + moneySpend.Amount,
+                    NewBalance = moneyHolder.Balance,
+                    BudgetId = budget.Id,
+                };
+                _accountBalanceTrackingRepository.Add(accTracking, accountInfo.Name);
             }
             catch (Exception ex)
             {

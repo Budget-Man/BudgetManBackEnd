@@ -4,6 +4,7 @@ using BudgetManBackEnd.DAL.Models.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetManBackEnd.DAL.Migrations
 {
     [DbContext(typeof(BudgetManDbContext))]
-    partial class BudgetManDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240502083102_trackbalance")]
+    partial class trackbalance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +35,6 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
-
-                    b.Property<Guid?>("BudgetId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ChangeType")
                         .HasColumnType("int");
@@ -67,8 +66,6 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("BudgetId");
 
                     b.HasIndex("MoneyHolderId");
 
@@ -885,11 +882,6 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.Budget", "Budget")
-                        .WithMany()
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
                         .WithMany()
                         .HasForeignKey("MoneyHolderId")
@@ -897,8 +889,6 @@ namespace BudgetManBackEnd.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
-
-                    b.Navigation("Budget");
 
                     b.Navigation("MoneyHolder");
                 });

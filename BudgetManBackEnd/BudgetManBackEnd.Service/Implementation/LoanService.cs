@@ -22,10 +22,12 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IMapper _mapper;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAccountBalanceTrackingRepository _accountBalanceTrackingRepository;
 
         public LoanService(ILoanRepository loanRepository, IAccountInfoRepository accountInfoRepository,
             IMapper mapper, IHttpContextAccessor httpContextAccessor,
-            IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository)
+            IBudgetRepository budgetRepository, IMoneyHolderRepository moneyHolderRepository, 
+            IAccountBalanceTrackingRepository accountBalanceTrackingRepository)
         {
             _loanRepository = loanRepository;
             _accountInfoRepository = accountInfoRepository;
@@ -33,6 +35,7 @@ namespace BudgetManBackEnd.Service.Implementation
             _httpContextAccessor = httpContextAccessor;
             _budgetRepository = budgetRepository;
             _moneyHolderRepository = moneyHolderRepository;
+            _accountBalanceTrackingRepository = accountBalanceTrackingRepository;
         }
 
         public AppResponse<LoanDto> CreateLoan(LoanDto request)
@@ -66,6 +69,18 @@ namespace BudgetManBackEnd.Service.Implementation
                 _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = loan.Id;
                 result.BuildResult(request);
+                var accTracking = new AccountBalanceTracking
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountInfo.Id,
+                    Amount = loan.LoanAmount.Value,
+                    MoneyHolderId = moneyHolder.Id,
+                    ChangeType = Common.Enum.ChangeType.Loan,
+                    CurrentBalance = moneyHolder.Balance - loan.LoanAmount.Value,
+                    NewBalance = moneyHolder.Balance,
+                    BudgetId = null,
+                };
+                _accountBalanceTrackingRepository.Add(accTracking, accountInfo.Name);
             }
             catch (Exception ex)
             {
