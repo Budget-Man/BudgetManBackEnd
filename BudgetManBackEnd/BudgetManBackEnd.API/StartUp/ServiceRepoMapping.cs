@@ -30,6 +30,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<ILocalTransferService,  LocalTransferService>();
             builder.Services.AddScoped<IMoneySpendService, MoneySpendService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAccountBalanceTrackingService, AccountBalanceTrackingService>();
             
             #endregion Service Mapping
 
@@ -47,6 +48,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IMoneySpendRepository, MoneySpendRepository>();
             builder.Services.AddScoped<ILocalTransferRepository, LocalTransferRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAccountBalanceTrackingRepository, AccountBalanceTrackingRepository>();
             
             #endregion Repository Mapping
         }

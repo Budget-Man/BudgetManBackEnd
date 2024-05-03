@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.DAL.Implementation
 {
-    internal class AccountBalanceTrackingRepository : GenericRepository<AccountBalanceTracking, BudgetManDbContext>, IAccountBalanceTrackingRepository
+    public class AccountBalanceTrackingRepository : GenericRepository<AccountBalanceTracking, BudgetManDbContext>, IAccountBalanceTrackingRepository
     {
         public AccountBalanceTrackingRepository(BudgetManDbContext unitOfWork) : base(unitOfWork)
         {
