@@ -73,10 +73,10 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     Id = Guid.NewGuid(),
                     AccountId = accountInfo.Id,
-                    Amount = loan.LoanAmount.Value,
+                    Amount = loan.TotalAmount,
                     MoneyHolderId = moneyHolder.Id,
                     ChangeType = Common.Enum.ChangeType.Loan,
-                    CurrentBalance = moneyHolder.Balance - loan.LoanAmount.Value,
+                    CurrentBalance = moneyHolder.Balance + loan.TotalAmount,
                     NewBalance = moneyHolder.Balance,
                     BudgetId = null,
                 };
@@ -84,7 +84,7 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             catch (Exception ex)
             {
-                result.BuildError(ex.Message);
+                result.BuildError(ex.ToString());
             }
             return result;
         }
