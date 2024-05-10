@@ -12,9 +12,9 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public string? Email { get; set; }
 
         public double Balance { get; set; }
-        public Languages? language { get; set; }
-        public Currencies? currency { get; set; }
-        public Guid? defaultMoneyHolderId { get; set; }
+        public Languages? Language { get; set; }
+        public Currencies? Currency { get; set; }
+        public Guid? DefaultMoneyHolderId { get; set; }
         public bool IsNewUser { get; set; }
     }
 }

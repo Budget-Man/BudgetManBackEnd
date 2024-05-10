@@ -21,6 +21,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Oauth2.v2;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Google.Apis.Oauth2.v2.Data;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -69,6 +70,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         Name = user.UserName,
                         IsDeleted = false,
                         UserId = newIdentityUser.Id,
+                        IsNewUser = true
                     };
                     _accountInfoRepository.Add(AccountInfo, "");
                 }
@@ -136,18 +138,18 @@ namespace BudgetManBackEnd.Service.Implementation
                     await _userManager.AddPasswordAsync(newIdentity, "CdzuOsSbBH");
                     
                     await _userManager.AddToRoleAsync(newIdentity, "superadmin");
-                    var accountInfor = new AccountInfo
-                    {
-                        Id = Guid.NewGuid(),
-                        Balance = 0,
-                        Email = newIdentity.Email,
-                        CreatedBy = newIdentity.Email,
-                        CreatedOn = DateTime.Now,
-                        Name = newIdentity.UserName,
-                        IsDeleted = false,
-                        UserId = newIdentity.Id,
-                    };
-                    _accountInfoRepository.Add(accountInfor, "");
+                    //var accountInfor = new AccountInfo
+                    //{
+                    //    Id = Guid.NewGuid(),
+                    //    Balance = 0,
+                    //    Email = newIdentity.Email,
+                    //    CreatedBy = newIdentity.Email,
+                    //    CreatedOn = DateTime.Now,
+                    //    Name = newIdentity.UserName,
+                    //    IsDeleted = false,
+                    //    UserId = newIdentity.Id,
+                    //};
+                    //_accountInfoRepository.Add(accountInfor, "");
 
                 }
                 if (user != null)
@@ -256,7 +258,10 @@ namespace BudgetManBackEnd.Service.Implementation
 
             // Use userInfo and perform server-side logic 
             var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
-
+            LoginResponseModel loginResponse = new LoginResponseModel()
+            {
+                userName = userInfo.Email
+            };
 
             if (identityUser != null)
             {
@@ -265,7 +270,17 @@ namespace BudgetManBackEnd.Service.Implementation
                     return result.BuildError(ERR_MSG_UserLockedOut);
 
                 }
+                else
+                {
+                    var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
+                    if (accountInfo!=null)
+                    {
+                        loginResponse.language = accountInfo.language;
+                        loginResponse.currency = accountInfo.currency;
+                        loginResponse.defaultMoneyHolderId = accountInfo.defaultMoneyHolderId;
+                    }
 
+                }
             }
             else
             {
@@ -288,6 +303,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         UserId = identityUser.Id,
                     };
                     _accountInfoRepository.Add(AccountInfo, "");
+                    loginResponse.isNewUser = true;
                 }
                 else
                 {
@@ -302,10 +318,7 @@ namespace BudgetManBackEnd.Service.Implementation
             };
 
             var tokenString = await GenerateJSONWebToken(user, identityUser);
-            LoginResponseModel loginResponse = new LoginResponseModel(){
-                userName = userInfo.Email,
-                accessToken = tokenString
-            };
+            loginResponse.accessToken = tokenString;
             return result.BuildResult(loginResponse);
         }
     }

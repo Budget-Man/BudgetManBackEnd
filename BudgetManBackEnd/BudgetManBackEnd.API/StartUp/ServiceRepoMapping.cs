@@ -32,6 +32,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAccountBalanceTrackingService, AccountBalanceTrackingService>();
             
+            builder.Services.AddScoped<IAccountService, AccountService>();
             #endregion Service Mapping
 
             #region Repository Mapping
