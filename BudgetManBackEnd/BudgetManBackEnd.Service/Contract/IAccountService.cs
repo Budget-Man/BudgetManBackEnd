@@ -1,4 +1,6 @@
 ﻿using BudgetManBackEnd.Model.Dto;
+using BudgetManBackEnd.Model.Response.User;
+using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using System;
 using System.Collections.Generic;
@@ -8,11 +10,9 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.Service.Contract
 {
-    public interface IAuthService
+    public interface IAccountService
     {
-        Task<AppResponse<LoginResult>> AuthenticateUser(UserModel login);
-        Task<AppResponse<string>> CreateUser(UserModel user);
-
-        Task<AppResponse<LoginResult>> LoginByGoogle(GoogleLoginDto token);
+        public Task<AppResponse<string>> SaveSetting(UserSettingDto model);
+        
     }
 }

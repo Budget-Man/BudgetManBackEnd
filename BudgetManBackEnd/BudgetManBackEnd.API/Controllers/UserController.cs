@@ -71,5 +71,14 @@ namespace BudgetManBackEnd.API.Controllers
 
             return Ok(result);
         }
+        
+        [HttpPut]
+        [Route("runtest")]
+        public async Task<IActionResult> RunTestUser([FromBody] UserModel request)
+        {
+            var result = await _userService.RunTestUser(request);
+
+            return Ok(result);
+        }
     }
 }
