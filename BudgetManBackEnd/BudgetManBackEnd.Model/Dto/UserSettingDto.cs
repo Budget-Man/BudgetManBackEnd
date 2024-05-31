@@ -1,0 +1,18 @@
+﻿using BudgetManBackEnd.CommonClass.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BudgetManBackEnd.Model.Dto
+{
+    public class UserSettingDto
+    {
+        public string? Language { get; set; }
+        public string? Currency { get; set; }
+        public Guid? DefaultMoneyHolderId { get; set; }
+        public bool? IsCreateBaseData { get; set; }
+
+    }
+}

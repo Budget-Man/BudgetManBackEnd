@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BudgetManBackEnd.Model.Dto
 {
-    public class LoginResult
+    public class LoginResponseDto
     {
-        public string Token { get; set; }
-        public string UserName { get; set; }
-        public string[] Roles { get; set; }
+        public string? Token { get; set; }
+        public string? UserName { get; set; }
+        public string[]? Roles { get; set; }
         public bool IsNewUser { get; set; } = false;
         public Languages? Language { get; set; }
         public Currencies? Currency { get; set; }
