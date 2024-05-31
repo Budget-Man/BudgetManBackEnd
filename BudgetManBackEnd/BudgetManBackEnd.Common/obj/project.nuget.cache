@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "YUuPbs4FqSdqYk5Tssu3pDcmrjs6fd1/Dl+Iiq4cJOSNKsbawbewBYIZOodDMpN3YnCAe7XOJBskDiKvniKh+A==",
+  "dgSpecHash": "Qvj/jqmchGXV9ivCG7XqpGJd75uqbfHxJoorKAH471bn4iRuuHiBQ8E47HVLCcYxJtcNm6BbMFEJRYF0dutusQ==",
   "success": true,
   "projectFilePath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
   "expectedPackageFiles": [
@@ -121,7 +121,10 @@
     "C:\\Users\\binh.phan\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
     "C:\\Users\\binh.phan\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512",
     "C:\\Users\\binh.phan\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.1\\system.threading.tasks.extensions.4.5.1.nupkg.sha512",
-    "C:\\Users\\binh.phan\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
+    "C:\\Users\\binh.phan\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512",
+    "C:\\Users\\binh.phan\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.30\\microsoft.windowsdesktop.app.ref.6.0.30.nupkg.sha512",
+    "C:\\Users\\binh.phan\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.30\\microsoft.netcore.app.ref.6.0.30.nupkg.sha512",
+    "C:\\Users\\binh.phan\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.30\\microsoft.aspnetcore.app.ref.6.0.30.nupkg.sha512"
   ],
   "logs": []
 }
