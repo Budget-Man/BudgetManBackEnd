@@ -272,6 +272,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
                 else
                 {
+                    loginResponse.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
                     var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
                     if (accountInfo!=null)
                     {
