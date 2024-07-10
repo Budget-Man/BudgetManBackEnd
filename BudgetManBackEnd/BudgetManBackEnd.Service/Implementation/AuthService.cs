@@ -159,6 +159,15 @@ namespace BudgetManBackEnd.Service.Implementation
                     loginResult.Token = tokenString;
                     loginResult.UserName = user.UserName;
                     loginResult.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
+
+                    var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
+                    if (accountInfo != null)
+                    {
+                        loginResult.Language = accountInfo.Language;
+                        loginResult.Currency = accountInfo.Currency;
+                        loginResult.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
+                        loginResult.IsNewUser = accountInfo.IsNewUser;
+                    }
                     return result.BuildResult(loginResult);
                 }
                 else

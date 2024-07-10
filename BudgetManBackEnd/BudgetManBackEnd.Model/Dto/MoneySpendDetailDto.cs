@@ -13,5 +13,7 @@ namespace BudgetManBackEnd.Model.Dto
         public double? Quantity { get; set; }
         public double Amount { get; set; }
         public string Reason { get; set; }
+
+        public DateTime? CreateOn { get; set; } 
     }
 }

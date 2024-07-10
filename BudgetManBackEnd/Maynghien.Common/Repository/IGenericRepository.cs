@@ -23,6 +23,7 @@ namespace Maynghien.Common.Repository
 
         void DeleteRange(List<T> entities);
         void SoftDeleteRange(List<T> entities);
+        void SoftDeleteRange(Expression<Func<T, bool>> predicate);
         Task<int> CountRecordsAsync(Expression<Func<T, bool>> predicate);
         void BulkInsert(IList<T> items, int packageSize = 1000);
         Task BulkInsert(IList<T> entities, CancellationToken cancellationToken);
