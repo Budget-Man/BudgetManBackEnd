@@ -40,14 +40,14 @@ namespace BudgetManBackEnd.API.Controllers
         }
         [HttpPut]
         //[Route("{Id}")]
-        public IActionResult EditLoanPay(MoneySpendDto request)
+        public IActionResult Edit(MoneySpendDto request)
         {
             var result = _moneySpendService.EditMoneySpend(request);
             return Ok(result);
         }
         [HttpDelete]
         [Route("{Id}")]
-        public IActionResult DeleteLoanPay(Guid Id)
+        public IActionResult Delete(Guid Id)
         {
             var result = _moneySpendService.DeleteMoneySpend(Id);
             return Ok(result);

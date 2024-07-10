@@ -150,6 +150,12 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var income = _incomeRepository.Get((Guid)request.Id);
+                if (income.Amount != request.Amount)
+                {
+                    var moneyHolder = _moneyHolderRepository.Get(income.MoneyHolderId);
+                    moneyHolder.Balance = moneyHolder.Balance - income.Amount + request.Amount;
+                    _moneyHolderRepository.Edit(moneyHolder);
+                }
                 income.Name = request.Name;
                 income.MoneyHolderId = request.MoneyHolderId;
                 income.Amount = request.Amount;
@@ -168,9 +174,13 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
+                
                 var income = _incomeRepository.Get(Id);
+                var moneyHolder = _moneyHolderRepository.Get(income.MoneyHolderId);
+                moneyHolder.Balance -= income.Amount;
                 income.IsDeleted = true;
                 _incomeRepository.Edit(income);
+                _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)
