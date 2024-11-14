@@ -97,8 +97,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-*.cache
-*.props
+
 # Chutzpah Test files
 _Chutzpah*
 
@@ -362,5 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-*/obj/
-*/obj/*
+*.env

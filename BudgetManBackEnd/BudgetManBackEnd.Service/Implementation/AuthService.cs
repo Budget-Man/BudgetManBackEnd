@@ -122,7 +122,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     }
 
                 }
-                else if (login.UserName == "may.nghien@gmail.com")
+                else if (login.UserName == "karzix1809@gmail.com")
                 {
                     var newIdentity = new IdentityUser { UserName = login.UserName, Email = login.Email, EmailConfirmed = true };
                     await _userManager.CreateAsync(newIdentity);
