@@ -46,7 +46,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError(ERR_MSG_UserExisted);
                 }
-                var newIdentityUser = new IdentityUser { Email = user.UserName, UserName = user.UserName };
+                var newIdentityUser = new IdentityUser { Email = user.UserName, UserName = user.UserName, EmailConfirmed = true };
                 var createResult = await _userManager.CreateAsync(newIdentityUser);
                 await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
 
