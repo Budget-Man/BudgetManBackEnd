@@ -50,7 +50,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var createResult = await _userManager.CreateAsync(newIdentityUser);
                 await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
 
-                newIdentityUser = await _userManager.FindByEmailAsync(user.Email);
+                newIdentityUser = await _userManager.FindByEmailAsync(user.UserName);
                 if (newIdentityUser != null)
                 {
                     var AccountInfo = new AccountInfo()

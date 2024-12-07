@@ -152,7 +152,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 //if (budget.Balance == null) budget.Balance = 0;
                 if(moneyHolder.Balance==null) moneyHolder.Balance = 0;
                 //budget.Balance += loanPay.PaidAmount.Value + loanPay.Interest.Value;
-                moneyHolder.Balance += loanPay.PaidAmount.Value;
+                moneyHolder.Balance -= loanPay.PaidAmount.Value;
 
                 _loanPayRepository.Add(loanPay, accountInfo.Name);
                 _loanRepository.Edit(Loan);
