@@ -283,7 +283,6 @@ namespace BudgetManBackEnd.Service.Implementation
 				throw;
 			}
 		}
-
         public AppResponse<string> StatusChange(Guid Id)
         {
             var result = new AppResponse<string>();
@@ -304,7 +303,6 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
-
         public AppResponse<string> MonthReset()
         {
             var result = new AppResponse<string>();
@@ -353,5 +351,6 @@ namespace BudgetManBackEnd.Service.Implementation
             _budgetRepository.AddRange(newBudgets);
             return result.BuildResult("ok");
         }
+
     }
 }

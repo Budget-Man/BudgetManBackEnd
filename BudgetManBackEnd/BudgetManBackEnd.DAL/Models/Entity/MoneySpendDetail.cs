@@ -13,5 +13,6 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public double Amount { get; set; }
         public string Reason { get; set; }
         public bool IsPaid { get; set; } = false;
+
     }
 }

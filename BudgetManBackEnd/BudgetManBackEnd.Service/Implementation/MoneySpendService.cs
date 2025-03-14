@@ -1,15 +1,19 @@
 ﻿using System.Data.Entity;
+using System.Diagnostics;
+using System.IO.Pipelines;
 using AutoMapper;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Model.Request;
 using BudgetManBackEnd.Service.Contract;
+using Intercom.Data;
 using LinqKit;
 using MayNghien.Common.Helpers;
 using MayNghien.Models.Request.Base;
 using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Http;
+using NetTopologySuite.Index.HPRtree;
 using static MayNghien.Common.Helpers.SearchHelper;
 
 namespace BudgetManBackEnd.Service.Implementation
@@ -97,8 +101,10 @@ namespace BudgetManBackEnd.Service.Implementation
                         MoneyHolderName = x.MoneyHolder.Name,
                         Reason= x.Reason,
                         Description= x.Description,
+                        //Details = GetMoneySpendDetail(x.Id)
                     })
                     .ToList();
+
                 result.BuildResult(list);
             }
             catch (Exception ex)
@@ -145,7 +151,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 moneySpend.Reason = request.Reason;
                 moneySpend.AccountId = accountInfo.Id;
                 var listDetails = new List<MoneySpendDetail>();
-                if (request.Details.Count > 0)
+                if (request.Details !=null && request.Details.Count > 0)
                 {
                     foreach (var item in request.Details)
                     {
@@ -206,13 +212,37 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var moneySpend = _moneySpendRepository.Get((Guid)request.Id);
+                if (moneySpend == null)
+                {
+                    result.BuildError("MoneySpend is not existed!");
+                    return result;
+                }
                 moneySpend.BudgetId = request.BudgetId;
-                moneySpend.Amount = request.Amount;
+                
                 moneySpend.MoneyHolderId = request.MoneyHolderId;
                 moneySpend.Reason = request.Reason;
                 moneySpend.Description = request.Description;
                 moneySpend.IsPaid = request.IsPaid;
+
+                if (request.Details == null || request.Details.Count <= 0)
+                {
+                    moneySpend.Amount = request.Amount;
+                    _moneySpendDetailRepository.SoftDeleteRange(x => x.MoneySpendId == moneySpend.Id);
+                }
+                else
+                {
+                    EditMoneySpendDetailsAsync(request.Details, moneySpend.Id, moneySpend.AccountId);
+                    moneySpend.Amount = moneySpend.Amount = request.Details.Sum(x => x.Quantity.Value*x.Price.Value);
+                }
+
                 _moneySpendRepository.Edit(moneySpend);
+
+                if (moneySpend.Amount != request.Amount)
+                {
+                    var moneyHolder = _moneyHolderRepository.Get(moneySpend.MoneyHolderId);
+                    moneyHolder.Balance = moneyHolder.Balance + moneySpend.Amount - request.Amount;
+                    _moneyHolderRepository.Edit(moneyHolder);
+                }
                 result.BuildResult(request);
             }
             catch (Exception ex)
@@ -221,15 +251,61 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
+        protected void EditMoneySpendDetailsAsync(List<MoneySpendDetailDto> updatedDetails, Guid moneySpendId, Guid accountId)
+        {
+            var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+            var existingDetails = _moneySpendDetailRepository.GetAll().Where(d => d.MoneySpendId == moneySpendId).ToList();
 
+            var newDetails = new List<MoneySpendDetail>();
+            foreach (var updatedDetail in updatedDetails)
+            {
+                var existingDetail = existingDetails.FirstOrDefault(d => d.Id == updatedDetail.Id);
+                if (existingDetail != null)
+                {
+                    existingDetail.Quantity = updatedDetail.Quantity;
+                    existingDetail.Price = updatedDetail.Price;
+                    existingDetail.Amount = updatedDetail.Quantity.HasValue && updatedDetail.Price.HasValue
+                                            ? updatedDetail.Quantity.Value * updatedDetail.Price.Value
+                                            : existingDetail.Amount;
+                    existingDetail.Reason = updatedDetail.Reason;
+                    //existingDetail.IsPaid = updatedDetail.IsPaid;
+                    existingDetail.AccountId = accountId;
+                    _moneySpendDetailRepository.Edit(existingDetail);
+                }
+                else
+                {
+                    var detail = new MoneySpendDetail();
+                    detail.Id = Guid.NewGuid();
+                    detail.Quantity = updatedDetail.Quantity;
+                    detail.Price = updatedDetail.Price;
+                    detail.Amount = updatedDetail.Quantity.Value * updatedDetail.Price.Value;
+                    detail.CreatedBy = userId;
+                    detail.CreatedOn = DateTime.UtcNow;
+                    detail.MoneySpendId = moneySpendId;
+                    detail.AccountId = accountId;
+                    detail.Reason = updatedDetail.Reason;
+                    newDetails.Add(detail);
+                }
+                
+            }
+            if (updatedDetails.Count < existingDetails.Count)
+            {
+                var updatedDetailIds = updatedDetails.Select(x => x.Id).ToList();
+                _moneySpendDetailRepository.SoftDeleteRange(x => !updatedDetailIds.Contains(x.Id));
+            }
+            _moneySpendDetailRepository.AddRange(newDetails);
+        }
         public AppResponse<string> DeleteMoneySpend(Guid Id)
         {
             var result = new AppResponse<string>();
             try
             {
                 var moneySpend = _moneySpendRepository.Get(Id);
+                var moneyHolder = _moneyHolderRepository.Get(moneySpend.MoneyHolderId);
+                moneyHolder.Balance += moneySpend.Amount;
                 moneySpend.IsDeleted = true;
                 _moneySpendRepository.Edit(moneySpend);
+                _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)
@@ -266,12 +342,15 @@ namespace BudgetManBackEnd.Service.Implementation
                         MoneyHolderId=x.MoneyHolderId,
                         MoneyHolderName=x.MoneyHolder.Name,
                         Amount=x.Amount,
-                        
-					})
+
+                    })
 					.ToList();
+                List.ForEach(x =>
+                {
+                    x.Details = GetMoneySpendDetail(x.Id);
+                });
 
-
-				var searchUserResult = new SearchResponse<MoneySpendDto>
+                var searchUserResult = new SearchResponse<MoneySpendDto>
 				{
 					TotalRows = 0,
 					TotalPages = CalculateNumOfPages(0, pageSize),
@@ -319,5 +398,25 @@ namespace BudgetManBackEnd.Service.Implementation
 				throw;
 			}
 		}
+
+        private List<MoneySpendDetailDto> GetMoneySpendDetail(Guid? moneySpendId)
+        {
+            if (moneySpendId == null)
+            {
+                return new List<MoneySpendDetailDto>();
+            }
+            var result = _moneySpendDetailRepository.GetAll().Where(x => x.MoneySpendId == moneySpendId && x.IsDeleted != true)
+                .Select(x=> new MoneySpendDetailDto
+                {
+                    Id = x.Id,
+                    Price = x.Price,
+                    Quantity = x.Quantity,
+                    Amount = x.Amount,
+                    Reason = x.Reason,
+                    CreateOn = x.CreatedOn
+                })
+                .OrderBy(x=>x.CreateOn).ToList();
+            return result;
+        }
 	}
 }

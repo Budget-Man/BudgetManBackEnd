@@ -150,7 +150,11 @@ namespace Maynghien.Common.Repository
             _context.UpdateRange(entities);
             _context.SaveChanges();
         }
-
+        public void SoftDeleteRange(Expression<Func<TEntity, bool>> predicate)
+        {
+            var entities =  GetSet().Where(predicate).ToList();
+            SoftDeleteRange(entities);
+        }
         public DbSet<TEntity> GetSet()
         {
             return _context.CreateSet<TEntity>();

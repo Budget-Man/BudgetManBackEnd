@@ -159,6 +159,15 @@ namespace BudgetManBackEnd.Service.Implementation
                     loginResult.Token = tokenString;
                     loginResult.UserName = user.UserName;
                     loginResult.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
+
+                    var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
+                    if (accountInfo != null)
+                    {
+                        loginResult.Language = accountInfo.Language;
+                        loginResult.Currency = accountInfo.Currency;
+                        loginResult.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
+                        loginResult.IsNewUser = accountInfo.IsNewUser;
+                    }
                     return result.BuildResult(loginResult);
                 }
                 else
@@ -255,71 +264,80 @@ namespace BudgetManBackEnd.Service.Implementation
             // Retrieve user information
             var userInfoRequest = service.Userinfo.Get();
             var userInfo = await userInfoRequest.ExecuteAsync();
-
-            // Use userInfo and perform server-side logic 
-            var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
-            LoginResult loginResponse = new LoginResult()
+            try
             {
-                UserName = userInfo.Email
-            };
-
-            if (identityUser != null)
-            {
-                if (await _userManager.IsLockedOutAsync(identityUser))
+                // Use userInfo and perform server-side logic 
+                var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+                LoginResult loginResponse = new LoginResult()
                 {
-                    return result.BuildError(ERR_MSG_UserLockedOut);
+                    UserName = userInfo.Email
+                };
 
-                }
-                else
-                {
-                    var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
-                    if (accountInfo!=null)
-                    {
-                        loginResponse.Language = accountInfo.Language;
-                        loginResponse.Currency = accountInfo.Currency;
-                        loginResponse.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
-                    }
-
-                }
-            }
-            else
-            {
-                identityUser = new IdentityUser { Email = userInfo.Email, UserName = userInfo.Email };
-                var createResult = await _userManager.CreateAsync(identityUser);
-                //await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
-
-                identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
                 if (identityUser != null)
                 {
-                    var AccountInfo = new AccountInfo()
+                    if (await _userManager.IsLockedOutAsync(identityUser))
                     {
-                        Id = Guid.NewGuid(),
-                        Balance = 0,
-                        Email = userInfo.Email,
-                        CreatedBy = userInfo.Email,
-                        CreatedOn = DateTime.Now,
-                        Name = userInfo.Name,
-                        IsDeleted = false,
-                        UserId = identityUser.Id,
-                    };
-                    _accountInfoRepository.Add(AccountInfo, "");
-                    loginResponse.IsNewUser = true;
+                        return result.BuildError(ERR_MSG_UserLockedOut);
+
+                    }
+                    else
+                    {
+                        loginResponse.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
+                        var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
+                        if (accountInfo != null)
+                        {
+                            loginResponse.Language = accountInfo.Language;
+                            loginResponse.Currency = accountInfo.Currency;
+                            loginResponse.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
+                        }
+
+                    }
                 }
                 else
                 {
-                    return result.BuildError(ERR_MSG_CanNotCreateUser);
-                }
-            }
-            var user = new UserModel
-            {
-                UserName = userInfo.Email,
-                Email = userInfo.Email,
-                Id = identityUser.Id,
-            };
+                    identityUser = new IdentityUser { Email = userInfo.Email, UserName = userInfo.Email };
+                    var createResult = await _userManager.CreateAsync(identityUser);
+                    //await _userManager.AddPasswordAsync(newIdentityUser, user.Password);
 
-            var tokenString = await GenerateJSONWebToken(user, identityUser);
-            loginResponse.Token = tokenString;
-            return result.BuildResult(loginResponse);
+                    identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+                    if (identityUser != null)
+                    {
+                        var AccountInfo = new AccountInfo()
+                        {
+                            Id = Guid.NewGuid(),
+                            Balance = 0,
+                            Email = userInfo.Email,
+                            CreatedBy = userInfo.Email,
+                            CreatedOn = DateTime.Now,
+                            Name = userInfo.Name,
+                            IsDeleted = false,
+                            UserId = identityUser.Id,
+                        };
+                        _accountInfoRepository.Add(AccountInfo, "");
+                        loginResponse.IsNewUser = true;
+                    }
+                    else
+                    {
+                        return result.BuildError(ERR_MSG_CanNotCreateUser);
+                    }
+                }
+                var user = new UserModel
+                {
+                    UserName = userInfo.Email,
+                    Email = userInfo.Email,
+                    Id = identityUser.Id,
+                };
+
+                var tokenString = await GenerateJSONWebToken(user, identityUser);
+                loginResponse.Token = tokenString;
+                return result.BuildResult(loginResponse);
+
+
+            }
+            catch (Exception ex)
+            {
+                return result.BuildError(ex.Message);
+            }
         }
     }
 }
