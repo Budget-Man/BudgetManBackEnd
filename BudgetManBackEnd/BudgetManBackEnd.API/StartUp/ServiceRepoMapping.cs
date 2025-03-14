@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
+using BudgetManBackEnd.BotFramework;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
@@ -51,6 +52,7 @@ namespace BudgetManBackEnd.API.StartUp
                 return new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(configuration), channelProvider, logger);
             });
             builder.Services.AddScoped<IBot, MyBot>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
             #endregion Service Mapping
 
             #region Repository Mapping
