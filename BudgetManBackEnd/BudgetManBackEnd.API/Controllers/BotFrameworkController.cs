@@ -3,7 +3,7 @@ using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BudgetManBackEnd.MessageCronJob;
+using BudgetManBackEnd.BotFramework;
 using MayNghien.Models.Request.Base;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder;
@@ -16,7 +16,7 @@ namespace BudgetManBackEnd.API.Controllers
     [Route("api/BotFramework")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = "Bearer")]
-    public class BotFrameworkController : Controller, ActivityHandler
+    public class BotFrameworkController : Controller
     {
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;

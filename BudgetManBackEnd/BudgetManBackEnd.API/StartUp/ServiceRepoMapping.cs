@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
-using BudgetManBackEnd.MessageCronJob;
+using BudgetManBackEnd.BotFramework;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using Microsoft.Bot.Builder;

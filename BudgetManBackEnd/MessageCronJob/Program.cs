@@ -32,13 +32,15 @@ namespace BudgetManBackEnd.BotFramework
 
         //private readonly IBotFrameworkHttpAdapter _adapter;
         //private readonly IBot _bot;
+        private ServiceProvider serviceProvider;
         public MyBot()
         {
             //_adapter = adapter;
             //_bot = bot;
             //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
             //client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-
+            serviceProvider = ConfigureServices();
+            var budgetService = serviceProvider.GetService<IBudgetService>();
         }
         public static void Main(string[] args)
         {
@@ -47,6 +49,7 @@ namespace BudgetManBackEnd.BotFramework
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var reply = new Activity();
+
             try
             {
                 // Send a "typing" activity to indicate the bot is preparing a response
@@ -67,8 +70,8 @@ namespace BudgetManBackEnd.BotFramework
 
                 bool isGroup = turnContext.Activity.Conversation.IsGroup ?? false;
                 string textReply = string.Empty;
-
-                
+                var meesageService = serviceProvider.GetService<IMessageService>();
+                textReply = await meesageService.HandleMessage(userMessage, isGroup);
 
                 reply = MessageFactory.Text(textReply);
                 if (isGroup)
@@ -136,7 +139,7 @@ namespace BudgetManBackEnd.BotFramework
             var services = new ServiceCollection();
 
             // Register IBudgetService with its implementation
-            services.AddScoped<IBudgetService, BudgetService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             return services.BuildServiceProvider();
         }
