@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {}
+    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
+    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
         "projectName": "BudgetManBackEnd.Common",
-        "projectPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
-        "packagesPath": "C:\\Users\\sy.nguyen\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
+        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
+        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sy.nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
-                "projectPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj"
+              "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
+                "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj"
               }
             }
           }
@@ -38,6 +38,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -77,17 +82,17 @@
         }
       }
     },
-    "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
+    "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
+        "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
         "projectName": "Maynghien.Common",
-        "projectPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
-        "packagesPath": "C:\\Users\\sy.nguyen\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\obj\\",
+        "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj",
+        "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
+        "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sy.nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -107,6 +112,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
