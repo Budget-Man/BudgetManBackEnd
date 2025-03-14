@@ -2090,7 +2090,7 @@
           }
         }
       },
-      "Maynghien.Common/1.0.0": {
+      "MayNghien.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
@@ -2100,10 +2100,10 @@
           "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
-          "bin/placeholder/Maynghien.Common.dll": {}
+          "bin/placeholder/MayNghien.Common.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Maynghien.Common.dll": {}
+          "bin/placeholder/MayNghien.Common.dll": {}
         }
       }
     }
@@ -4635,19 +4635,20 @@
         "version.txt"
       ]
     },
-    "Maynghien.Common/1.0.0": {
+    "MayNghien.Common/1.0.0": {
       "type": "project",
-      "path": "../Maynghien.Common/Maynghien.Common.csproj",
-      "msbuildProject": "../Maynghien.Common/Maynghien.Common.csproj"
+      "path": "../MayNghien.Common/MayNghien.Common.csproj",
+      "msbuildProject": "../MayNghien.Common/MayNghien.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Maynghien.Common >= 1.0.0"
+      "MayNghien.Common >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sy.nguyen\\.nuget\\packages\\": {}
+    "C:\\Users\\sy.nguyen\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -4658,8 +4659,12 @@
       "packagesPath": "C:\\Users\\sy.nguyen\\.nuget\\packages\\",
       "outputPath": "D:\\Projects\\BudgetMan\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
         "C:\\Users\\sy.nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4683,7 +4688,13 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net6.0": {
@@ -4699,26 +4710,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.30, 6.0.30]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.30, 6.0.30]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.30, 6.0.30]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
