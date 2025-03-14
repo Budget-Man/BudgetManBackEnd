@@ -279,17 +279,17 @@ namespace BudgetManBackEnd.Service.Implementation
                     {
                         return result.BuildError(ERR_MSG_UserLockedOut);
 
-                    }
-                    else
+                }
+                else
+                {
+                    loginResponse.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
+                    var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
+                    if (accountInfo!=null)
                     {
-                        loginResponse.Roles = (await _userManager.GetRolesAsync(identityUser)).ToArray();
-                        var accountInfo = _accountInfoRepository.FindBy(x => x.UserId == identityUser.Id).FirstOrDefault();
-                        if (accountInfo != null)
-                        {
-                            loginResponse.Language = accountInfo.Language;
-                            loginResponse.Currency = accountInfo.Currency;
-                            loginResponse.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
-                        }
+                        loginResponse.Language = accountInfo.Language;
+                        loginResponse.Currency = accountInfo.Currency;
+                        loginResponse.DefaultMoneyHolderId = accountInfo.DefaultMoneyHolderId;
+                    }
 
                     }
                 }
