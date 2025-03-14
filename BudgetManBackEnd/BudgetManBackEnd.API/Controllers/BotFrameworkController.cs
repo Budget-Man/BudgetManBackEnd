@@ -20,19 +20,15 @@ namespace BudgetManBackEnd.API.Controllers
     {
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
-        //private ISkype _loanService;
-        //private MyBot myBot;
         public BotFrameworkController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             _adapter = adapter;
             _bot = bot;
-            //myBot = new MyBot();
         }
 
         [HttpPost]
         public async Task PostAsync()
         {
-            //await myBot.ProcessAsync(Request, Response);
             _adapter.ProcessAsync(Request, Response, _bot);
         }
 

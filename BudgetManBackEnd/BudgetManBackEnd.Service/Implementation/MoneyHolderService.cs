@@ -204,5 +204,28 @@ namespace BudgetManBackEnd.Service.Implementation
                 throw;
             }
         }
+
+        public AppResponse<List<MoneyHolderDto>> GetMoneyHolderByUser(string userId)
+        {
+            var result = new AppResponse<List<MoneyHolderDto>>();
+            try
+            {
+                var query = _moneyHolderRepository.GetAll()
+                .Where(m => m.Account.UserId == userId && m.IsDeleted != true);
+                var list = query.Select(m => new MoneyHolderDto
+                {
+                    BankName = m.BankName,
+                    Id = m.Id,
+                    Name = m.Name,
+                    Balance = m.Balance,
+                }).ToList();
+                result.BuildResult(list);
+            }
+            catch (Exception ex)
+            {
+                result.BuildError(ex.Message);
+            }
+            return result;
+        }
     }
 }

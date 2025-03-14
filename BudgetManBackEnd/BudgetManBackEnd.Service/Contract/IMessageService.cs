@@ -8,6 +8,8 @@ namespace BudgetManBackEnd.Service.Contract
 {
     public interface IMessageService
     {
-        Task<string> HandleMessage(string message, bool isGroup);
+        Task<string> HandleMessage(string message, string userId, bool isGroup = false);
+
+        string GetBalance(string userid);
     }
 }

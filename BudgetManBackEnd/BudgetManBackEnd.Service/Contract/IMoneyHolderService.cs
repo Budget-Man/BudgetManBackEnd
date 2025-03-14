@@ -17,6 +17,8 @@ namespace BudgetManBackEnd.Service.Contract
         AppResponse<MoneyHolderDto> EditMoneyHolder(MoneyHolderDto request);
         AppResponse<string> DeleteMoneyHolder(Guid Id);
         AppResponse<SearchResponse<MoneyHolderDto>> Search(SearchRequest request);
+        AppResponse<List<MoneyHolderDto>> GetMoneyHolderByUser(string userId);
 
-	}
+
+    }
 }

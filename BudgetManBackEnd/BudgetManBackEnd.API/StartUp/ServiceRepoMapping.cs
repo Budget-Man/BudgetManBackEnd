@@ -39,18 +39,9 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IMoneySpendService, MoneySpendService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAccountBalanceTrackingService, AccountBalanceTrackingService>();
-            
             builder.Services.AddScoped<IAccountService, AccountService>();
-            //builder.Services.AddScoped<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>();
-            builder.Services.AddSingleton<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>((sp) =>
-            {
-                var logger = sp.GetRequiredService<ILogger<BotFrameworkHttpAdapter>>();
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                var authConfig = new AuthenticationConfiguration();
-                IChannelProvider channelProvider = null; // Use a specific implementation if required
-                return new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(configuration), channelProvider, logger);
-            });
-            builder.Services.AddScoped<IBot, MyBot>();
+            builder.Services.AddScoped<IMessageService, MessageService >();
+            
             #endregion Service Mapping
 
             #region Repository Mapping
@@ -68,8 +59,19 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<ILocalTransferRepository, LocalTransferRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAccountBalanceTrackingRepository, AccountBalanceTrackingRepository>();
-            
+
             #endregion Repository Mapping
+
+            //builder.Services.AddScoped<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>();
+            builder.Services.AddSingleton<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>((sp) =>
+            {
+                var logger = sp.GetRequiredService<ILogger<BotFrameworkHttpAdapter>>();
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var authConfig = new AuthenticationConfiguration();
+                IChannelProvider channelProvider = null; // Use a specific implementation if required
+                return new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(configuration), channelProvider, logger);
+            });
+            builder.Services.AddTransient<IBot, MyBot>();
         }
     }
 }

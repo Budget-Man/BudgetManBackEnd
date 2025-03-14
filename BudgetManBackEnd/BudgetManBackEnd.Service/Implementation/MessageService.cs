@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using BudgetManBackEnd.Service.Contract;
@@ -10,19 +6,46 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using BudgetManBackEnd.Model.Request;
+using BudgetManBackEnd.Model.Dto;
+using MayNghien.Common.Helpers;
+using MayNghien.Models.Response.Base;
+using AutoMapper;
+using BudgetManBackEnd.DAL.Contract;
+using Microsoft.AspNetCore.Http;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
     public class MessageService : IMessageService
     {
-        public async Task<string> HandleMessage(string message, bool isGroup)
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
+        private readonly IAccountInfoRepository _accountInfoRepository;
+        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMoneyHolderService _moneyHolderService;
+        private readonly IServiceScopeFactory _serviceScopeFactory; // ✅ Use IServiceScopeFactory
+
+
+        public MessageService(IServiceScopeFactory serviceScopeFactory, IMoneyHolderRepository moneyHolderRepository, IAccountInfoRepository accountInfoRepository, IMoneyHolderService moneyHolderService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        {
+            _moneyHolderRepository = moneyHolderRepository ?? throw new ArgumentNullException(nameof(moneyHolderRepository));
+            _accountInfoRepository = accountInfoRepository;
+            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            _moneyHolderService = moneyHolderService;
+            _serviceScopeFactory = serviceScopeFactory;
+
+        }
+
+        public async Task<string> HandleMessage(string message, string? userId = null, bool isGroup = false)
         {
             var userMessage = message;
             var jsonResponse = await GetResponseFromWitAI(userMessage);
             string commandResult = string.Empty;
+
+            if (string.IsNullOrEmpty(userId)) userId  = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             if (jsonResponse != null)
             {
-                commandResult = await ProcessWitAiResponse(jsonResponse, isGroup);
+                commandResult = ProcessWitAiResponse(jsonResponse, userId, isGroup);
             }
 
             //bool isGroup = turnContext.Activity.Conversation.IsGroup ?? false;
@@ -36,28 +59,9 @@ namespace BudgetManBackEnd.Service.Implementation
                 text = commandResult;
             }
             return text;
-            //reply = MessageFactory.Text(text);
-            //if (isGroup)
-            //{
-            //    var incomingMessageId = turnContext.Activity.Id;
-            //    reply.ReplyToId = incomingMessageId;
-            //    var originalMessage = turnContext.Activity;
-            //    var authorName = originalMessage.From.Name ?? "Unknown User";
-            //    var messageId = originalMessage.Id ?? "unknown";
-            //    var timestamp = originalMessage.Timestamp.HasValue
-            //        ? new DateTimeOffset(originalMessage.Timestamp.Value.UtcDateTime).ToUnixTimeSeconds().ToString()
-            //        : "0";
-
-            //    // Build the quote markup
-            //    var quote = $"<quote authorname=\"{authorName}\" timestamp=\"{timestamp}\" " +
-            //                $"conversation=\"{originalMessage.Conversation.Id}\" messageid=\"{messageId}\" cuid=\"{Guid.NewGuid()}\">" +
-            //                $"<legacyquote>[{timestamp}] {authorName}: </legacyquote>" +
-            //                $"{originalMessage.Text}<legacyquote>\n\n&lt;&lt;&lt; </legacyquote></quote>";
-            //    reply.Text = quote + reply.Text;
-            //}
         }
 
-        protected async Task<string> GetResponseFromEdenAI(string message, bool isGroup)
+        protected static async Task<string> GetResponseFromEdenAI(string message, bool isGroup)
         {
             string result = string.Empty;
             HttpClient client = new HttpClient();
@@ -108,7 +112,7 @@ namespace BudgetManBackEnd.Service.Implementation
             return result;
         }
 
-        protected async Task<JObject> GetResponseFromWitAI(string message)
+        protected static async Task<JObject> GetResponseFromWitAI(string message)
         {
             var baseUrl = "https://api.wit.ai/message";
             var versionParam = "v=20241216";
@@ -149,14 +153,7 @@ namespace BudgetManBackEnd.Service.Implementation
             return null;
         }
 
-        //private Dictionary<string, Action<object[]>> intentActions = new Dictionary<string, Action<object[]>>()
-        //{
-        //    { "get_weather", parameters => GetRandomPersonInGroup((ITurnContext<IMessageActivity>)parameters[0], (string)parameters[1]) },
-        //    //{ "book_flight", parameters => BookFlight((string)parameters[0], (string)parameters[1]) },
-        //    //{ "set_reminder", parameters => SetReminder((string)parameters[0], (string)parameters[1]) }
-        //};
-
-        protected async Task<string> ProcessWitAiResponse(JObject jsonResponse, bool isGroup)
+        protected string ProcessWitAiResponse(JObject jsonResponse, string userid, bool isGroup)
         {
             var intents = jsonResponse["intents"];
             Console.WriteLine("\nIntents:");
@@ -173,7 +170,7 @@ namespace BudgetManBackEnd.Service.Implementation
 
                     //    return await GetRandomPersonInGroup(turnContext, numberPerson);
                     case nameof(GetBalance):
-                        return await GetBalance(isGroup);
+                        return GetBalance(userid);
                     default:
                         Console.WriteLine("Intent not recognized.");
                         return string.Empty;
@@ -204,83 +201,21 @@ namespace BudgetManBackEnd.Service.Implementation
             //}
         }
 
-        //protected static async Task<string> GetRandomPersonInGroup(ITurnContext<IMessageActivity> turnContext, int number = 1)
-        //{
-        //    //string result = string.Empty;
-        //    //if (turnContext.Activity.Conversation?.IsGroup == true)
-        //    {
-        //        try
-        //        {
-        //            // Retrieve the list of conversation members
-        //            var conversationMembers = await turnContext.TurnState.Get<IConnectorClient>()
-        //                .Conversations.GetConversationMembersAsync(turnContext.Activity.Conversation.Id);
-        //            var test = await turnContext.TurnState.Get<IConnectorClient>().Conversations.GetConversationMembersWithHttpMessagesAsync(turnContext.Activity.Conversation.Id);
-        //            // Extract names of all members
-        //            var memberIds = conversationMembers
-        //                .Where(member => !string.IsNullOrEmpty(member.Id)) // Exclude empty names
-        //                .Select(member => member.Id)
-        //                .ToList();
-
-        //            // Check if we have any valid members
-        //            if (memberIds.Count == 0)
-        //            {
-        //                return "No participants found in the group.";
-        //            }
-
-        //            // Select random members
-        //            var random = new Random();
-        //            var selectedMembers = new List<string>();
-
-        //            for (int i = 0; i < Math.Min(number, memberIds.Count); i++)
-        //            {
-        //                int randomIndex = random.Next(memberIds.Count);
-        //                selectedMembers.Add(memberIds[randomIndex]);
-        //                memberIds.RemoveAt(randomIndex); // Avoid picking duplicates
-        //            }
-
-        //            // Return selected member names
-        //            return $"Selected {number} participant(s): {string.Join(", ", selectedMembers)}";
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine($"Error retrieving group members: {ex.Message}");
-        //            return string.Empty;
-        //        }
-        //    }
-        //    return string.Empty;
-        //}
-
-        //private static ServiceProvider ConfigureServices()
-        //{
-        //    var services = new ServiceCollection();
-
-        //    // Register IBudgetService with its implementation
-        //    services.AddScoped<IBudgetService, BudgetService>();
-
-        //    return services.BuildServiceProvider();
-        //}
-
-        protected static async Task<string> GetBalance(bool isGroup = false)
+        public string GetBalance(string userid)
         {
-
-            //var serviceProvider = ConfigureServices();
-            //var budgetService = serviceProvider.GetService<IBudgetService>();
-
+            
             try
             {
-                if (isGroup)
+                using (var scope = _serviceScopeFactory.CreateScope()) // ✅ Get fresh scope
                 {
-                    return "123456789";
-                    Guid budgetId = new Guid("asd");
-                    //var budget = budgetService.GetBudget(budgetId);
-                    //return budget.Data.Balance.ToString();
-                }
-                else
-                {
-                    return "123456789";
-                    Guid budgetId = new Guid("asd");
-                    //var budget = budgetService.GetBudget(budgetId);
-                    //return budget.Data.Balance.ToString();
+                    var moneyHolderRepository = scope.ServiceProvider.GetRequiredService<IMoneyHolderRepository>(); // ✅ New repository instance
+
+                    var query = moneyHolderRepository.GetAll()
+                        .Where(m => m.Account.UserId == userid && m.IsDeleted != true)
+                        .ToList();
+
+                    var firstItem = query.FirstOrDefault();
+                    return firstItem?.Balance.ToString() ?? "Bạn chưa có ví tiền nào";
                 }
             }
             catch (Exception ex)
