@@ -398,7 +398,6 @@ namespace BudgetManBackEnd.Service.Implementation
 				throw;
 			}
 		}
-
         private List<MoneySpendDetailDto> GetMoneySpendDetail(Guid? moneySpendId)
         {
             if (moneySpendId == null)

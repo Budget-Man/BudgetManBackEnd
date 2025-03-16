@@ -21,15 +21,22 @@ using BudgetManBackEnd.Service.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
+using Microsoft.Bot.Connector.Authentication;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
 
 namespace BudgetManBackEnd.BotFramework
 {
     public class MyBot : ActivityHandler
     {
         private readonly IMessageService _messageService;
-        public MyBot(IMessageService messageService)
+        private readonly string _appId;
+        private readonly string _appPassword;
+        public MyBot(IMessageService messageService, IConfiguration configuration)
         {
             _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
+            _appId = configuration["MicrosoftAppId"];
+            _appPassword = configuration["MicrosoftAppPassword"];
         }
         public static void Main(string[] args)
         {
@@ -46,7 +53,8 @@ namespace BudgetManBackEnd.BotFramework
             {
                 var userMessage = turnContext.Activity.Text;
                 string userId = "4d2d815f-4def-4a12-8dc8-860ac023254a";
-                string response = await _messageService.HandleMessage(userMessage, userId);
+                var images = await DownloadAttachmentAsync(turnContext);
+                string response = await _messageService.HandleMessage(userMessage, images, userId);
 
                 reply = MessageFactory.Text(response);
                 await turnContext.SendActivityAsync(reply, cancellationToken);
@@ -142,6 +150,49 @@ namespace BudgetManBackEnd.BotFramework
                 Console.WriteLine($"Error handling ConversationUpdateActivity: {ex.Message}");
             }
         }
-        
+
+        public async Task<List<byte[]>?> DownloadAttachmentAsync(ITurnContext<IMessageActivity> turnContext)
+        {
+            HttpClient _httpClient = new HttpClient();
+            if (turnContext.Activity.Attachments == null || !turnContext.Activity.Attachments.Any())
+            {
+                return null;
+            }
+
+            var firstAttachment = turnContext.Activity.Attachments.First();
+            List<byte[]> result = new List<byte[]>();
+            try
+            {
+                if ((turnContext.Activity.ChannelId.Equals("skype", StringComparison.InvariantCultureIgnoreCase) ||
+                     turnContext.Activity.ChannelId.Equals("msteams", StringComparison.InvariantCultureIgnoreCase)) 
+                     //&&new Uri(firstAttachment.ContentUrl).Host.EndsWith("skype.com")
+                     )
+                {
+                    var credentials = new MicrosoftAppCredentials(_appId, _appPassword);
+                    var token = await credentials.GetTokenAsync();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                foreach (var attachment in turnContext.Activity.Attachments)
+                {
+                    if (attachment.ContentType == "image")
+                    {
+                        var responseMessage = await _httpClient.GetByteArrayAsync(attachment.ContentUrl);
+                        result.Add(responseMessage);
+                    }
+                }
+                return result;
+            }
+            catch (UriFormatException)
+            {
+                Console.WriteLine("Error: Invalid attachment URL.");
+                return null;
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

@@ -15,6 +15,13 @@ using Microsoft.AspNetCore.Http;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using System.Text.RegularExpressions;
+using Intercom.Data;
+using AutoMapper.Execution;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Linq;
+using System.Net.Http;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -36,26 +43,65 @@ namespace BudgetManBackEnd.Service.Implementation
             _httpContextAccessor = httpContextAccessor;
             _moneyHolderService = moneyHolderService;
             _serviceScopeFactory = serviceScopeFactory;
-
         }
 
-        public async Task<string> HandleMessage(string message, string? userId = null, bool isGroup = false)
+        public async Task<string> HandleMessage(string message, List<byte[]>? images = null, string? userId = null, bool isGroup = false)
         {
-            var userMessage = message;
-            var jsonResponse = await GetResponseFromWitAI(userMessage);
-            string commandResult = string.Empty;
+            Console.WriteLine((string)("Handle message: " + message));
+            JObject? jsonResponse = null;
+            if (!string.IsNullOrEmpty(message))
+            {
+                jsonResponse = await GetResponseFromWitAI(message);
+            }
+            string[] imageResults = null;
+            if (images !=null && images.Any())
+            {
+                var tasks = images.Select(path => ReadImageWithOcrSpace(path)).ToArray();
+                imageResults = await Task.WhenAll(tasks);
+            }
 
+            string commandResult = string.Empty;
+            if (imageResults != null && imageResults.Any())
+            {
+                var command = "Tìm cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số tổng (nếu không có số tổng thì tính tổng các số). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
+                //var command = "Cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số cuối cùng (nếu không có số cuối cùng thì tính tổng các mòn hàng). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
+                var allImageResult = String.Join("\n", imageResults);
+                var jsonExpense = await GetResponseFromGemini(allImageResult, command);
+                string cleanedJson = jsonExpense
+                .Replace("```json", "")  // Xóa ```json
+                .Replace("```", "")      // Xóa ```
+                .Replace("\n", "")       // Xóa ký tự xuống dòng
+                .Trim();                 // Xóa khoảng trắng thừa
+                dynamic expense = JsonConvert.DeserializeObject(cleanedJson);
+                if (expense != null && expense.reason != null && expense.amount != null &&
+                    !string.IsNullOrEmpty(expense.reason.ToString()) && 
+                    !string.IsNullOrEmpty(expense.amount.ToString()))
+                {
+                    string reason = expense.reason.ToString(); // Ép kiểu sang string
+                    string amount = expense.amount.ToString();
+                    amount = amount.Replace(",", ".");
+                    if (string.IsNullOrEmpty(message))
+                        message = reason;
+                    else message = ": " + reason;
+                    commandResult = AddExpense(message, userId, amount);
+                }
+                else
+                {
+                    commandResult = allImageResult;
+                }
+            }
             if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             if (jsonResponse != null)
             {
-                commandResult = await ProcessWitAiResponse(message, jsonResponse, userId, isGroup);
+                //detect command with WitAI
+                commandResult = await ProcessWitAiResponse((string)message, (JObject)jsonResponse, userId, isGroup);
             }
 
             //bool isGroup = turnContext.Activity.Conversation.IsGroup ?? false;
             string text = string.Empty;
             if (string.IsNullOrEmpty(commandResult))
             {
-                text = await GetResponseFromEdenAI(userMessage, isGroup);
+                text = await GetResponseFromEdenAI(message, isGroup);
             }
             else
             {
@@ -66,6 +112,10 @@ namespace BudgetManBackEnd.Service.Implementation
 
         protected static async Task<string> GetResponseFromGemini(string userMessage, string systemMessage)
         {
+            Console.WriteLine("Process message with Gemini: ");
+            Console.WriteLine("user message: " + userMessage);
+            Console.WriteLine("system message: " + systemMessage);
+
             string result = string.Empty;
             var apiKey = "AIzaSyCqMFpfwgGjuhu7a_VnFtkGNw6qmKdJ6RI";
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
@@ -125,6 +175,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
         protected static async Task<string> GetResponseFromEdenAI(string message, bool isGroup)
         {
+            Console.WriteLine("Process message with Eden Ai: " + message);
+
             string result = string.Empty;
             HttpClient client = new HttpClient();
             var url = "https://api.edenai.run/v2/aiproducts/askyoda/v2/a765c4b2-7e1a-4fdb-87b4-9b313c4b11f9/ask_llm";
@@ -179,6 +231,8 @@ namespace BudgetManBackEnd.Service.Implementation
 
         protected static async Task<JObject> GetResponseFromWitAI(string message)
         {
+            Console.WriteLine("Process message with Wit.Ai: " + message);
+
             var baseUrl = "https://api.wit.ai/message";
             var versionParam = "v=20241216";
             var queryParam = "q=" + HttpUtility.UrlEncode(message);
@@ -221,60 +275,114 @@ namespace BudgetManBackEnd.Service.Implementation
         protected async Task<string> ProcessWitAiResponse(string message, JObject jsonResponse, string userid, bool isGroup)
         {
             var intents = jsonResponse["intents"];
-            Console.WriteLine("\nIntents:");
             //var a = nameof(GetRandomPersonInGroup);
             var intent = intents.First?["name"]?.ToString();
             {
-                //Console.WriteLine($"- Name: {intent["name"]}, Confidence: {intent["confidence"]}");
+                Console.WriteLine($"Wit.Ai result: intent = " + intent);
                 JToken? entitiyParameter;
+                string result,response;
                 switch (intent)
                 {
-                    //case nameof(GetRandomPersonInGroup):
-                    //    var entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
-                    //    int numberPerson = 1;
-                    //    if (entitiyParameter != null) numberPerson = (int)entitiyParameter;
-
-                    //    return await GetRandomPersonInGroup(turnContext, numberPerson);
                     case nameof(GetBalance):
                         var balance = GetBalance(userid);
                         balance = "số tiền/balance: " + balance;
-                        var response = await GetResponseFromGemini(message, balance);
+                        response = await GetResponseFromGemini(message, balance);
                         return response;
                     case nameof(AddIncome):
                         entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
                         return AddIncome(message, userid, (string)entitiyParameter);
+                    case nameof(GetIncomes):
+                        result = GetIncomes(userid);
+                        response = await GetResponseFromGemini(message, "data: " + result);
+                        return response;
+                    case nameof(GetExpenses):
+                        result = GetExpenses(userid);
+                        response = await GetResponseFromGemini(message, "data: " + result);
+                        return response;
                     case nameof(AddExpense):
                         entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
                         return AddExpense(message, userid, (string)entitiyParameter);
-                        
+                    case nameof(GetRandomPersonInGroup):
+                        entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
+                        int numberPerson = 1;
+                        if (entitiyParameter != null) numberPerson = (int)entitiyParameter;
+                        result = GetRandomPersonInGroup(numberPerson);
+
+                        response = await GetResponseFromGemini(message, "kết quả ngẫu nhiên/randomize: " + result);
+
+                        return response;
                     default:
                         Console.WriteLine("Intent not recognized.");
                         return string.Empty;
                 }
 
+            }
+        }
 
-                // Extract and display entities
-                var entities = jsonResponse["entities"];
-                Console.WriteLine("\nEntities:");
-                //foreach (var entity in entities)
+        public static async Task<string> ReadImageWithOcrSpace(byte[] image)
+        {
+            string apiKey = "K81572330988957";
+            bool isURL = false;
+            try
+            {
+                // Check if the file exists
+                //if (!File.Exists(imagePath))
                 //{
-                //    Console.WriteLine($"- Entity Type: {entity.Key}");
-                //    foreach (var detail in entity.Value)
-                //    {
-                //        Console.WriteLine($"  - Value: {detail["value"]}, Confidence: {detail["confidence"]}");
-                //    }
+                //    isURL = true;
                 //}
 
+                // Create HttpClient
+                using (var client = new HttpClient())
+                {
+                    // Prepare multipart form data
+                    using (var content = new MultipartFormDataContent())
+                    {
+                        //if (isURL)
+                        //{
+                            //byte[] imageBytes = await client.GetByteArrayAsync(imagePath);
+                            var imageContent = new ByteArrayContent(image);
+                            content.Add(imageContent, "file", "image.jpg");
+                        //}
+                        //else
+                        //{
+                        //    // Read image file into byte array
+                        //    byte[] imageBytes = File.ReadAllBytes(imagePath);
+                        //    var imageContent = new ByteArrayContent(imageBytes);
+                        //    content.Add(imageContent, "file", Path.GetFileName(imagePath));
+                        //}
+                            
+
+                        // Add API parameters
+                        content.Add(new StringContent(apiKey), "apikey");
+                        content.Add(new StringContent("vnm"), "language"); // Vietnamese language
+                        content.Add(new StringContent("2"), "OCREngine"); // Use Engine 2 for Vietnamese
+                        content.Add(new StringContent("true"), "isTable");
+                        // Send POST request to API
+                        var response = await client.PostAsync("https://api.ocr.space/parse/image", content);
+
+                        // Check response
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string jsonResponse = await response.Content.ReadAsStringAsync();
+                            // Parse JSON to extract text (assuming Newtonsoft.Json is used)
+                            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+                            if (result.ParsedResults != null && result.ParsedResults.Count > 0)
+                            {
+                                return result.ParsedResults[0].ParsedText.ToString();
+                            }
+                            return "No text found in the image.";
+                        }
+                        else
+                        {
+                            return $"Error: Request failed with status code {response.StatusCode}";
+                        }
+                    }
+                }
             }
-            //if (intentActions.ContainsKey(intent))
-            //{
-            //    return intentActions[intent](parameters);
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Intent not recognized.");
-            //    return string.Empty;
-            //}
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
         }
 
         public static string FormatCurrency(string number, string currencyCode = "vnđ")
@@ -317,10 +425,14 @@ namespace BudgetManBackEnd.Service.Implementation
             return string.Empty;
         }
 
-        public static double ConvertMoneyStringToDouble(string moneyString)
+        public static double ConvertMoneyStringToDouble(string moneyString, out string message)
         {
-            if (string.IsNullOrWhiteSpace(moneyString))
-                throw new ArgumentException("The money string cannot be empty.");
+            message = string.Empty;
+            if (string.IsNullOrWhiteSpace(moneyString) || moneyString.Equals("không có", StringComparison.InvariantCultureIgnoreCase))
+            {
+                message = "Không tìm thấy số liệu để nhập!";
+                return 0;
+            }
 
             // Normalize the string: remove extra spaces, convert to lowercase
             moneyString = moneyString.Trim().ToLower();
@@ -345,7 +457,10 @@ namespace BudgetManBackEnd.Service.Implementation
             var standardMatch = standardRegex.Match(moneyString);
 
             if (!standardMatch.Success)
-                throw new ArgumentException("Invalid money string format.");
+            {
+                message = "không đúng định dạng!";
+                return 0;
+            }
 
             // Get the number part (may include decimal point)
             string numberPart = standardMatch.Groups[1].Value;
@@ -353,7 +468,10 @@ namespace BudgetManBackEnd.Service.Implementation
 
             // Convert the number part to double
             if (!double.TryParse(numberPart, out double number))
-                throw new ArgumentException("Unable to convert the number part to double.");
+            {
+                message = $"không thể '{moneyString}' chuyển thành số!";
+                return 0;
+            }
 
             // Handle the unit
             double multiplier = 1; // Default is 1 if no unit is provided
@@ -404,7 +522,12 @@ namespace BudgetManBackEnd.Service.Implementation
 
         public string AddIncome(string message, string userId, string amountText)
         {
-            var amount = ConvertMoneyStringToDouble(amountText);
+            string errMessage = string.Empty;
+            var amount = ConvertMoneyStringToDouble(amountText, out errMessage);
+            if (!string.IsNullOrEmpty(errMessage))
+            {
+                return message + ": " + errMessage;
+            }
             var income = new Income();
             income.Id = Guid.NewGuid();
             try
@@ -447,7 +570,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     incomeRepository.Add(income, accountInfo.Name);
 
                 }
-                string reply = $"Đã thêm {amountText} vào ngân sách";
+                string reply = $"{message}: Đã thêm {amountText} vào ngân sách";
                 return reply;
 
 
@@ -462,7 +585,12 @@ namespace BudgetManBackEnd.Service.Implementation
 
         public string AddExpense(string message, string userId, string amountText)
         {
-            var amount = ConvertMoneyStringToDouble(amountText);
+            string errMessage = string.Empty;
+            var amount = ConvertMoneyStringToDouble(amountText, out errMessage);
+            if (!string.IsNullOrEmpty(errMessage))
+            {
+                return message + ": " + errMessage;
+            }
             var expense = new MoneySpend();
             expense.Id = Guid.NewGuid();
             try
@@ -517,7 +645,7 @@ namespace BudgetManBackEnd.Service.Implementation
                     moneySpendRepository.Add(expense, accountInfo.Name);
 
                 }
-                string reply = $"Đã trừ {amountText} vào ngân sách";
+                string reply = $"{message}: Đã trừ {amountText} vào ngân sách";
                 return reply;
 
 
@@ -528,6 +656,124 @@ namespace BudgetManBackEnd.Service.Implementation
                 return ex.Message;
             }
             return string.Empty;
+        }
+
+        public string GetRandomPersonInGroup(int quantity, string separator = ", ")
+        {
+            List<string> members = new List<string>
+            {
+                "Bình",
+                "Ngà",
+                "Yến",
+                "Tài",
+                "Duy",
+                "Nguyên",
+                "Trung",
+                "Mãi",
+                "Sỹ"
+            };
+
+            if (quantity <= 0)
+            {
+                return string.Empty;
+            }
+
+            // If quantity exceeds total members, return all members
+            if (quantity >= members.Count)
+            {
+                return "bạn yêu càu số lượng vượt quá hiện có, vui lòng chọn lại nha!";
+            }
+
+            // Create Random instance
+            Random random = new Random();
+            // Create a copy of the list
+            List<string> tempList = new List<string>(members);
+            List<string> result = new List<string>();
+
+            // Randomly select the requested number of names
+            for (int i = 0; i < quantity; i++)
+            {
+                int randomIndex = random.Next(0, tempList.Count);
+                result.Add(tempList[randomIndex]);
+                tempList.RemoveAt(randomIndex);
+            }
+
+            // Return the joined string
+            return string.Join(separator, result);
+        }
+
+        public string GetIncomes(string userId)
+        {
+            try
+            {
+                using (var scope = _serviceScopeFactory.CreateScope()) // ✅ Get fresh scope
+                {
+                    var accountInfoRepository = scope.ServiceProvider.GetRequiredService<IAccountInfoRepository>();
+
+                    var accountInfos = accountInfoRepository.FindBy(m => m.UserId == userId).ToList();
+                    if (!accountInfos.Any())
+                    {
+                        return "Can't find your account";
+                    }
+
+                    var accountInfo = accountInfos.First();
+
+                    var incomeRepository = scope.ServiceProvider.GetRequiredService<IIncomeRepository>();
+                    var list = incomeRepository.GetAll()
+                        .Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true)
+                        .Select(x => new IncomeDto
+                        {
+                            Name = x.Name,
+                            MoneyHolderId = accountInfo.Id,
+                            //MoneyHolderName = x.MoneyHolder.Name,
+                            Amount = x.Amount,
+                            CreatedOn = x.CreatedOn,
+                        })
+                        .ToList();
+                    return JsonConvert.SerializeObject(list);
+                }
+            } 
+            catch (Exception ex) 
+            {
+                return "error:" + ex.Message;
+            }
+        }
+
+        public string GetExpenses(string userId)
+        {
+            try
+            {
+                using (var scope = _serviceScopeFactory.CreateScope()) // ✅ Get fresh scope
+                {
+                    var accountInfoRepository = scope.ServiceProvider.GetRequiredService<IAccountInfoRepository>();
+
+                    var accountInfos = accountInfoRepository.FindBy(m => m.UserId == userId).ToList();
+                    if (!accountInfos.Any())
+                    {
+                        return "Can't find your account";
+                    }
+
+                    var accountInfo = accountInfos.First();
+
+                    var moneySpendRepository = scope.ServiceProvider.GetRequiredService<IMoneySpendRepository>();
+                    var list = moneySpendRepository.GetAll()
+                        .Where(x => x.AccountId == accountInfo.Id && x.IsDeleted != true)
+                        .Select(x => new MoneySpendDto
+                        {
+                            Reason = x.Reason,
+                            MoneyHolderId = accountInfo.Id,
+                            //MoneyHolderName = x.MoneyHolder.Name,
+                            Amount = x.Amount,
+                            CreatedOn = x.CreatedOn,
+                        })
+                        .ToList();
+                    return JsonConvert.SerializeObject(list);
+                }
+            }
+            catch (Exception ex)
+            {
+                return "error:" + ex.Message;
+            }
         }
     }
 }
