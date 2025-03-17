@@ -1,16 +1,26 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
-# Copy solution and project files first
+# Copy solution file
 COPY BudgetManBackEnd.sln ./
-COPY */*.csproj ./
-COPY */*/BudgetManBackEnd.API.csproj ./BudgetManBackEnd.API/
-COPY */*/BudgetManBackEnd.DAL.csproj ./BudgetManBackEnd.DAL/
-COPY */*/BudgetManBackEnd.Service.csproj ./BudgetManBackEnd.Service/
-COPY */*/BudgetManBackEnd.Common.csproj ./BudgetManBackEnd.Common/
-COPY */*/BudgetManBackEnd.Model.csproj ./BudgetManBackEnd.Model/
-COPY */*/Maynghien.Common.csproj ./MayNghien.Common/
-COPY */*/BudgetManBackEnd.BotFramework.csproj ./MessageCronJob/
+
+# Create project directories
+RUN mkdir -p BudgetManBackEnd.API \
+    BudgetManBackEnd.DAL \
+    BudgetManBackEnd.Service \
+    BudgetManBackEnd.Common \
+    BudgetManBackEnd.Model \
+    MayNghien.Common \
+    MessageCronJob
+
+# Copy project files
+COPY BudgetManBackEnd.API/BudgetManBackEnd.API.csproj ./BudgetManBackEnd.API/
+COPY BudgetManBackEnd.DAL/BudgetManBackEnd.DAL.csproj ./BudgetManBackEnd.DAL/
+COPY BudgetManBackEnd.Service/BudgetManBackEnd.Service.csproj ./BudgetManBackEnd.Service/
+COPY BudgetManBackEnd.Common/BudgetManBackEnd.Common.csproj ./BudgetManBackEnd.Common/
+COPY BudgetManBackEnd.Model/BudgetManBackEnd.Model.csproj ./BudgetManBackEnd.Model/
+COPY Maynghien.Common/Maynghien.Common.csproj ./MayNghien.Common/
+COPY MessageCronJob/BudgetManBackEnd.BotFramework.csproj ./MessageCronJob/
 
 # Restore as distinct layers
 RUN dotnet restore BudgetManBackEnd.sln
