@@ -11,7 +11,8 @@ RUN mkdir -p BudgetManBackEnd.API \
     BudgetManBackEnd.Common \
     BudgetManBackEnd.Model \
     MayNghien.Common \
-    MessageCronJob
+    MessageCronJob \
+    BudgetManBackEnd.TransferCronjob
 
 # Copy project files
 COPY BudgetManBackEnd.API/BudgetManBackEnd.API.csproj ./BudgetManBackEnd.API/
@@ -21,6 +22,7 @@ COPY BudgetManBackEnd.Common/BudgetManBackEnd.Common.csproj ./BudgetManBackEnd.C
 COPY BudgetManBackEnd.Model/BudgetManBackEnd.Model.csproj ./BudgetManBackEnd.Model/
 COPY Maynghien.Common/Maynghien.Common.csproj ./MayNghien.Common/
 COPY MessageCronJob/BudgetManBackEnd.BotFramework.csproj ./MessageCronJob/
+COPY BudgetManBackEnd.TransferCronjob/BudgetManBackEnd.TransferCronjob.csproj ./BudgetManBackEnd.TransferCronjob/
 
 # Restore as distinct layers
 RUN dotnet restore BudgetManBackEnd.sln
