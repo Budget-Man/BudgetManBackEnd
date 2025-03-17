@@ -1,17 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
-# Copy solution and project files
+# Copy everything first to ensure all projects are available
 COPY . ./
 
-# Ensure Maynghien.Common project is properly referenced
+# Restore dependencies
 RUN dotnet restore BudgetManBackEnd.sln
-
-# Restore as distinct layers
-RUN dotnet restore BudgetManBackEnd.sln
-
-# Copy everything else
-COPY . ./
 
 # Build and publish
 RUN dotnet publish BudgetManBackEnd.API/BudgetManBackEnd.API.csproj -c Release -o out
