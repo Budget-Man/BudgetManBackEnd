@@ -31,7 +31,6 @@
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
     <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
-    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
   </ItemGroup>
 
 </Project>
