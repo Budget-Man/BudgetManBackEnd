@@ -20,7 +20,7 @@ COPY BudgetManBackEnd.DAL/BudgetManBackEnd.DAL.csproj ./BudgetManBackEnd.DAL/
 COPY BudgetManBackEnd.Service/BudgetManBackEnd.Service.csproj ./BudgetManBackEnd.Service/
 COPY BudgetManBackEnd.Common/BudgetManBackEnd.Common.csproj ./BudgetManBackEnd.Common/
 COPY BudgetManBackEnd.Model/BudgetManBackEnd.Model.csproj ./BudgetManBackEnd.Model/
-COPY Maynghien.Common/Maynghien.Common.csproj ./MayNghien.Common/
+COPY MayNghien.Common/MayNghien.Common.csproj ./MayNghien.Common/
 COPY MessageCronJob/BudgetManBackEnd.BotFramework.csproj ./MessageCronJob/
 COPY BudgetManBackEnd.TransferCronjob/BudgetManBackEnd.TransferCronjob.csproj ./BudgetManBackEnd.TransferCronjob/
 
