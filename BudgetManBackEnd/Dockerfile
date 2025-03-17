@@ -4,6 +4,10 @@ WORKDIR /app
 # Copy everything
 COPY . ./
 
+# Ensure correct case for MayNghien.Common
+RUN if [ -d "Maynghien.Common" ]; then mv Maynghien.Common MayNghien.Common; fi
+RUN if [ -d "maynghien.common" ]; then mv maynghien.common MayNghien.Common; fi
+
 # Restore as distinct layers
 RUN dotnet restore BudgetManBackEnd.sln
 
