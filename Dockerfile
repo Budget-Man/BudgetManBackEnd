@@ -10,10 +10,10 @@ WORKDIR /app
 COPY . ./
 
 # Restore as distinct layers
-RUN dotnet restore BudgetManBackEnd/BudgetManBackEnd.sln
+RUN dotnet restore BudgetManBackEnd/BudgetManBackEnd/BudgetManBackEnd.sln
 
 # Build and publish a release
-RUN dotnet publish BudgetManBackEnd/BudgetManBackEnd.API/BudgetManBackEnd.API.csproj -c Release -o out
+RUN dotnet publish BudgetManBackEnd/BudgetManBackEnd/BudgetManBackEnd.API/BudgetManBackEnd.API.csproj -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
