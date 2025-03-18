@@ -63,7 +63,8 @@ builder.Services.AddCors(options =>
         policy.SetIsOriginAllowed(origin => true) // Cho phép tất cả các nguồn
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // Nếu UI cần gửi cookie hoặc xác thực
+              .AllowCredentials()
+              .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 
