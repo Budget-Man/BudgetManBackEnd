@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BudgetManBackEnd.BotFramework\BudgetManBackEnd.BotFramework.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj" />
     <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
-    <ProjectReference Include="..\MessageCronJob\BudgetManBackEnd.BotFramework.csproj" />
   </ItemGroup>
 
 </Project>
