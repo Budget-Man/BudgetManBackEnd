@@ -62,10 +62,9 @@ builder.Services.AddCors(options =>
     // this defines a CORS policy called "default"
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.SetIsOriginAllowed(_ => true) // Cho phép tất cả origin
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Chỉ cần nếu gửi cookies/token
+              .AllowAnyMethod();
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
