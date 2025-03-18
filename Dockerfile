@@ -18,6 +18,6 @@ COPY --from=build-env /app/out .
 # Configure the port and environment
 EXPOSE 80
 EXPOSE 443
-
+ 
 # Set the entry point
 ENTRYPOINT ["dotnet", "BudgetManBackEnd.API.dll"]
