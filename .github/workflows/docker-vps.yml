@@ -32,6 +32,11 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+    # Set the working directory for all steps in this job
+    defaults:
+      run:
+        working-directory: BudgetManBackEnd
   
     steps:
       - name: Install sshpass
@@ -54,9 +59,12 @@ jobs:
           pwd
           ls -la
 
+      - name: Checkout code for config
+        uses: actions/checkout@v3
+
       - name: Copy Nginx config to server
         run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no BudgetManBackEnd/budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
 
       - name: Copy Nginx config to container
         run: |
