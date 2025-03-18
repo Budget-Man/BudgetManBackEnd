@@ -8,7 +8,6 @@ using MayNghien.Models.Request.Base;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
 namespace BudgetManBackEnd.API.Controllers
@@ -31,6 +30,5 @@ namespace BudgetManBackEnd.API.Controllers
         {
             _adapter.ProcessAsync(Request, Response, _bot);
         }
-
     }
 }
