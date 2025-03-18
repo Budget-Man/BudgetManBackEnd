@@ -49,9 +49,15 @@ jobs:
             docker network connect nginx-proxy budgetmanapi;
           "
 
+      - name: Debug directory structure
+        run: |
+          pwd
+          ls -la
+          ls -la ../../../../UI/Budget-Man/BudgetManUI/BudgetManUI/
+
       - name: Copy Nginx config to server
         run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no ../budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no ../../../../UI/Budget-Man/BudgetManUI/BudgetManUI/budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
 
       - name: Copy Nginx config to container
         run: |
