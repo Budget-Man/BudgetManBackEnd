@@ -59,6 +59,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var tasks = images.Select(path => ReadImageWithOcrSpace(path)).ToArray();
                 imageResults = await Task.WhenAll(tasks);
             }
+            if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
 
             string commandResult = string.Empty;
             if (imageResults != null && imageResults.Any())
@@ -90,7 +91,6 @@ namespace BudgetManBackEnd.Service.Implementation
                     commandResult = allImageResult;
                 }
             }
-            if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             if (jsonResponse != null)
             {
                 //detect command with WitAI
