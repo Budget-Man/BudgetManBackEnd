@@ -405,3 +405,6 @@ FodyWeavers.xsd
 /BudgetManBackEnd/MessageCronJob/appsettings.json
 /BudgetManBackEnd/BudgetManBackEnd.API/appsettings.json
 /BudgetManBackEnd/BudgetManBackEnd.Common/obj/
+BudgetManBackEnd/BudgetManBackEnd.Common/obj/BudgetManBackEnd.Common.csproj.nuget.dgspec.json
+BudgetManBackEnd/BudgetManBackEnd.Common/obj/project.assets.json
+BudgetManBackEnd/BudgetManBackEnd.Common/obj/project.nuget.cache
