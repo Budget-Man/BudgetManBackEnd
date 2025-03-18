@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetManBackEnd.Model", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maynghien.Common", "Maynghien.Common\Maynghien.Common.csproj", "{48C19B53-561A-40CA-BE49-AC8266379F8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.BotFramework", "MessageCronJob\BudgetManBackEnd.BotFramework.csproj", "{7041C139-B530-4225-B783-BFFD2221A5AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetManBackEnd.BotFramework", "BudgetManBackEnd.BotFramework\BudgetManBackEnd.BotFramework.csproj", "{7041C139-B530-4225-B783-BFFD2221A5AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
