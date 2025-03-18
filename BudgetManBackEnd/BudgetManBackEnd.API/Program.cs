@@ -64,8 +64,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.SetIsOriginAllowed(_ => true)  // Allow any origin
-              .AllowAnyHeader()
+        policy.WithOrigins("http://maynghien.ddns.net", "http://budmanapi.ddns.net")
+              .AllowAnyHeader()  // Đảm bảo chấp nhận tất cả headers
+              .WithExposedHeaders("x-custom-header")  // Cho phép client đọc headers này
               .AllowAnyMethod()
               .AllowCredentials();
     });
