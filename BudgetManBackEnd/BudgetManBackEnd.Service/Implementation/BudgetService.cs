@@ -56,8 +56,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Name Cannot be null");
                 }
-                var budgetCategories = _budgetCategoryRepository.FindBy(m => m.Id == request.BudgetCategoryId && m.IsDeleted != true);
-                if (budgetCategories.Count() == 0)
+                var budgetCategories = _budgetCategoryRepository.FindBy(m => m.Id == request.BudgetCategoryId && m.IsDeleted != true).FirstOrDefault();
+                if (budgetCategories == null)
                 {
                     return result.BuildError("Cannot find category");
                 }
@@ -67,7 +67,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 budget.AccountId = accountInfo.Id;
                 budget.IsActive = true;
                 budget.BudgetCategory = null;
-                budget.MonthlyLimit = budget.Balance;
+                budget.MonthlyLimit = budgetCategories.MonthlyLimit;
+                budget.Balance = budgetCategories.MonthlyLimit;
                 _budgetRepository.Add(budget, accountInfo.Name);
                 request.Id = budget.Id;
                 result.BuildResult(request);
@@ -160,7 +161,7 @@ namespace BudgetManBackEnd.Service.Implementation
 			try
             {
                 var query = _budgetRepository.GetAll()
-                    .Where(x => x.Account.UserId == userId && x.IsDeleted!=true)
+                    .Where(x => x.Account.UserId == userId && x.IsDeleted!=true && x.IsActive)
                     .Include(x=>x.BudgetCategory);
                 var list = query
                     .Select(x=> new BudgetDto
@@ -235,6 +236,7 @@ namespace BudgetManBackEnd.Service.Implementation
                         Name = x.Name,
                         UseCredit = x.UseCredit,
                         MonthlyLimit = x.MonthlyLimit,
+                        BalanceInfo = x.Balance.ToString("n0")+"/"+(x.MonthlyLimit!=null? x.MonthlyLimit.Value.ToString("n0"):"0"),
                     })
 					.ToList();
 
@@ -281,7 +283,6 @@ namespace BudgetManBackEnd.Service.Implementation
 				throw;
 			}
 		}
-
         public AppResponse<string> StatusChange(Guid Id)
         {
             var result = new AppResponse<string>();
@@ -302,5 +303,54 @@ namespace BudgetManBackEnd.Service.Implementation
             }
             return result;
         }
+        public AppResponse<string> MonthReset()
+        {
+            var result = new AppResponse<string>();
+            var userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
+            var accountInfoQuery = _accountInfoRepository.FindBy(m => m.UserId == userId);
+            if (accountInfoQuery.Count() == 0)
+            {
+                return result.BuildError("Cannot find Account Info by this user");
+            }
+            var accountInfo = accountInfoQuery.First();
+
+            #region disable old budget
+            var activeBudgets = _budgetRepository.FindBy(m=>m.AccountId == accountInfo.Id && m.IsActive).ToList();
+
+            foreach ( var budget in activeBudgets)
+            {
+                budget.IsActive = false;
+            }
+            _budgetRepository.EditRange(activeBudgets, false);
+
+            #endregion disable
+
+            var cates = _budgetCategoryRepository.FindBy(m => m.AccountId == accountInfo.Id).ToList();
+            
+            var newBudgets = new List<Budget>();
+            foreach (var cate in cates)
+            {
+                var budget = new Budget
+                {
+                    AccountId = accountInfo.Id,
+                    Balance = cate.MonthlyLimit,
+                    MonthlyLimit = cate.MonthlyLimit,
+                    BudgetCategoryId = cate.Id,
+                    Id = Guid.NewGuid(),
+                    IsActive = true,
+                    Name = cate.Name + " - " + DateTime.UtcNow.AddDays(10).ToString("yy/MM"),
+                    UseCredit = 0,
+                    IsDeleted = false,
+                    CreatedBy = userId,
+                    CreatedOn = DateTime.UtcNow,
+
+                };
+                newBudgets.Add(budget);
+            }
+
+            _budgetRepository.AddRange(newBudgets);
+            return result.BuildResult("ok");
+        }
+
     }
 }

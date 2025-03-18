@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.20" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.23.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.23.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,10 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BudgetManBackEnd.BotFramework\BudgetManBackEnd.BotFramework.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Common\BudgetManBackEnd.Common.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Model\BudgetManBackEnd.Model.csproj" />
     <ProjectReference Include="..\BudgetManBackEnd.Service\BudgetManBackEnd.Service.csproj" />
-    <ProjectReference Include="..\MayNghien.Common\MayNghien.Common.csproj" />
+    <ProjectReference Include="..\Maynghien.Common\Maynghien.Common.csproj" />
   </ItemGroup>
 
 </Project>

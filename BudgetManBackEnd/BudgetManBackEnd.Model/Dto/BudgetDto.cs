@@ -18,5 +18,6 @@ namespace BudgetManBackEnd.Model.Dto
         public bool? IsActive { get; set; }
         public double? UseCredit { get; set; }
         public double? MonthlyLimit { get; set; }
+        public string? BalanceInfo { get; set; }
     }
 }

@@ -19,5 +19,7 @@ namespace BudgetManBackEnd.Service.Contract
         public Task<AppResponse<string>> DeleteUser(string id);
         public Task<AppResponse<SearchUserResponse>> Search(SearchRequest request);
         public Task<AppResponse<UserModel>> GetUser(string id);
+        public Task<AppResponse<string>> RunTestUser(UserModel model);
+        
     }
 }

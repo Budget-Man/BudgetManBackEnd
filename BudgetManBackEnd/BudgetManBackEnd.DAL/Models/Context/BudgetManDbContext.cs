@@ -27,6 +27,7 @@ namespace BudgetManBackEnd.DAL.Models.Context
         public DbSet<MoneyHolder> MoneyHolders { get; set; }
         public DbSet<MoneySpend> MoneySpends { get; set; }
         public DbSet<MoneySpendDetail> MoneySpendDetails { get; set; }
+        public DbSet<AccountBalanceTracking> AccountBalanceTrackings { get; set; }
 
         #endregion
 

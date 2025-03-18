@@ -22,7 +22,7 @@ jobs:
       
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile -t maynghien/budgetmanapi
+      run: docker build . --file Dockerfile -t maynghien/budgetmanapi 
 
     - name: Login to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
@@ -32,7 +32,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
@@ -40,11 +40,33 @@ jobs:
       - name: SSH to server and pull
         run: |
           sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
+            mkdir -p /home/binh/tmp/nginx;
             docker stop budgetmanapi;
+            docker start mssql;
             docker system prune -af;
             docker pull maynghien/budgetmanapi;
             docker run --name budgetmanapi -e ASPNETCORE_ENVIRONMENT=Development --expose 5000 -d maynghien/budgetmanapi;
             docker network connect nginx-proxy budgetmanapi;
+          "
+
+      
+
+      - name: Checkout code for config
+        uses: actions/checkout@v3
+
+      - name: Debug directory structure
+        run: |
+          pwd
+          ls -la
+      - name: Copy Nginx config to server
+        run: |
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+
+      - name: Copy Nginx config to container
+        run: |
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
+            docker cp /home/binh/tmp/nginx/budmanapi.conf nginx-proxy:/etc/nginx/conf.d/budmanapi.conf;
+            docker exec nginx-proxy nginx -s reload;
           "
 
       - name: recheck

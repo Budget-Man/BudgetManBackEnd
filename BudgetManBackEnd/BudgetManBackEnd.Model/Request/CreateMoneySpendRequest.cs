@@ -15,6 +15,6 @@ namespace BudgetManBackEnd.Model.Request
         public string Reason { get; set; }
         public string? Description { get; set; }
 
-        public List<MoneySpendDetailDto> Details { get; set; }
+        public List<MoneySpendDetailDto>? Details { get; set; }
     }
 }

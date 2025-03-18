@@ -83,6 +83,22 @@ namespace Maynghien.Common.Repository
             }
 
         }
+        public void EditRange(List<TEntity> entities, bool isCommit = true)
+        {
+            try
+            {
+                _context.UpdateRange(entities);
+                if (isCommit)
+                    _context.SaveChanges();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
         public void DeleteRange(List<TEntity> entities)
         {
@@ -134,7 +150,11 @@ namespace Maynghien.Common.Repository
             _context.UpdateRange(entities);
             _context.SaveChanges();
         }
-
+        public void SoftDeleteRange(Expression<Func<TEntity, bool>> predicate)
+        {
+            var entities =  GetSet().Where(predicate).ToList();
+            SoftDeleteRange(entities);
+        }
         public DbSet<TEntity> GetSet()
         {
             return _context.CreateSet<TEntity>();

@@ -6,6 +6,6 @@ namespace BudgetManBackEnd.DAL.Models.Entity
     public class BudgetCategory: BaseAccountEntity
     {
         public string Name { get; set; }
-
+        public double MonthlyLimit { get; set; }
     }
 }

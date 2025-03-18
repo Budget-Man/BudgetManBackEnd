@@ -20,13 +20,17 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
         private IMoneyHolderRepository _moneyHolderRepository;
-        public IncomeService(IIncomeRepository incomeRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository moneyHolderRepository)
+        private IAccountBalanceTrackingRepository _accountBalanceTrackingRepository;
+        public IncomeService(IIncomeRepository incomeRepository, IMapper mapper, 
+            IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, 
+            IMoneyHolderRepository moneyHolderRepository,IAccountBalanceTrackingRepository accountBalanceTrackingRepository)
         {
             _incomeRepository = incomeRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
             _moneyHolderRepository = moneyHolderRepository;
+            _accountBalanceTrackingRepository = accountBalanceTrackingRepository;
         }
 
         public AppResponse<IncomeDto> GetIncome(Guid Id)
@@ -120,7 +124,18 @@ namespace BudgetManBackEnd.Service.Implementation
                 _moneyHolderRepository.Edit(moneyHolder);
                 request.Id = income.Id;
                 result.BuildResult(request);
-
+                var accTracking = new AccountBalanceTracking
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountInfo.Id,
+                    Amount = income.Amount,
+                    MoneyHolderId = moneyHolder.Id,
+                    ChangeType = Common.Enum.ChangeType.Income,
+                    CurrentBalance = moneyHolder.Balance - income.Amount,
+                    NewBalance = moneyHolder.Balance,
+                    BudgetId = null,
+                };
+                _accountBalanceTrackingRepository.Add(accTracking, accountInfo.Name);
             }
             catch (Exception ex)
             {
@@ -135,6 +150,12 @@ namespace BudgetManBackEnd.Service.Implementation
             try
             {
                 var income = _incomeRepository.Get((Guid)request.Id);
+                if (income.Amount != request.Amount)
+                {
+                    var moneyHolder = _moneyHolderRepository.Get(income.MoneyHolderId);
+                    moneyHolder.Balance = moneyHolder.Balance - income.Amount + request.Amount;
+                    _moneyHolderRepository.Edit(moneyHolder);
+                }
                 income.Name = request.Name;
                 income.MoneyHolderId = request.MoneyHolderId;
                 income.Amount = request.Amount;
@@ -153,9 +174,13 @@ namespace BudgetManBackEnd.Service.Implementation
             var result = new AppResponse<string>();
             try
             {
+                
                 var income = _incomeRepository.Get(Id);
+                var moneyHolder = _moneyHolderRepository.Get(income.MoneyHolderId);
+                moneyHolder.Balance -= income.Amount;
                 income.IsDeleted = true;
                 _incomeRepository.Edit(income);
+                _moneyHolderRepository.Edit(moneyHolder);
                 result.BuildResult("Delete Sucessfuly");
             }
             catch (Exception ex)

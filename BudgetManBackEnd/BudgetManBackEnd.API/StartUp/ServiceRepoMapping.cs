@@ -1,9 +1,16 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Configuration;
+using System.Security.Cryptography.X509Certificates;
+using BudgetManBackEnd.BotFramework;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.BotFramework;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BudgetManBackEnd.API.StartUp
 {
@@ -14,6 +21,7 @@ namespace BudgetManBackEnd.API.StartUp
 
         }
 
+        [Obsolete]
         public void Mapping(WebApplicationBuilder builder)
         {
             #region Service Mapping
@@ -30,7 +38,10 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<ILocalTransferService,  LocalTransferService>();
             builder.Services.AddScoped<IMoneySpendService, MoneySpendService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            
+            builder.Services.AddScoped<IAccountBalanceTrackingService, AccountBalanceTrackingService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IMessageService, MessageService >();
+          
             #endregion Service Mapping
 
             #region Repository Mapping
@@ -47,8 +58,20 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IMoneySpendRepository, MoneySpendRepository>();
             builder.Services.AddScoped<ILocalTransferRepository, LocalTransferRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            
+            builder.Services.AddScoped<IAccountBalanceTrackingRepository, AccountBalanceTrackingRepository>();
+
             #endregion Repository Mapping
+
+            //builder.Services.AddScoped<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>();
+            builder.Services.AddSingleton<IBotFrameworkHttpAdapter, BotFrameworkHttpAdapter>((sp) =>
+            {
+                var logger = sp.GetRequiredService<ILogger<BotFrameworkHttpAdapter>>();
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var authConfig = new AuthenticationConfiguration();
+                IChannelProvider channelProvider = null; // Use a specific implementation if required
+                return new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(configuration), channelProvider, logger);
+            });
+            builder.Services.AddTransient<IBot, MyBot>();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BudgetManBackEnd.Common.Enum;
+using BudgetManBackEnd.CommonClass.Enum;
 using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
 using BudgetManBackEnd.Model.Dto;
 using BudgetManBackEnd.Model.Response.User;
@@ -13,6 +15,9 @@ using MayNghien.Models.Response.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Reflection.Metadata;
 using static MayNghien.Common.CommonMessage.AuthResponseMessage;
 
 namespace BudgetManBackEnd.Service.Implementation
@@ -25,12 +30,17 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IAccountInfoRepository _accountInfoRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IBudgetCategoryRepository _budgetCategoryRepository;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IMoneyHolderRepository _moneyHolderRepository;
 
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UserService(IConfiguration config, UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager, IAccountInfoRepository accountInfoRepository,
-            IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+            IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, 
+            IBudgetCategoryRepository budgetCategoryRepository, IBudgetRepository budgetRepository,
+            IMoneyHolderRepository moneyHolderRepository)
         {
             _config = config;
             _userManager = userManager;
@@ -39,6 +49,9 @@ namespace BudgetManBackEnd.Service.Implementation
             _userRepository = userRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _budgetCategoryRepository = budgetCategoryRepository;
+            _budgetRepository = budgetRepository;
+            _moneyHolderRepository = moneyHolderRepository;
         }
         public async Task<AppResponse<string>> CreateUser(UserModel user)
         {
@@ -185,15 +198,18 @@ namespace BudgetManBackEnd.Service.Implementation
                 var users = _userRepository.FindByPredicate(query);
                 var UserList = users.ToList();
                 var dtoList = _mapper.Map<List<UserModel>>(UserList);
-                if (dtoList != null && dtoList.Count > 0)
-                {
-                    for (int i = 0; i < UserList.Count; i++)
-                    {
-                        var dtouser = dtoList[i];
-                        var identityUser = UserList[i];
-                        dtouser.Role = (await _userManager.GetRolesAsync(identityUser)).First();
-                    }
-                }
+                //if (dtoList != null && dtoList.Count > 0)
+                //{
+                //    for (int i = 0; i < UserList.Count; i++)
+                //    {
+                //        //var dtoUser = dtoList[i];
+                //        //var identityUser = UserList[i];
+                //        //dtoUser.Role = (await _userManager.GetRolesAsync(identityUser)).First();
+
+                //        //var accountInfo = _accountInfoRepository.FindBy(m => m.UserId == UserList[i].Id);
+
+                //    }
+                //}
                 return result.BuildResult(dtoList);
             }
             catch (Exception ex)
@@ -351,6 +367,38 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     await _userManager.RemovePasswordAsync(identityUser);
                     await _userManager.AddPasswordAsync(identityUser, "Abc@123");
+                }
+                return result.BuildResult("ok");
+            }
+            catch (Exception ex)
+            {
+
+                return result.BuildError(ex.ToString());
+            }
+        }
+
+        public async Task<AppResponse<string>> RunTestUser(UserModel model)
+        {
+            var result = new AppResponse<string>();
+            if (model.Id == null)
+            {
+                return result.BuildError(ERR_MSG_EmailIsNullOrEmpty);
+            }
+
+            try
+            {
+                var identityUser = await _userManager.FindByIdAsync(model.Id);
+                if (identityUser != null)
+                {
+                    //await _userManager.RemovePasswordAsync(identityUser);
+                    //await _userManager.AddPasswordAsync(identityUser, "Abc@123");
+                    var accountInfos = _accountInfoRepository.FindBy(m => m.UserId == model.Id);
+                    if (accountInfos != null && accountInfos.Count()>0)
+                    {
+                        var accInfo = accountInfos.First();
+                        accInfo.IsNewUser = true;
+                        _accountInfoRepository.Edit(accInfo);
+                    }
                 }
                 return result.BuildResult("ok");
             }

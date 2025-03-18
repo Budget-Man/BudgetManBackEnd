@@ -22,6 +22,59 @@ namespace BudgetManBackEnd.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.AccountBalanceTracking", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("BudgetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ChangeType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("CurrentBalance")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Modifiedby")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("NewBalance")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetId");
+
+                    b.HasIndex("MoneyHolderId");
+
+                    b.ToTable("AccountBalanceTrackings");
+                });
+
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.AccountInfo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -31,17 +84,35 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
+                    b.Property<string>("ChatUserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("DefaultMoneyHolderId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsNewUser")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Language")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MemberList")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MobileNo")
                         .HasColumnType("nvarchar(max)");
@@ -139,6 +210,9 @@ namespace BudgetManBackEnd.DAL.Migrations
 
                     b.Property<string>("Modifiedby")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MonthlyLimit")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -819,6 +893,32 @@ namespace BudgetManBackEnd.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.AccountBalanceTracking", b =>
+                {
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.AccountInfo", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BudgetManBackEnd.DAL.Models.Entity.MoneyHolder", "MoneyHolder")
+                        .WithMany()
+                        .HasForeignKey("MoneyHolderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Budget");
+
+                    b.Navigation("MoneyHolder");
                 });
 
             modelBuilder.Entity("BudgetManBackEnd.DAL.Models.Entity.Budget", b =>

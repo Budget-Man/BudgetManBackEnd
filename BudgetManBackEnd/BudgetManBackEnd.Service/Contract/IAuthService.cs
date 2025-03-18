@@ -13,6 +13,6 @@ namespace BudgetManBackEnd.Service.Contract
         Task<AppResponse<LoginResult>> AuthenticateUser(UserModel login);
         Task<AppResponse<string>> CreateUser(UserModel user);
 
-        Task<AppResponse<LoginResponseModel>> LoginByGoogle(GoogleLoginDto token);
+        Task<AppResponse<LoginResult>> LoginByGoogle(GoogleLoginDto token);
     }
 }

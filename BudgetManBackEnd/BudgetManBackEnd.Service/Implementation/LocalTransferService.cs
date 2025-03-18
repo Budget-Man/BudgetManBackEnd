@@ -20,13 +20,17 @@ namespace BudgetManBackEnd.Service.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IAccountInfoRepository _accountInfoRepository;
         private IMoneyHolderRepository _moneyHolderRepository;
-        public LocalTransferService(ILocalTransferRepository localTransferRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository moneyHolderRepository)
+        private IAccountBalanceTrackingRepository _accountBalanceTrackingRepository;
+        public LocalTransferService(ILocalTransferRepository localTransferRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor,
+            IAccountInfoRepository accountInfoRepository, IMoneyHolderRepository moneyHolderRepository, 
+            IAccountBalanceTrackingRepository accountBalanceTrackingRepository)
         {
             _localTransferRepository = localTransferRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _accountInfoRepository = accountInfoRepository;
             _moneyHolderRepository = moneyHolderRepository;
+            _accountBalanceTrackingRepository = accountBalanceTrackingRepository;
         }
 
         public AppResponse<LocalTransferDto> GetLocalTransfer(Guid Id)
@@ -108,7 +112,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find to money holder");
                 }
-                if(request.FromMoneyHolderName == null)
+                if(request.FromMoneyHolderId == null)
                 {
                     return result.BuildError("From money holder cannot be null");
                 }
@@ -117,20 +121,52 @@ namespace BudgetManBackEnd.Service.Implementation
                 {
                     return result.BuildError("Cannot find from money holder");
                 }
+                var MoneyHolderSource = moneyHolder2.FirstOrDefault();
+                var MoneyHolderDestination = moneyHolder.FirstOrDefault();
                  var localTransfer = _mapper.Map<LocalTransfer>(request);
                 localTransfer.Id = Guid.NewGuid();
                 localTransfer.AccountId = accountInfo.Id;
-                localTransfer.FromMoneyHolder = null;
+                localTransfer.FromMoneyHolderId = MoneyHolderSource.Id;
+                localTransfer.ToMoneyHolderId = MoneyHolderDestination.Id;
                 localTransfer.ToMoneyHolder = null;
+                localTransfer.FromMoneyHolder = null;
                 _localTransferRepository.Add(localTransfer, accountInfo.Name);
 
+                MoneyHolderSource.Balance -= request.Amount;
+                MoneyHolderDestination.Balance += request.Amount;
+                _moneyHolderRepository.Edit(MoneyHolderSource);
+                _moneyHolderRepository.Edit(MoneyHolderDestination);
                 request.Id = localTransfer.Id;
                 result.BuildResult(request);
+                var accTrackingsource = new AccountBalanceTracking
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountInfo.Id,
+                    Amount = localTransfer.Amount,
+                    MoneyHolderId = MoneyHolderSource.Id,
+                    ChangeType = Common.Enum.ChangeType.TransferOut,
+                    CurrentBalance = MoneyHolderSource.Balance + localTransfer.Amount,
+                    NewBalance = MoneyHolderSource.Balance,
+                    BudgetId = null,
+                };
+                _accountBalanceTrackingRepository.Add(accTrackingsource, accountInfo.Name);
 
+                var accTrackingdest = new AccountBalanceTracking
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountInfo.Id,
+                    Amount = localTransfer.Amount,
+                    MoneyHolderId = MoneyHolderDestination.Id,
+                    ChangeType = Common.Enum.ChangeType.TransferIn,
+                    CurrentBalance = MoneyHolderDestination.Balance - localTransfer.Amount,
+                    NewBalance = MoneyHolderDestination.Balance,
+                    BudgetId = null,
+                };
+                _accountBalanceTrackingRepository.Add(accTrackingdest, accountInfo.Name);
             }
             catch (Exception ex)
             {
-                result.BuildError(ex.Message);
+                result.BuildError(ex.ToString());
             }
             return result;
         }
