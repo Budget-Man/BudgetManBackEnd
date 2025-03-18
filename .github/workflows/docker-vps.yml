@@ -32,7 +32,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
@@ -49,14 +49,23 @@ jobs:
             docker network connect nginx-proxy budgetmanapi;
           "
 
+      
+
+      - name: Checkout code for config
+        uses: actions/checkout@v3
+
+      - name: Debug directory structure
+        run: |
+          pwd
+          ls -la
       - name: Copy Nginx config to server
         run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no nginx.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
 
       - name: Copy Nginx config to container
         run: |
           sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
-            docker cp /home/binh/tmp/nginx/nginx.conf nginx-proxy:/etc/nginx/conf.d/api.conf;
+            docker cp /home/binh/tmp/nginx/budmanapi.conf nginx-proxy:/etc/nginx/conf.d/budmanapi.conf;
             docker exec nginx-proxy nginx -s reload;
           "
 
