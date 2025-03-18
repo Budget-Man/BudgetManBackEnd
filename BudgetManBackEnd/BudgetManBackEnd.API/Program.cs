@@ -62,7 +62,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.WithOrigins("http://maynghien.ddns.net", "http://budmanapi.ddns.net")
+        policy.AllowAnyOrigin()  // Thử AllowAnyOrigin
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
