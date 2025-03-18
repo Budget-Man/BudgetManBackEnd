@@ -45,7 +45,7 @@ namespace BudgetManBackEnd.BotFramework
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var reply = MessageFactory.Text("");
-            turnContext.SendActivityAsync(new Activity
+            await turnContext.SendActivityAsync(new Activity
                 {
                     Type = ActivityTypes.Typing
                 }, cancellationToken);
