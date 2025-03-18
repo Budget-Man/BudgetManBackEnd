@@ -60,9 +60,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.AllowAnyOrigin()  // Cho phép tất cả các nguồn
+        policy.SetIsOriginAllowed(origin => true) // Cho phép tất cả các nguồn
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials(); // Nếu UI cần gửi cookie hoặc xác thực
     });
 });
 
