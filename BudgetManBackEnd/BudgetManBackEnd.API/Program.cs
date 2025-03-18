@@ -62,11 +62,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.SetIsOriginAllowed(origin => true) // Chấp nhận tất cả origin (tránh lỗi với AllowCredentials)
+        policy.WithOrigins("http://maynghien.ddns.net", "http://budmanapi.ddns.net")
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials()
-              .SetIsOriginAllowedToAllowWildcardSubdomains();
+              .AllowCredentials();
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -121,6 +120,15 @@ if (!app.Environment.IsDevelopment())
 
 
 app.UseCors("AllowAllOrigins");  // Đặt trước Authentication và Authorization
+
+// Add middleware for Referrer-Policy header
+app.Use(async (context, next) => {
+    context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Add("X-Frame-Options", "DENY");
+    context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
