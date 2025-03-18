@@ -57,14 +57,16 @@ builder.Services.AddSwaggerGen(c =>
                     });
 });
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
+// Configure CORS
 builder.Services.AddCors(options =>
 {
-    // this defines a CORS policy called "default"
-    options.AddPolicy("default", policy =>
+    options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.WithOrigins("https://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.SetIsOriginAllowed(origin => true) // Chấp nhận tất cả origin (tránh lỗi với AllowCredentials)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials()
+              .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -85,7 +87,7 @@ builder.Services.AddAuthentication(opt =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
+    options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -111,10 +113,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Make HTTPS redirection optional in development
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 
-app.UseCors("default");
+app.UseCors("AllowAllOrigins");  // Đặt trước Authentication và Authorization
 
 app.UseAuthentication();
 app.UseAuthorization();
