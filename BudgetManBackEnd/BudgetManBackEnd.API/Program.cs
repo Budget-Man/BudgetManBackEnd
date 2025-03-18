@@ -60,12 +60,12 @@ builder.Services.AddAutoMapper(typeof(MappingsProfile));
 builder.Services.AddCors(options =>
 {
     // this defines a CORS policy called "default"
-    options.AddPolicy("default", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "*")
-            .AllowAnyHeader()
-            .AllowAnyOrigin()
-            .AllowAnyMethod();
+        policy.SetIsOriginAllowed(_ => true) // Cho phép tất cả origin
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Chỉ cần nếu gửi cookies/token
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -115,7 +115,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.UseCors("default");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
