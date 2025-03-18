@@ -19,7 +19,7 @@ namespace BudgetManBackEnd.Api.Controllers
         {
             try
             {
-                var response = await _messageService.HandleMessage(request.Message, request.IsGroup);
+                var response = await _messageService.HandleMessage(request.Message, request.Images);
                 return Ok(new { message = response });
             }
             catch (Exception ex)
@@ -32,6 +32,6 @@ namespace BudgetManBackEnd.Api.Controllers
     public class MessageRequest
     {
         public string Message { get; set; }
-        public bool IsGroup { get; set; }
+        public List<byte[]>? Images { get; set; }
     }
 }
