@@ -59,6 +59,7 @@ namespace BudgetManBackEnd.Service.Implementation
                 var tasks = images.Select(path => ReadImageWithOcrSpace(path)).ToArray();
                 imageResults = await Task.WhenAll(tasks);
             }
+            if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
 
             string commandResult = string.Empty;
             if (imageResults != null && imageResults.Any())
@@ -90,7 +91,6 @@ namespace BudgetManBackEnd.Service.Implementation
                     commandResult = allImageResult;
                 }
             }
-            if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
             if (jsonResponse != null)
             {
                 //detect command with WitAI
@@ -387,11 +387,14 @@ namespace BudgetManBackEnd.Service.Implementation
 
         public static string FormatCurrency(string number, string currencyCode = "vnđ")
         {
-            // Remove any existing formatting and convert to long
-            if (long.TryParse(new string(number.Where(char.IsDigit).ToArray()), out long parsedNumber))
+            // Remove any existing formatting except for the leading negative sign
+            string cleanedNumber = new string(number.Where(c => char.IsDigit(c) || c == '-').ToArray());
+
+            if (long.TryParse(cleanedNumber, out long parsedNumber))
             {
                 return string.Format("{0:N0}{1}", parsedNumber, currencyCode).Replace(",", ".");
             }
+
             return number; // Return original string if parsing fails
         }
 

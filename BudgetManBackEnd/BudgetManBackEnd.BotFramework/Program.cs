@@ -24,6 +24,7 @@ using BudgetManBackEnd.DAL.Implementation;
 using Microsoft.Bot.Connector.Authentication;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace BudgetManBackEnd.BotFramework
 {
@@ -45,13 +46,19 @@ namespace BudgetManBackEnd.BotFramework
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var reply = MessageFactory.Text("");
-            await turnContext.SendActivityAsync(new Activity
-                {
+            await turnContext.SendActivityAsync(new Microsoft.Bot.Schema.Activity
+            {
                     Type = ActivityTypes.Typing
                 }, cancellationToken);
             try
             {
                 var userMessage = turnContext.Activity.Text;
+                if (turnContext.Activity.Conversation.IsGroup.HasValue &&
+                    turnContext.Activity.Conversation.IsGroup.Value &&
+                    userMessage.StartsWith("Budman"))
+                {
+                    userMessage = userMessage.Substring(6).Trim();
+                }
                 string userId = "4d2d815f-4def-4a12-8dc8-860ac023254a";
                 var images = await DownloadAttachmentAsync(turnContext);
                 string response = await _messageService.HandleMessage(userMessage, images, userId);
@@ -132,7 +139,7 @@ namespace BudgetManBackEnd.BotFramework
                         // Check if the added member is the bot itself
                         if (member.Id == activity.Recipient.Id)
                         {
-                            await turnContext.SendActivityAsync(new Activity
+                            await turnContext.SendActivityAsync(new Microsoft.Bot.Schema.Activity
                             {
                                 Type = ActivityTypes.Typing
                             }, cancellationToken);
@@ -147,7 +154,7 @@ namespace BudgetManBackEnd.BotFramework
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error handling ConversationUpdateActivity: {ex.Message}");
+                Debug.WriteLine($"Error handling ConversationUpdateActivity: {ex.Message}");
             }
         }
 
@@ -184,13 +191,13 @@ namespace BudgetManBackEnd.BotFramework
             }
             catch (UriFormatException)
             {
-                Console.WriteLine("Error: Invalid attachment URL.");
+                Debug.WriteLine("Error: Invalid attachment URL.");
                 return null;
                 
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Debug.WriteLine($"Error: {ex.Message}");
                 return null;
             }
         }

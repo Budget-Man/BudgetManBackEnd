@@ -16,5 +16,7 @@ namespace BudgetManBackEnd.DAL.Models.Entity
         public Currencies? Currency { get; set; }
         public Guid? DefaultMoneyHolderId { get; set; }
         public bool IsNewUser { get; set; }
+        public string? ChatUserId { get; set; }
+        public string? MemberList { get; set; }
     }
 }

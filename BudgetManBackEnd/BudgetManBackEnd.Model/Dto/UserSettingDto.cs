@@ -9,10 +9,11 @@ namespace BudgetManBackEnd.Model.Dto
 {
     public class UserSettingDto
     {
+        public bool? IsCreateBaseData { get; set; }
         public string? Language { get; set; }
         public string? Currency { get; set; }
         public Guid? DefaultMoneyHolderId { get; set; }
-        public bool? IsCreateBaseData { get; set; }
-
+        public string? ChatUserId { get; set; }
+        public string? MemberList { get; set; }
     }
 }

@@ -68,6 +68,8 @@ namespace BudgetManBackEnd.Service.Implementation
                     accountInfo.Language = (Languages)Enum.Parse(typeof(Languages), model.Language, true);
                     accountInfo.Currency = (Currencies)Enum.Parse(typeof(Currencies), model.Currency, true);
                     accountInfo.IsNewUser = false;
+                    accountInfo.ChatUserId = model.ChatUserId;
+                    accountInfo.MemberList = model.MemberList;
                     _accountInfoRepository.Edit(accountInfo);
 
                     if (model.IsCreateBaseData.HasValue && model.IsCreateBaseData.Value)
