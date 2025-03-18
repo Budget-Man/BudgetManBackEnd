@@ -57,16 +57,16 @@ builder.Services.AddSwaggerGen(c =>
                     });
 });
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
-builder.Services.AddCors(options =>
-{
-    // this defines a CORS policy called "default"
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    // this defines a CORS policy called "default"
+//    options.AddPolicy("AllowAll", policy =>
+//    {
+//        policy.AllowAnyOrigin()
+//              .AllowAnyHeader()
+//              .AllowAnyMethod();
+//    });
+//});
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = false;
@@ -114,7 +114,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
