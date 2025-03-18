@@ -53,7 +53,7 @@ jobs:
         run: |
           pwd
           ls -la
-          ls -la ../../../../UI/Budget-Man/BudgetManUI/BudgetManUI/
+          ls -la ../../../../UI/Budget-Man/BudgetManUI/BudgetManUI/ 
 
       - name: Copy Nginx config to server
         run: |
