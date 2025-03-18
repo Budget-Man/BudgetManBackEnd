@@ -28,7 +28,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            _adapter.ProcessAsync(Request, Response, _bot);
+            await _adapter.ProcessAsync(Request, Response, _bot);
         }
     }
 }
