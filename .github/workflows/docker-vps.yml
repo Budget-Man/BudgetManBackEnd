@@ -51,7 +51,7 @@ jobs:
 
       - name: Copy Nginx config to server
         run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no BudgetManBackEnd/budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no ../budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
 
       - name: Copy Nginx config to container
         run: |
