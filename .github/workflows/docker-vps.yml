@@ -6,79 +6,123 @@ on:
       - deploy
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
-    # Set the working directory for all steps in this job
     defaults:
       run:
         working-directory: BudgetManBackEnd
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
-    
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile -t maynghien/budgetmanapi 
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Login to Docker Hub
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Push Docker image
-      run: docker push maynghien/budgetmanapi
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up environment variables
+        run: |
+          echo "ASPNETCORE_ENVIRONMENT=Development" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: maynghien/budgetmanapi:latest
+          build-args: |
+            ASPNETCORE_ENVIRONMENT=Development
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
-    # Set the working directory for all steps in this job
     defaults:
       run:
         working-directory: BudgetManBackEnd
-  
-    steps:
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-  
-      - name: SSH to server and pull
-        run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
-            mkdir -p /home/binh/tmp/nginx;
-            docker stop budgetmanapi;
-            docker start mssql;
-            docker system prune -af;
-            docker pull maynghien/budgetmanapi;
-            docker run --name budgetmanapi -e ASPNETCORE_ENVIRONMENT=Development --expose 5000 -d maynghien/budgetmanapi;
-            docker network connect nginx-proxy budgetmanapi;
-          "
 
-      - name: Debug directory structure
-        run: |
-          pwd
-          ls -la
+    steps:
+      - name: Deploy to remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: maynghien.ddns.net
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            # Ensure MSSQL is running
+            docker start mssql || true
+            
+            # Clean up unused resources
+            docker system prune -af
+            
+            # Pull latest image
+            docker pull maynghien/budgetmanapi:latest
+            
+            # Stop and remove existing container
+            docker stop budgetmanapi || true
+            docker rm budgetmanapi || true
+            
+            # Create network if it doesn't exist
+            docker network create nginx-proxy || true
+            
+            # Run new container
+            docker run -d --name budgetmanapi \
+              --restart unless-stopped \
+              --expose 5000 \
+              --network nginx-proxy \
+              -e ASPNETCORE_ENVIRONMENT=Development \
+              maynghien/budgetmanapi:latest
+            
+            # Wait for container to start
+            sleep 10
+            
+            # Verify container is running
+            docker ps | grep budgetmanapi
 
       - name: Checkout code for config
         uses: actions/checkout@v3
 
-      - name: Copy Nginx config to server
-        run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" scp -o StrictHostKeyChecking=no BudgetManBackEnd/budmanapi.conf root@maynghien.ddns.net:/home/binh/tmp/nginx/
+      - name: Copy and reload Nginx config
+        uses: appleboy/ssh-action@master
+        with:
+          host: maynghien.ddns.net
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            # Create nginx config directory if it doesn't exist
+            mkdir -p /etc/nginx/conf.d
+            
+            # Copy nginx configuration
+            docker cp BudgetManBackEnd/budmanapi.conf nginx-proxy:/etc/nginx/conf.d/budmanapi.conf
+            
+            # Test nginx configuration
+            docker exec nginx-proxy nginx -t
+            
+            # Reload nginx if test passes
+            docker exec nginx-proxy nginx -s reload
 
-      - name: Copy Nginx config to container
-        run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
-            docker cp /home/binh/tmp/nginx/budmanapi.conf nginx-proxy:/etc/nginx/conf.d/budmanapi.conf;
-            docker exec nginx-proxy nginx -s reload;
-          "
-
-      - name: recheck
-        run: |
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@maynghien.ddns.net "
-           
-             docker logs budgetmanapi;
-             
-             docker container ls
-             
-          "
+      - name: Verify deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: maynghien.ddns.net
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            # Check container logs
+            docker logs --tail 50 budgetmanapi
+            
+            # List running containers
+            docker ps
+            
+            # Check nginx status
+            docker exec nginx-proxy nginx -t
+            docker container ls
