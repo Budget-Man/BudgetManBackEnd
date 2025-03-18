@@ -62,9 +62,8 @@ builder.Services.AddCors(options =>
     // this defines a CORS policy called "default"
     options.AddPolicy("default", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "*")
+        policy.WithOrigins("https://localhost:5173")
             .AllowAnyHeader()
-            .AllowAnyOrigin()
             .AllowAnyMethod();
     });
 });
@@ -86,12 +85,12 @@ builder.Services.AddAuthentication(opt =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JwtConfig:validIssuer"],
