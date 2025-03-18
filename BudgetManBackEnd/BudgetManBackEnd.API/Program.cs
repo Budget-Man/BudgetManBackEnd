@@ -67,8 +67,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials()
               .SetIsOriginAllowedToAllowWildcardSubdomains()
-              .WithExposedHeaders("Content-Disposition")
-              .WithReferrerPolicy(Microsoft.AspNetCore.Http.ReferrerPolicy.StrictOriginWhenCrossOrigin);
+              .WithExposedHeaders("Content-Disposition");
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
