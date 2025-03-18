@@ -12,62 +12,66 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-builder.Services.AddDbContext<BudgetManDbContext>(options =>
-        options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnection"))
-        );
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 
+// Configure DbContext
+builder.Services.AddDbContext<BudgetManDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// Configure AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingsProfile));
+
+// Configure Dependency Injection
 new ServiceRepoMapping().Mapping(builder);
 
+// Configure Swagger with JWT Authentication
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
-
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                      "Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n" +
+                      "Example: 'Bearer 12345abcdef'",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                  {
-                    {
-                      new OpenApiSecurityScheme
-                      {
-                        Reference = new OpenApiReference
-                          {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                          },
-                          Scheme = "oauth2",
-                          Name = "Bearer",
-                          In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                      }
-                    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
 });
-builder.Services.AddAutoMapper(typeof(MappingsProfile));
-// Configure CORS
+
+// Configure CORS - Allow all origins dynamically
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.WithOrigins("http://maynghien.ddns.net", "http://budmanapi.ddns.net")
+        policy.SetIsOriginAllowed(_ => true)  // Allow any origin
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
+
+// Configure Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = false;
@@ -76,14 +80,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 })
-    .AddEntityFrameworkStores<BudgetManDbContext>()
-    .AddDefaultTokenProviders();
-builder.Services.AddAuthentication(opt =>
-{
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+.AddEntityFrameworkStores<BudgetManDbContext>()
+.AddDefaultTokenProviders();
+
+// Configure Authentication & JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
@@ -96,33 +97,41 @@ builder.Services.AddAuthentication(opt =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JwtConfig:validIssuer"],
         ValidAudience = builder.Configuration["JwtConfig:validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        )
     };
 });
+
+// Configure Authorization
 builder.Services.AddAuthorization();
-//builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
+// Configure JSON Serializer
 builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+);
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure middleware
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Make HTTPS redirection optional in development
+// Make HTTPS optional in development
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
 
+// Ensure CORS is applied before authentication
+app.UseCors("AllowAllOrigins");
 
-app.UseCors("AllowAllOrigins");  // Đặt trước Authentication và Authorization
-
-// Add middleware for Referrer-Policy header
-app.Use(async (context, next) => {
+app.Use(async (context, next) =>
+{
     context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
     context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
     context.Response.Headers.Add("X-Frame-Options", "DENY");
