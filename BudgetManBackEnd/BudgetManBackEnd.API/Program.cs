@@ -62,12 +62,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.SetIsOriginAllowed(origin => true)
+        policy.SetIsOriginAllowed(origin => true) // Chấp nhận tất cả origin (tránh lỗi với AllowCredentials)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()
-              .SetIsOriginAllowedToAllowWildcardSubdomains()
-              .WithExposedHeaders("Content-Disposition");
+              .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
