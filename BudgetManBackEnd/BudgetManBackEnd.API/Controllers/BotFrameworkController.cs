@@ -15,11 +15,10 @@ namespace BudgetManBackEnd.API.Controllers
     [Route("api/BotFramework")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = "Bearer")]
-    public class BotFrameworkController : ControllerBase
+    public class BotFrameworkController : Controller
     {
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
-
         public BotFrameworkController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             _adapter = adapter;
@@ -29,7 +28,7 @@ namespace BudgetManBackEnd.API.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            await _adapter.ProcessAsync(Request, Response, _bot);
+            _adapter.ProcessAsync(Request, Response, _bot);
         }
     }
 }

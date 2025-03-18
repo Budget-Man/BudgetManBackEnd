@@ -19,26 +19,24 @@ using BudgetManBackEnd.Service;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using Microsoft.Extensions.DependencyInjection;
+using BudgetManBackEnd.DAL.Contract;
+using BudgetManBackEnd.DAL.Implementation;
+using Microsoft.Bot.Connector.Authentication;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
 
 namespace BudgetManBackEnd.BotFramework
 {
     public class MyBot : ActivityHandler
     {
-        //protected readonly HttpClient client = new HttpClient();
-        //private static string apiKey = "AIzaSyCUsEtDTL478LUgDTVKTqgxqoyEHuj-mW8";
-        //private static string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={apiKey}";
-        //private static string url = $"https://generativelanguage.googleapis.com/v1beta/models/tunedModels/budget-managment-9c5d6c3pw0yu:generateContent?key={apiKey}";
-
-
-        //private readonly IBotFrameworkHttpAdapter _adapter;
-        //private readonly IBot _bot;
-        public MyBot()
+        private readonly IMessageService _messageService;
+        private readonly string _appId;
+        private readonly string _appPassword;
+        public MyBot(IMessageService messageService, IConfiguration configuration)
         {
-            //_adapter = adapter;
-            //_bot = bot;
-            //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-            //client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-
+            _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
+            _appId = configuration["MicrosoftAppId"];
+            _appPassword = configuration["MicrosoftAppPassword"];
         }
         public static void Main(string[] args)
         {
@@ -46,59 +44,80 @@ namespace BudgetManBackEnd.BotFramework
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var reply = new Activity();
-            try
-            {
-                // Send a "typing" activity to indicate the bot is preparing a response
-                await turnContext.SendActivityAsync(new Activity
+            var reply = MessageFactory.Text("");
+            turnContext.SendActivityAsync(new Activity
                 {
                     Type = ActivityTypes.Typing
                 }, cancellationToken);
-
+            try
+            {
                 var userMessage = turnContext.Activity.Text;
+                string userId = "4d2d815f-4def-4a12-8dc8-860ac023254a";
+                var images = await DownloadAttachmentAsync(turnContext);
+                string response = await _messageService.HandleMessage(userMessage, images, userId);
 
-
-                //var jsonResponse = await GetResponseFromWitAI(userMessage);
-                //string commandResult = string.Empty;
-                //if (jsonResponse != null)
-                //{
-                //    commandResult = await ProcessWitAiResponse(jsonResponse, turnContext);
-                //}
-
-                bool isGroup = turnContext.Activity.Conversation.IsGroup ?? false;
-                string textReply = string.Empty;
-
-                
-
-                reply = MessageFactory.Text(textReply);
-                if (isGroup)
-                {
-                    var incomingMessageId = turnContext.Activity.Id;
-                    reply.ReplyToId = incomingMessageId;
-                    var originalMessage = turnContext.Activity;
-                    var authorName = originalMessage.From.Name ?? "Unknown User";
-                    var messageId = originalMessage.Id ?? "unknown";
-                    var timestamp = originalMessage.Timestamp.HasValue
-                        ? new DateTimeOffset(originalMessage.Timestamp.Value.UtcDateTime).ToUnixTimeSeconds().ToString()
-                        : "0";
-
-                    // Build the quote markup
-                    var quote = $"<quote authorname=\"{authorName}\" timestamp=\"{timestamp}\" " +
-                                $"conversation=\"{originalMessage.Conversation.Id}\" messageid=\"{messageId}\" cuid=\"{Guid.NewGuid()}\">" +
-                                $"<legacyquote>[{timestamp}] {authorName}: </legacyquote>" +
-                                $"{originalMessage.Text}<legacyquote>\n\n&lt;&lt;&lt; </legacyquote></quote>";
-                    reply.Text = quote + reply.Text;
-                }
-
+                reply = MessageFactory.Text(response);
                 await turnContext.SendActivityAsync(reply, cancellationToken);
             }
             catch (Exception ex)
             {
-                reply = MessageFactory.Text(ex.ToString());
-                await turnContext.SendActivityAsync(reply, cancellationToken);
-                Console.WriteLine($"Error sending message: {ex.Message}");
+                await turnContext.SendActivityAsync(MessageFactory.Text($"Error: {ex.Message}"), cancellationToken);
             }
         }
+
+        //protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        //{
+        //    using (var scope = _scopeFactory.CreateScope()) // Creates a new scope per request
+        //    {
+        //        var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
+        //        var reply = new Activity();
+
+        //        try
+        //        {
+        //            // Send a "typing" activity to indicate the bot is preparing a response
+        //            await turnContext.SendActivityAsync(new Activity
+        //            {
+        //                Type = ActivityTypes.Typing
+        //            }, cancellationToken);
+
+        //            var userMessage = turnContext.Activity.Text;
+
+        //            bool isGroup = turnContext.Activity.Conversation.IsGroup ?? false;
+        //            string textReply = string.Empty;
+        //            //var meesageService = serviceProvider.GetService<IMessageService>();
+        //            var userId = "4d2d815f-4def-4a12-8dc8-860ac023254a";
+        //            textReply = await _messageService.HandleMessage(userMessage, userId);
+
+        //            reply = MessageFactory.Text(textReply);
+        //            if (isGroup)
+        //            {
+        //                var incomingMessageId = turnContext.Activity.Id;
+        //                reply.ReplyToId = incomingMessageId;
+        //                var originalMessage = turnContext.Activity;
+        //                var authorName = originalMessage.From.Name ?? "Unknown User";
+        //                var messageId = originalMessage.Id ?? "unknown";
+        //                var timestamp = originalMessage.Timestamp.HasValue
+        //                    ? new DateTimeOffset(originalMessage.Timestamp.Value.UtcDateTime).ToUnixTimeSeconds().ToString()
+        //                    : "0";
+
+        //                // Build the quote markup
+        //                var quote = $"<quote authorname=\"{authorName}\" timestamp=\"{timestamp}\" " +
+        //                            $"conversation=\"{originalMessage.Conversation.Id}\" messageid=\"{messageId}\" cuid=\"{Guid.NewGuid()}\">" +
+        //                            $"<legacyquote>[{timestamp}] {authorName}: </legacyquote>" +
+        //                            $"{originalMessage.Text}<legacyquote>\n\n&lt;&lt;&lt; </legacyquote></quote>";
+        //                reply.Text = quote + reply.Text;
+        //            }
+
+        //            await turnContext.SendActivityAsync(reply, cancellationToken);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            reply = MessageFactory.Text(ex.ToString());
+        //            await turnContext.SendActivityAsync(reply, cancellationToken);
+        //            Console.WriteLine($"Error sending message: {ex.Message}");
+        //        }
+        //    }
+        //}
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             try
@@ -131,14 +150,49 @@ namespace BudgetManBackEnd.BotFramework
                 Console.WriteLine($"Error handling ConversationUpdateActivity: {ex.Message}");
             }
         }
-        private static ServiceProvider ConfigureServices()
+
+        public async Task<List<byte[]>?> DownloadAttachmentAsync(ITurnContext<IMessageActivity> turnContext)
         {
-            var services = new ServiceCollection();
+            HttpClient _httpClient = new HttpClient();
+            if (turnContext.Activity.Attachments == null || !turnContext.Activity.Attachments.Any())
+            {
+                return null;
+            }
 
-            // Register IBudgetService with its implementation
-            services.AddScoped<IBudgetService, BudgetService>();
-
-            return services.BuildServiceProvider();
+            var firstAttachment = turnContext.Activity.Attachments.First();
+            List<byte[]> result = new List<byte[]>();
+            try
+            {
+                if ((turnContext.Activity.ChannelId.Equals("skype", StringComparison.InvariantCultureIgnoreCase) ||
+                     turnContext.Activity.ChannelId.Equals("msteams", StringComparison.InvariantCultureIgnoreCase)) 
+                     //&&new Uri(firstAttachment.ContentUrl).Host.EndsWith("skype.com")
+                     )
+                {
+                    var credentials = new MicrosoftAppCredentials(_appId, _appPassword);
+                    var token = await credentials.GetTokenAsync();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                foreach (var attachment in turnContext.Activity.Attachments)
+                {
+                    if (attachment.ContentType == "image")
+                    {
+                        var responseMessage = await _httpClient.GetByteArrayAsync(attachment.ContentUrl);
+                        result.Add(responseMessage);
+                    }
+                }
+                return result;
+            }
+            catch (UriFormatException)
+            {
+                Console.WriteLine("Error: Invalid attachment URL.");
+                return null;
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
         }
     }
 }
