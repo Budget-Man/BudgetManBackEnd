@@ -404,3 +404,4 @@ FodyWeavers.xsd
 /BudgetManBackEnd/BudgetManBackEnd.Service/obj/Debug/net6.0/BudgetManBackEnd.Service.AssemblyInfo.cs
 /BudgetManBackEnd/MessageCronJob/appsettings.json
 /BudgetManBackEnd/BudgetManBackEnd.API/appsettings.json
+/BudgetManBackEnd/BudgetManBackEnd.Common/obj/
