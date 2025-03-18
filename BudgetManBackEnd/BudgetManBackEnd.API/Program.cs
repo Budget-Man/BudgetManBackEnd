@@ -62,11 +62,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.SetIsOriginAllowed(origin => true) // Chấp nhận tất cả origin (tránh lỗi với AllowCredentials)
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()
-              .SetIsOriginAllowedToAllowWildcardSubdomains();
+              .SetIsOriginAllowedToAllowWildcardSubdomains()
+              .WithExposedHeaders("Content-Disposition")
+              .WithReferrerPolicy(Microsoft.AspNetCore.Http.ReferrerPolicy.StrictOriginWhenCrossOrigin);
     });
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
