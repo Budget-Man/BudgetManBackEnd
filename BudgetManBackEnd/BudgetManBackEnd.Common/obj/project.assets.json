@@ -1,3 +1,4 @@
+@ -1,4736 +0,0 @@
 {
   "version": 3,
   "targets": {
@@ -4652,14 +4653,30 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<<<< Temporary merge branch 1
+      "projectUniqueName": "D:\\Projects\\BudgetManagement\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+      "projectName": "BudgetManBackEnd.Common",
+      "projectPath": "D:\\Projects\\BudgetManagement\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "D:\\Projects\\BudgetManagement\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
+=========
       "projectUniqueName": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
       "projectName": "BudgetManBackEnd.Common",
       "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\BudgetManBackEnd.Common.csproj",
       "packagesPath": "C:\\Users\\binh.phan\\.nuget\\packages\\",
       "outputPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\BudgetManBackEnd.Common\\obj\\",
+>>>>>>>>> Temporary merge branch 2
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
+<<<<<<<<< Temporary merge branch 1
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+=========
         "C:\\Users\\binh.phan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>>>> Temporary merge branch 2
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4673,8 +4690,13 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
+<<<<<<<<< Temporary merge branch 1
+            "D:\\Projects\\BudgetManagement\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
+              "projectPath": "D:\\Projects\\BudgetManagement\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj"
+=========
             "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj": {
               "projectPath": "D:\\project\\BudgetMan\\Code\\Backend\\Budget-Man\\BudgetManBackEnd\\BudgetManBackEnd\\Maynghien.Common\\Maynghien.Common.csproj"
+>>>>>>>>> Temporary merge branch 2
             }
           }
         }
@@ -4688,7 +4710,12 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
+<<<<<<<<< Temporary merge branch 1
+      },
+      "SdkAnalysisLevel": "9.0.200"
+=========
       }
+>>>>>>>>> Temporary merge branch 2
     },
     "frameworks": {
       "net6.0": {
@@ -4707,6 +4734,17 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
+<<<<<<<<< Temporary merge branch 1
+            "version": "[6.0.36, 6.0.36]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[6.0.36, 6.0.36]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[6.0.36, 6.0.36]"
+=========
             "version": "[6.0.30, 6.0.30]"
           },
           {
@@ -4716,6 +4754,7 @@
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
             "version": "[6.0.30, 6.0.30]"
+>>>>>>>>> Temporary merge branch 2
           }
         ],
         "frameworkReferences": {
@@ -4723,7 +4762,11 @@
             "privateAssets": "all"
           }
         },
+<<<<<<<<< Temporary merge branch 1
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201\\RuntimeIdentifierGraph.json"
+=========
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205\\RuntimeIdentifierGraph.json"
+>>>>>>>>> Temporary merge branch 2
       }
     }
   }

@@ -4,7 +4,7 @@ using BudgetManBackEnd.BotFramework;
 using BudgetManBackEnd.DAL.Contract;
 using BudgetManBackEnd.DAL.Implementation;
 using BudgetManBackEnd.DAL.Models.Entity;
-using BudgetManBackEnd.MessageCronJob;
+using BudgetManBackEnd.BotFramework;
 using BudgetManBackEnd.Service.Contract;
 using BudgetManBackEnd.Service.Implementation;
 using Microsoft.Bot.Builder;
@@ -42,7 +42,7 @@ namespace BudgetManBackEnd.API.StartUp
             builder.Services.AddScoped<IAccountBalanceTrackingService, AccountBalanceTrackingService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IMessageService, MessageService >();
-            
+          
             #endregion Service Mapping
 
             #region Repository Mapping
