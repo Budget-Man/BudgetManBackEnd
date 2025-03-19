@@ -18,6 +18,7 @@ namespace BudgetManBackEnd.Model.Request
         public FilterDocuments? filter_documents { get; set; }
         public int max_tokens { get; set; }
         public double temperature { get; set; }
+        public string? chatbot_global_action { get; set; }
         public string? conversation_id { get; set; }
     }
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]

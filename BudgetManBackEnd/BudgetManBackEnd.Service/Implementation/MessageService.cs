@@ -22,6 +22,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 
 namespace BudgetManBackEnd.Service.Implementation
 {
@@ -53,45 +54,13 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 jsonResponse = await GetResponseFromWitAI(message);
             }
-            string[] imageResults = null;
-            if (images !=null && images.Any())
-            {
-                var tasks = images.Select(path => ReadImageWithOcrSpace(path)).ToArray();
-                imageResults = await Task.WhenAll(tasks);
-            }
+            
             if (string.IsNullOrEmpty(userId)) userId = ClaimHelper.GetClainByName(_httpContextAccessor, "UserId");
 
             string commandResult = string.Empty;
-            if (imageResults != null && imageResults.Any())
-            {
-                var command = "Tìm cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số tổng (nếu không có số tổng thì tính tổng các số). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
-                //var command = "Cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số cuối cùng (nếu không có số cuối cùng thì tính tổng các mòn hàng). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
-                var allImageResult = String.Join("\n", imageResults);
-                var jsonExpense = await GetResponseFromGemini(allImageResult, command);
-                string cleanedJson = jsonExpense
-                .Replace("```json", "")  // Xóa ```json
-                .Replace("```", "")      // Xóa ```
-                .Replace("\n", "")       // Xóa ký tự xuống dòng
-                .Trim();                 // Xóa khoảng trắng thừa
-                dynamic expense = JsonConvert.DeserializeObject(cleanedJson);
-                if (expense != null && expense.reason != null && expense.amount != null &&
-                    !string.IsNullOrEmpty(expense.reason.ToString()) && 
-                    !string.IsNullOrEmpty(expense.amount.ToString()))
-                {
-                    string reason = expense.reason.ToString(); // Ép kiểu sang string
-                    string amount = expense.amount.ToString();
-                    amount = amount.Replace(",", ".");
-                    if (string.IsNullOrEmpty(message))
-                        message = reason;
-                    else message = ": " + reason;
-                    commandResult = AddExpense(message, userId, amount);
-                }
-                else
-                {
-                    commandResult = allImageResult;
-                }
-            }
-            if (jsonResponse != null)
+            commandResult = await ProcessImages(images, message, userId);
+
+            if (string.IsNullOrEmpty(commandResult) && jsonResponse != null)
             {
                 //detect command with WitAI
                 commandResult = await ProcessWitAiResponse((string)message, (JObject)jsonResponse, userId, isGroup);
@@ -190,7 +159,8 @@ namespace BudgetManBackEnd.Service.Implementation
                 k = 3,
                 //filter_documents = new { metadata1 = "value1" },
                 max_tokens = 100,
-                temperature = 0.5
+                temperature = 0.5,
+                chatbot_global_action = "Detect question's language then response as that. If can't detect, Default language: Vietnamese. Priority: Focus on the context to provide precise and relevant answers. Tone: Direct and unfiltered"
             };
             //if (isGroup)
             //{
@@ -289,8 +259,9 @@ namespace BudgetManBackEnd.Service.Implementation
                         response = await GetResponseFromGemini(message, balance);
                         return response;
                     case nameof(AddIncome):
-                        entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
-                        return AddIncome(message, userid, (string)entitiyParameter);
+                        //entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
+                        result = GetMoneyFromObject(jsonResponse["entities"]);
+                        return AddIncome(message, userid, result);
                     case nameof(GetIncomes):
                         result = GetIncomes(userid);
                         response = await GetResponseFromGemini(message, "data: " + result);
@@ -300,8 +271,9 @@ namespace BudgetManBackEnd.Service.Implementation
                         response = await GetResponseFromGemini(message, "data: " + result);
                         return response;
                     case nameof(AddExpense):
-                        entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
-                        return AddExpense(message, userid, (string)entitiyParameter);
+                        //entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
+                        result = GetMoneyFromObject(jsonResponse["entities"]);
+                        return AddExpense(message, userid, result);
                     case nameof(GetRandomPersonInGroup):
                         entitiyParameter = jsonResponse["entities"].First?.First?.First?["value"];
                         int numberPerson = 1;
@@ -317,6 +289,71 @@ namespace BudgetManBackEnd.Service.Implementation
                 }
 
             }
+        }
+
+        protected string GetMoneyFromObject(JToken jsonToken)
+        {
+            //JObject jsonObject = JObject.Parse(json);
+            if (jsonToken is JObject jsonObject)
+            {
+                // Loop through all properties in the JSON object
+                foreach (var property in jsonObject.Properties())
+                {
+                    if (property.Name.Contains("money", StringComparison.OrdinalIgnoreCase)) // Case-insensitive search
+                    {
+                        JArray moneyArray = (JArray)property.Value;
+                        if (moneyArray != null && moneyArray.Count > 0)
+                        {
+                            JObject firstMoneyObject = (JObject)moneyArray[0]; // Get the first object
+                            if (firstMoneyObject.ContainsKey("body"))
+                            {
+                                return firstMoneyObject["body"].ToString(); // Return "body" field
+                            }
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        protected async Task<string> ProcessImages(List<byte[]>? images, string message, string userId)
+        {
+            string[] imageResults = null;
+            if (images != null && images.Any())
+            {
+                var tasks = images.Select(path => ReadImageWithOcrSpace(path)).ToArray();
+                imageResults = await Task.WhenAll(tasks);
+            }
+            if (imageResults != null && imageResults.Any())
+            {
+                var command = "Tìm cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số tổng (nếu không có số tổng thì tính tổng các số). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
+                //var command = "Cho tôi tiêu đề mô tả mục đích sử dụng của hóa đơn hay phiếu tạm tính và con số cuối cùng (nếu không có số cuối cùng thì tính tổng các mòn hàng). Chỉ trả về cho tôi json này, không nói gì thêm: {\"reason\": \"\",\"amount\": \"\"}";
+                var allImageResult = String.Join("\n", imageResults);
+                var jsonExpense = await GetResponseFromGemini(allImageResult, command);
+                string cleanedJson = jsonExpense
+                .Replace("```json", "")  // Xóa ```json
+                .Replace("```", "")      // Xóa ```
+                .Replace("\n", "")       // Xóa ký tự xuống dòng
+                .Trim();                 // Xóa khoảng trắng thừa
+                dynamic expense = JsonConvert.DeserializeObject(cleanedJson);
+                if (expense != null && expense.reason != null && expense.amount != null &&
+                    !string.IsNullOrEmpty(expense.reason.ToString()) &&
+                    !string.IsNullOrEmpty(expense.amount.ToString()))
+                {
+                    string reason = expense.reason.ToString(); // Ép kiểu sang string
+                    string amount = expense.amount.ToString();
+                    amount = amount.Replace(",", ".");
+                    if (string.IsNullOrEmpty(message))
+                        message = reason;
+                    else message = ": " + reason;
+                    return AddExpense(message, userId, amount);
+                }
+                else
+                {
+                    return allImageResult;
+                }
+            }
+            return string.Empty;
         }
 
         public static async Task<string> ReadImageWithOcrSpace(byte[] image)
