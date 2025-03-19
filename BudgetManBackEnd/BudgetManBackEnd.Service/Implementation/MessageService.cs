@@ -519,8 +519,6 @@ namespace BudgetManBackEnd.Service.Implementation
             {
                 // Vietnamese units
                 case "k":
-                    multiplier = 1000; // Thousand
-                    break;
                 case "nghin":
                 case "nghìn":
                 case "ngan":
@@ -529,23 +527,22 @@ namespace BudgetManBackEnd.Service.Implementation
                     break;
                 case "xi":
                 case "xị":
+                case "trăm":
+                case "tram":
+                case "thousand":
                     multiplier = 100000; // 100 thousand
                     break;
                 case "cu":
                 case "củ":
-                    multiplier = 1000000; // Million
-                    break;
+                case "triệu":
+                case "trieu":
                 case "m": // "m" alone means million
-                    multiplier = 1000000; // Million
-                    break;
-
-                // English units
-                case "thousand":
-                    multiplier = 1000; // Thousand
-                    break;
                 case "million":
                     multiplier = 1000000; // Million
                     break;
+                case "tỉ":
+                case "tỷ":
+                case "tỏi":
                 case "b":
                 case "billion":
                     multiplier = 1000000000; // Billion
